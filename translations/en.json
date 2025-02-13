@@ -1,0 +1,11 @@
+{
+    "greeting": "Hello",
+    "welcome": "Welcome",
+    "password": "Password",
+    "password_confirm": "Password confirmation",
+    "invalid_email": "Invalid email",
+    "required": "Required",
+    "short_password": "Short password",
+    "dont_have_account": "Don't have an account? Sign Up",
+    "passwords_must_match": "The passwords you entered do not match."
+}

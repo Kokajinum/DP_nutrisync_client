@@ -1,0 +1,11 @@
+{
+    "greeting": "Ahoj",
+    "welcome": "Vítej",
+    "password": "Heslo",
+    "password_confirm": "Heslo znovu",
+    "invalid_email": "Neplatný email",
+    "required": "Povinné",
+    "short_password": "Příliš krátké heslo",
+    "dont_have_account": "Nemáte účet? Vytvořit účet",
+    "passwords_must_match": "Zadaná hesla se neshodují."
+}
