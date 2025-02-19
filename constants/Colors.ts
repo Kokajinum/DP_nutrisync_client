@@ -115,3 +115,8 @@ export const Colors = {
   light: nutrisyncColors.light,
   dark: nutrisyncColors.dark,
 };
+
+export const GlobalColors = {
+  "green": "#34b233",
+  "yellow": "",
+};

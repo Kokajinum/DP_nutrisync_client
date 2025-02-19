@@ -1,15 +1,28 @@
 import { Router, useRouter } from "expo-router";
-import { TouchableOpacity, StyleSheet, Text, ScrollView, RefreshControl } from "react-native";
+import { StyleSheet, Image, View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { STORAGE_KEY_HAS_LAUNCHED, _500Medium } from "@/constants/Global";
+import CButton from "@/components/button/CButton";
+import { STORAGE_KEY_HAS_LAUNCHED, _500Medium, _600SemiBold } from "@/constants/Global";
 import { setStorageItem } from "@/utils/storage";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useCallback, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { StatusBar } from "expo-status-bar";
+
+const FeatureItem = ({ text }: { text: string }) => (
+  <View style={styles.featureItem}>
+    <MaterialIcons name="check" size={24} color="green" />
+    <ThemedText style={styles.featureText}>{text}</ThemedText>
+  </View>
+);
 
 const WelcomeScreen = () => {
   const router: Router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
+  const backgroundGradientStart = useThemeColor({}, "secondary");
+  const backgroundGradientEnd = useThemeColor({}, "background");
 
   const handleLoginPress = async () => {
     await setStorageItem(STORAGE_KEY_HAS_LAUNCHED, "true");
@@ -21,69 +34,126 @@ const WelcomeScreen = () => {
     router.push("/register");
   };
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
+  const handleContinueWithoutAccount = () => {
+    router.push("/(tabs)");
+  };
 
   return (
-    <SafeAreaView>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh}></RefreshControl>
-        }>
-        <ThemedText>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla porttitor, lectus at semper
-          gravida, nisl dolor eleifend sem, quis laoreet purus nisl eu arcu. Suspendisse aliquet
-          lacus id ex tempus, nec tempus mauris venenatis. Etiam pretium enim a urna sagittis, in
-          malesuada dolor sagittis. Nunc vitae enim pellentesque, vestibulum est ac, bibendum ipsum.
-          Cras feugiat sem metus, vitae aliquet urna iaculis id. Sed finibus libero nec felis
-          efficitur, sed viverra tortor efficitur. Phasellus et ullamcorper felis. Praesent
-          vestibulum risus at diam aliquam euismod. Morbi non porta ligula. Vivamus eleifend
-          consectetur tincidunt. Sed condimentum, turpis faucibus ultricies ornare, dui arcu lacinia
-          odio, quis tempor lacus nibh vehicula diam. Donec vel orci sit amet lorem pretium
-          sollicitudin ut et purus. Aliquam quis magna maximus, tempus leo in, venenatis dui.
-          Aliquam vestibulum odio mauris. In dui ligula, sodales sed dictum quis, molestie ut dui.
-          In a gravida dolor. Duis luctus tortor vitae porta rutrum.
-        </ThemedText>
-      </ScrollView>
-    </SafeAreaView>
+    <ThemedView style={styles.container}>
+      <LinearGradient
+        colors={[backgroundGradientStart, backgroundGradientEnd]}
+        style={styles.gradient}>
+        <StatusBar backgroundColor={backgroundGradientStart}></StatusBar>
+        {/* <Image
+        source={require("@/assets/images/welcome-page/welcome-page-background.svg")}
+        style={styles.backgroundImage}
+      /> */}
+
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <ThemedText type="title" style={styles.welcomeText}>
+              Welcome to
+            </ThemedText>
+            <ThemedText type="title" style={styles.appName}>
+              NutriSync
+            </ThemedText>
+          </View>
+
+          <ThemedText style={styles.subtitle}>
+            Your personal guide to a healthy lifestyle is here.
+          </ThemedText>
+
+          <View style={styles.features}>
+            <FeatureItem text="Track calorie intake" />
+            <FeatureItem text="Sync activity data" />
+            <FeatureItem text="Create mindful eating habit" />
+            <FeatureItem text="discover personalized recommendations for your ideal diet" />
+          </View>
+
+          <View style={styles.buttons}>
+            <CButton
+              title="Sign Up"
+              onPress={handleSignUpPress}
+              icon={<MaterialIcons name="person-add" />}
+              style={styles.button}
+            />
+            <CButton
+              title="Log In"
+              onPress={handleLoginPress}
+              icon={<MaterialIcons name="login" />}
+              style={styles.button}
+            />
+            <CButton
+              title="Continue Without Account"
+              onPress={handleContinueWithoutAccount}
+              icon={<MaterialIcons name="rocket-launch"></MaterialIcons>}
+              style={styles.button}
+            />
+          </View>
+        </View>
+      </LinearGradient>
+    </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
-  background: {
+  backgroundImage: {
     position: "absolute",
-    top: 0,
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  gradient: {
+    position: "absolute",
     left: 0,
     right: 0,
+    top: 0,
     bottom: 0,
-    backgroundColor: "#f0f0f0",
   },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
+  content: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "space-between",
+  },
+  header: {
+    marginTop: 40,
+  },
+  welcomeText: {
+    fontSize: 32,
+    fontFamily: _600SemiBold,
+  },
+  appName: {
+    fontSize: 32,
+    marginTop: 4,
+  },
+  subtitle: {
+    fontSize: 18,
+    marginTop: 20,
     marginBottom: 30,
-    padding: 10,
+  },
+  features: {
+    marginBottom: 30,
+  },
+  featureItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  featureText: {
+    marginLeft: 12,
+    fontSize: 16,
+    flex: 1,
+  },
+  buttons: {
+    marginTop: "auto",
   },
   button: {
-    backgroundColor: "#007bff",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
+    width: "100%",
+    marginVertical: 6,
+    borderRadius: 12,
   },
 });
 

@@ -6,6 +6,7 @@ export interface AuthContextType {
   user: any | null;
   loading: boolean;
   error: string | null;
+  isInitialAuthCheckComplete: boolean;
   signUp: (email: string, password: string) => Promise<boolean>;
   signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<void>;
@@ -30,6 +31,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialAuthCheckComplete, setIsInitialAuthCheckComplete] = useState(false);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -65,6 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } finally {
         if (isSubscribed) {
           setLoading(false);
+          setIsInitialAuthCheckComplete(true);
         }
       }
     };
@@ -163,6 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     loading,
     error,
+    isInitialAuthCheckComplete,
     signUp,
     signIn,
     signOut,

@@ -1,6 +1,7 @@
 import { Slot, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { View, Text } from "react-native";
+import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
@@ -44,8 +45,6 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepareApp() {
       try {
-        //await delay(4000);
-        console.log("test log after splash screen hide");
       } catch (e) {
         console.warn("Error loading fonts:", e);
       } finally {
@@ -69,7 +68,8 @@ export default function RootLayout() {
     <AuthProvider>
       <ThemeProvider>
         <SafeAreaView style={{ flex: 1 }}>
-          <AuthCheck />
+          <ThemedStatusBar />
+          <AuthCheck></AuthCheck>
         </SafeAreaView>
       </ThemeProvider>
     </AuthProvider>
@@ -77,14 +77,16 @@ export default function RootLayout() {
 }
 
 const AuthCheck = () => {
-  const { session, loading } = useAuth();
+  const { session, loading, isInitialAuthCheckComplete } = useAuth();
   const router = useRouter();
   const [isFirstLaunchChecked, setIsFirstLaunchChecked] = useState(false);
 
   useEffect(() => {
     const checkFirstLaunchAndAuth = async () => {
       try {
-        if (loading) return;
+        if (loading) {
+          return;
+        }
 
         const hasLaunchedBefore = await getStorageItem(STORAGE_KEY_HAS_LAUNCHED);
 
@@ -94,6 +96,7 @@ const AuthCheck = () => {
             router.replace("/(tabs)/home");
           } else if (hasLaunchedBefore) {
             router.push("/login");
+          } else {
           }
         }
       } catch (e) {
@@ -104,6 +107,10 @@ const AuthCheck = () => {
     checkFirstLaunchAndAuth();
   }, [session, loading, router]);
 
-  // Always render Slot to ensure proper navigation
+  // Only render content when initial auth check is complete
+  if (!isInitialAuthCheckComplete) {
+    return null;
+  }
+
   return <Slot />;
 };
