@@ -69,48 +69,9 @@ export default function RootLayout() {
       <ThemeProvider>
         <SafeAreaView style={{ flex: 1 }}>
           <ThemedStatusBar />
-          <AuthCheck></AuthCheck>
+          <Slot></Slot>
         </SafeAreaView>
       </ThemeProvider>
     </AuthProvider>
   );
 }
-
-const AuthCheck = () => {
-  const { session, loading, isInitialAuthCheckComplete } = useAuth();
-  const router = useRouter();
-  const [isFirstLaunchChecked, setIsFirstLaunchChecked] = useState(false);
-
-  useEffect(() => {
-    const checkFirstLaunchAndAuth = async () => {
-      try {
-        if (loading) {
-          return;
-        }
-
-        const hasLaunchedBefore = await getStorageItem(STORAGE_KEY_HAS_LAUNCHED);
-
-        if (!loading) {
-          setIsFirstLaunchChecked(true);
-          if (session) {
-            router.replace("/(tabs)/home");
-          } else if (hasLaunchedBefore) {
-            router.push("/login");
-          } else {
-          }
-        }
-      } catch (e) {
-        console.error("Error in checkFirstLaunchAndAuth:", e);
-      }
-    };
-
-    checkFirstLaunchAndAuth();
-  }, [session, loading, router]);
-
-  // Only render content when initial auth check is complete
-  if (!isInitialAuthCheckComplete) {
-    return null;
-  }
-
-  return <Slot />;
-};

@@ -1,35 +1,43 @@
-import { useAuth } from "@/context/AuthProvider";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Alert, View, Text, TextInput, Button, ActivityIndicator, StyleSheet } from "react-native";
+import { useAuth } from "@/context/AuthProvider";
+import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/ThemedText";
 
-const RegistrationScreen = () => {
+const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const { signUp, loading, error } = useAuth();
+  const { signIn, loading, error } = useAuth();
   const router = useRouter();
 
-  const handleSignUp = async () => {
+  const handleSignIn = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Please enter email and password.");
       return;
     }
-    const success = await signUp(email, password);
+
+    const success = await signIn(email, password);
 
     if (!success && !loading) {
-      Alert.alert("Registration Failed", "Please try again in few minutes.", [
+      Alert.alert("Login Failed", "Incorrect email or password. You can try again or sign up.", [
         { text: "Try Again", style: "cancel" },
-        { text: "Sign In", onPress: () => router.replace("/login") },
+        { text: "Sign Up", onPress: () => router.replace("/RegisterScreen") },
       ]);
     } else if (success) {
-      router.replace("/(tabs)/home");
+      router.replace("/(tabs)/HomeScreen");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+    <ThemedView style={styles.container}>
+      <ThemedText
+        style={styles.title}
+        /*lightColor={Colors.light.primary}
+        darkColor={Colors.dark.primary}*/
+      >
+        Login
+      </ThemedText>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <TextInput
         style={styles.input}
@@ -47,25 +55,24 @@ const RegistrationScreen = () => {
         secureTextEntry
       />
       <Button
-        title={loading ? "Registering..." : "Register"}
-        onPress={handleSignUp}
+        title={loading ? "Logging in..." : "Login"}
+        onPress={handleSignIn}
         disabled={loading}
       />
       <View style={styles.footer}>
-        <Text>Already have an account? </Text>
-        <Text style={styles.link} onPress={() => router.replace("/login")}>
-          Login
+        <Text>Don't have an account? </Text>
+        <Text style={styles.link} onPress={() => router.replace("/RegisterScreen")}>
+          Register
         </Text>
       </View>
       {loading && <ActivityIndicator style={styles.loading} />}
-    </View>
+    </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
@@ -100,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegistrationScreen;
+export default LoginScreen;
