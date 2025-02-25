@@ -1,3 +1,5 @@
+import CButton from "@/components/button/CButton";
+import CCheckBox from "@/components/checkbox/CCheckBox";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/context/AuthProvider";
@@ -35,6 +37,18 @@ const RegistrationScreen = () => {
     <>
       <ThemedView style={styles.container}>
         <ThemedText>ahoij</ThemedText>
+        <CCheckBox
+          label="Remember"
+          boxColor="#333"
+          checkColor="#fff"
+          defaultChecked={true}
+          onChange={(newState) => console.log("Checkbox state:", newState)}
+        />
+        <CButton
+          title="TEST"
+          onPress={() => {
+            console.log("test");
+          }}></CButton>
       </ThemedView>
     </>
   );
