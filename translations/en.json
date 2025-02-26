@@ -52,5 +52,22 @@
     "height_weight_info": "These metrics help us calculate your BMI and tailor your plan based on your current body composition.",
     "age_info": "Age is crucial for determining your basal metabolic rate (BMR), which affects your daily calorie needs.",
     "gender_info": "Gender impacts metabolic rate and fat distribution, which is essential for accurate fitness and nutrition recommendations.",
-    "understand": "I Understand"
+    "understand": "I Understand",
+    "loading": "Loading...",
+    "validation_required": "This field is required",
+    "validation_invalid_email": "Invalid email address",
+    "validation_short_password": "Password must be at least 6 characters long",
+    "validation_passwords_mismatch": "Passwords do not match",
+    "validation_invalid_weight": "Invalid weight",
+    "validation_invalid_height": "Invalid height",
+    "validation_invalid_age": "Invalid age",
+    "registration_failed": "Registration Failed",
+    "try_again_later": "Please try again in a few minutes.",
+    "try_again": "Try Again",
+    "cancel": "Cancel",
+    "error": "Error",
+    "enter_email_password": "Please enter email and password.",
+    "login_failed": "Login Failed",
+    "incorrect_email_password": "Incorrect email or password. You can try again or sign up.",
+    "passwords_do_not_match": "Passwords do not match."
 }

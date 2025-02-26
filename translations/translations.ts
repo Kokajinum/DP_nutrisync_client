@@ -53,5 +53,22 @@ export enum TranslationKeys {
     height_weight_info = "height_weight_info",
     age_info = "age_info",
     gender_info = "gender_info",
-    understand = "understand"
+    understand = "understand",
+    loading = "loading",
+    validation_required = "validation_required",
+    validation_invalid_email = "validation_invalid_email",
+    validation_short_password = "validation_short_password",
+    validation_passwords_mismatch = "validation_passwords_mismatch",
+    validation_invalid_weight = "validation_invalid_weight",
+    validation_invalid_height = "validation_invalid_height",
+    validation_invalid_age = "validation_invalid_age",
+    registration_failed = "registration_failed",
+    try_again_later = "try_again_later",
+    try_again = "try_again",
+    cancel = "cancel",
+    error = "error",
+    enter_email_password = "enter_email_password",
+    login_failed = "login_failed",
+    incorrect_email_password = "incorrect_email_password",
+    passwords_do_not_match = "passwords_do_not_match"
 }

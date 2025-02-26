@@ -58,7 +58,7 @@ interface CTextInputProps extends Omit<TextInputProps, "placeholder" | "onChange
   isPassword?: boolean;
 }
 
-const FloatingPlaceholderInput: React.FC<CTextInputProps> = ({
+const CTextInput: React.FC<CTextInputProps> = ({
   value = "",
   onChangeText,
   placeholder = "Placeholder",
@@ -100,11 +100,11 @@ const FloatingPlaceholderInput: React.FC<CTextInputProps> = ({
       // Posun Y z 0 na -35
       transform: [
         {
-          translateY: interpolate(animation.value, [0, 1], [0, -35]),
+          translateY: interpolate(animation.value, [0, 1], [0, -38]),
         },
       ],
       // Měníme velikost písma z 16 na 12
-      fontSize: interpolate(animation.value, [0, 1], [16, 12]),
+      fontSize: interpolate(animation.value, [0, 1], [16, 14]),
       color: placeholderColor,
     };
   });
@@ -153,7 +153,7 @@ const FloatingPlaceholderInput: React.FC<CTextInputProps> = ({
   );
 };
 
-export default FloatingPlaceholderInput;
+export default CTextInput;
 
 const styles = StyleSheet.create({
   wrapper: {

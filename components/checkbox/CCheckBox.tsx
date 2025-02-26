@@ -9,6 +9,7 @@ import Animated, {
 
 // Import ikony z @expo/vector-icons
 import { MaterialIcons } from "@expo/vector-icons";
+import { ThemedText } from "../ThemedText";
 
 // Vytvoříme si "animovatelnou" verzi MaterialIcons
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcons);
@@ -72,7 +73,7 @@ const CCheckBox: React.FC<CCheckBox> = ({
       <Animated.View style={[styles.box, animatedBoxStyle]}>
         <AnimatedIcon name="check" size={16} style={[animatedIconStyle, { color: checkColor }]} />
       </Animated.View>
-      <Text style={styles.label}>{label}</Text>
+      <ThemedText style={styles.label}>{label}</ThemedText>
     </Pressable>
   );
 };

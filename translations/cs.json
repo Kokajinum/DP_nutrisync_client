@@ -52,5 +52,22 @@
     "height_weight_info": "Tyto metriky nám pomáhají vypočítat vaše BMI a přizpůsobit plán na základě vaší aktuální tělesné kompozice.",
     "age_info": "Věk je klíčový pro výpočet vašeho bazálního metabolismu (BMR), který ovlivňuje vaše denní kalorické potřeby.",
     "gender_info": "Pohlaví ovlivňuje metabolismus a distribuci tuku, což je zásadní pro přesná fitness a nutriční doporučení.",
-    "understand": "Rozumím"
+    "understand": "Rozumím",
+    "loading": "Načítám...",
+    "validation_required": "Toto pole je povinné",
+    "validation_invalid_email": "Neplatná e-mailová adresa",
+    "validation_short_password": "Heslo musí mít alespoň 6 znaků",
+    "validation_passwords_mismatch": "Hesla se neshodují",
+    "validation_invalid_weight": "Neplatná hmotnost",
+    "validation_invalid_height": "Neplatná výška",
+    "validation_invalid_age": "Neplatný věk",
+    "registration_failed": "Registrace selhala",
+    "try_again_later": "Zkuste to znovu za několik minut.",
+    "try_again": "Zkusit znovu",
+    "cancel": "Zrušit",
+    "error": "Chyba",
+    "enter_email_password": "Zadejte e-mail a heslo.",
+    "login_failed": "Přihlášení selhalo",
+    "incorrect_email_password": "Nesprávný e-mail nebo heslo. Můžete to zkusit znovu nebo se zaregistrovat.",
+    "passwords_do_not_match": "Hesla se neshodují."
 }
