@@ -25,7 +25,7 @@ interface CButtonProps {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   iconStyle?: StyleProp<ViewStyle | TextStyle | ImageStyle>;
-  type?: "default";
+  type?: "default" | "google";
   textLightColor?: string;
   textDarkColor?: string;
   iconLightColor?: string;

@@ -1,9 +1,10 @@
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { STORAGE_KEY_HAS_LAUNCHED, _500Medium, _600SemiBold } from "@/constants/Global";
 import { getStorageItem } from "@/utils/storage";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { delay } from "@/utils/methods";
 
 const IndexPage = () => {
   const { session, loading } = useAuth();
@@ -12,13 +13,9 @@ const IndexPage = () => {
   useEffect(() => {
     const checkFirstLaunchAndAuth = async () => {
       try {
-        if (loading) {
-          <View style={styles.center}>
-            <ActivityIndicator size="large" />
-          </View>;
-        }
-
         const hasLaunchedBefore = await getStorageItem(STORAGE_KEY_HAS_LAUNCHED);
+
+        //await delay(10000);
 
         if (!loading) {
           if (session) {
@@ -37,6 +34,16 @@ const IndexPage = () => {
 
     checkFirstLaunchAndAuth();
   }, [session, loading, router]);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  } else {
+    null;
+  }
 };
 
 export default IndexPage;

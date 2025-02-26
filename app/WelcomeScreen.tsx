@@ -1,4 +1,4 @@
-import { Router, useRouter } from "expo-router";
+import { Router, Stack, useRouter } from "expo-router";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
@@ -10,6 +10,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Translation, useTranslation } from "react-i18next";
+import { TranslationKeys } from "@/translations/translations";
 
 const FeatureItem = ({ text }: { text: string }) => (
   <View style={styles.featureItem}>
@@ -20,6 +23,7 @@ const FeatureItem = ({ text }: { text: string }) => (
 
 const WelcomeScreen = () => {
   const router: Router = useRouter();
+  const { t } = useTranslation();
   const backgroundGradientStart = useThemeColor({}, "secondary");
   const backgroundGradientEnd = useThemeColor({}, "background");
 
@@ -43,15 +47,15 @@ const WelcomeScreen = () => {
         colors={[backgroundGradientStart, backgroundGradientEnd]}
         locations={[0, 0.47]}
         style={styles.gradient}>
-        <StatusBar backgroundColor={backgroundGradientStart}></StatusBar>
+        {/* <StatusBar backgroundColor={backgroundGradientStart}></StatusBar> */}
 
         <ScrollView>
           <View style={styles.header}>
             <ThemedText type="title" style={styles.welcomeText}>
-              Welcome to
+              {t(TranslationKeys.welcome)}
             </ThemedText>
             <ThemedText type="title" style={styles.appName}>
-              NutriSync
+              {t(TranslationKeys.app_name)}
             </ThemedText>
             <Image
               source={require("../assets/images/welcome-page/welcome-page-background.svg")}
@@ -118,7 +122,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   header: {
-    marginTop: 20,
+    marginTop: 60,
     height: 250,
   },
   welcomeText: {

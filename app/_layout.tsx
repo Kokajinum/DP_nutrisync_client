@@ -1,4 +1,4 @@
-import { Slot, useRouter } from "expo-router";
+import { Slot, Stack, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
@@ -17,6 +17,9 @@ import { getStorageItem } from "@/utils/storage";
 import { STORAGE_KEY_HAS_LAUNCHED } from "@/constants/Global";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/translations/i18n";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 // export const unstable_settings = {
 //   // Ensure that reloading on `/modal` keeps a back button present.
@@ -67,10 +70,22 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <SafeAreaView style={{ flex: 1 }}>
+        <I18nextProvider i18n={i18n}>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="WelcomeScreen" options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen
+              name="RegisterScreen"
+              options={
+                {
+                  //headerStyle: { backgroundColor: "transparent" },
+                  //headerTransparent: true,
+                }
+              }></Stack.Screen>
+            <Stack.Screen name="LoginScreen"></Stack.Screen>
+          </Stack>
           <ThemedStatusBar />
-          <Slot></Slot>
-        </SafeAreaView>
+        </I18nextProvider>
       </ThemeProvider>
     </AuthProvider>
   );

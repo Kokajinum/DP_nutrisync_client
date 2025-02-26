@@ -1,20 +1,25 @@
 import CButton from "@/components/button/CButton";
 import CCheckBox from "@/components/checkbox/CCheckBox";
+import FloatingLabelInput from "@/components/input/CTextInput";
+import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/context/AuthProvider";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { LinearGradient } from "expo-linear-gradient";
+import { TranslationKeys } from "@/translations/translations";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, View, Text, TextInput, Button, ActivityIndicator, StyleSheet } from "react-native";
+import { useTranslation } from "react-i18next";
+import { Alert, StyleSheet } from "react-native";
 
 const RegistrationScreen = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const { signUp, loading, error } = useAuth();
+  const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const router = useRouter();
+  const { t } = useTranslation();
 
   const handleSignUp = async () => {
     if (!email || !password) {
@@ -34,23 +39,56 @@ const RegistrationScreen = () => {
   };
 
   return (
-    <>
-      <ThemedView style={styles.container}>
-        <ThemedText>ahoij</ThemedText>
-        <CCheckBox
-          label="Remember"
-          boxColor="#333"
-          checkColor="#fff"
-          defaultChecked={true}
-          onChange={(newState) => console.log("Checkbox state:", newState)}
-        />
-        <CButton
-          title="TEST"
-          onPress={() => {
-            console.log("test");
-          }}></CButton>
-      </ThemedView>
-    </>
+    <ThemedView style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: t(TranslationKeys.get_free_account),
+          headerTitleAlign: "center",
+        }}></Stack.Screen>
+      <ThemedStatusBar></ThemedStatusBar>
+      <ThemedText>ahoijrere</ThemedText>
+      <CCheckBox
+        label="Remember"
+        boxColor="#333"
+        checkColor="#fff"
+        defaultChecked={true}
+        onChange={(newState) => console.log("Checkbox state:", newState)}
+      />
+      <CButton
+        title="TEST"
+        onPress={() => {
+          console.log("test");
+        }}></CButton>
+
+      <FloatingLabelInput
+        placeholder="Enter your email"
+        value={email}
+        onChangeText={(val) => {
+          setEmail(val);
+        }}
+        rightIcon={<MaterialIcons name="close" size={20} color="#000" />}
+        onRightIconPress={() => setEmail("")} // Vymaže text
+      />
+
+      <FloatingLabelInput
+        placeholder="Enter your password"
+        value={password}
+        onChangeText={(val) => {
+          setPassword(val);
+        }}
+        rightIcon={
+          isPasswordVisible ? (
+            <MaterialIcons name="visibility" size={20} color="#000"></MaterialIcons>
+          ) : (
+            <MaterialIcons name="visibility-off" size={20} color="#000"></MaterialIcons>
+          )
+        }
+        isPassword={!isPasswordVisible}
+        onRightIconPress={() => {
+          setIsPasswordVisible(!isPasswordVisible);
+        }}
+      />
+    </ThemedView>
   );
 };
 
