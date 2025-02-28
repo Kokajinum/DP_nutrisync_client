@@ -117,6 +117,7 @@ export const Colors = {
 };
 
 export const GlobalColors = {
+  "checkGreen" : "#4CAF50",
   "green": "#34b233",
   "yellow": "",
 };

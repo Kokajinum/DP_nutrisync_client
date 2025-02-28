@@ -1,17 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import React, { useState, useEffect, ReactElement } from "react";
+import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 interface CAccordionProps {
   title: string;
   content: string;
-  leftIcon?: React.ReactNode; // Volitelná ikona vedle titulku
+  leftIcon?: ReactElement; // Volitelná ikona vedle titulku
 }
 
 const CAccordion: React.FC<CAccordionProps> = ({ title, content, leftIcon }) => {
+  const onBackgroundColor = useThemeColor({}, "onBackground");
+
+  let leftIconWithColor: ReactElement | null = leftIcon ?? null;
+  try {
+    //trochu nebezpecne, nekontroluje, zda element opravdu obsahuje atribut "color"
+    leftIconWithColor = React.isValidElement(leftIcon)
+      ? React.cloneElement(leftIcon as React.ReactElement<any>, {
+          color: onBackgroundColor,
+        })
+      : (leftIcon ?? null);
+  } catch (e) {
+    if (__DEV__) {
+      Alert.alert("Error: CCheckCard -> leftIconWithColor");
+    }
+  }
+
   const [expanded, setExpanded] = useState(false);
 
   // Měřená výška obsahu (uložená v React state)
@@ -52,12 +69,12 @@ const CAccordion: React.FC<CAccordionProps> = ({ title, content, leftIcon }) => 
       <Pressable style={styles.header} onPress={() => setExpanded(!expanded)}>
         <View style={styles.titleContainer}>
           {/* Volitelná ikona vlevo */}
-          {leftIcon && <View style={styles.iconWrapper}>{leftIcon}</View>}
-          <ThemedText style={styles.title}>{title}</ThemedText>
+          {leftIcon && <View style={styles.iconWrapper}>{leftIconWithColor}</View>}
+          <ThemedText style={[styles.title, { color: onBackgroundColor }]}>{title}</ThemedText>
         </View>
         {/* Šipka (expand-more) */}
         <Animated.View style={arrowAnimatedStyle}>
-          <MaterialIcons name="expand-more" size={24} color="black" />
+          <MaterialIcons name="expand-more" size={24} color={onBackgroundColor} />
         </Animated.View>
       </Pressable>
 
@@ -66,7 +83,9 @@ const CAccordion: React.FC<CAccordionProps> = ({ title, content, leftIcon }) => 
         <View
           style={styles.contentContainer}
           onLayout={(e) => setMeasuredHeight(e.nativeEvent.layout.height)}>
-          <ThemedText style={styles.contentText}>{content}</ThemedText>
+          <ThemedText style={[styles.contentText, { color: onBackgroundColor }]}>
+            {content}
+          </ThemedText>
         </View>
       </ThemedView>
 
@@ -105,7 +124,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#000",
   },
   // Neviditelný kontejner mimo obrazovku pro měření
   hiddenMeasuringContainer: {
@@ -119,6 +137,5 @@ const styles = StyleSheet.create({
   },
   contentText: {
     fontSize: 14,
-    color: "#000",
   },
 });
