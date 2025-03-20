@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import React, { useState } from "react";
 import CAccordion from "@/components/text/CAccordion";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -13,7 +13,7 @@ const HomeScreen = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   return (
-    <View style={{ paddingHorizontal: 20 }}>
+    <ScrollView style={{ paddingHorizontal: 20 }}>
       <Text>HomeScreen</Text>
       <CAccordion
         title="Training plan"
@@ -26,6 +26,7 @@ const HomeScreen = () => {
         content="To understand your basic stats like age, height, and weight, which are crucial for our algorithms to calculate your calorie needs and goals."
         leftIcon={<MaterialIcons name="rocket-launch" size={24} />}
       />
+
       <CCheckCard
         icon={<MaterialIcons name="fitness-center" size={24} />}
         label="Lose fat"
@@ -52,7 +53,7 @@ const HomeScreen = () => {
         isSelected={selectedIndex === 1}
         onPress={() => setSelectedIndex(1)}
       />
-    </View>
+    </ScrollView>
   );
 };
 

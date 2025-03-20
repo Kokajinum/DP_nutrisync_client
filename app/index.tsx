@@ -19,6 +19,7 @@ const IndexPage = () => {
 
         if (!loading) {
           if (session) {
+            console.log(session);
             router.replace("/(tabs)/HomeScreen");
           } else if (hasLaunchedBefore) {
             router.replace("/LoginScreen");

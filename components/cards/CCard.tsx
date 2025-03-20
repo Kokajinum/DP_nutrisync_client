@@ -3,6 +3,7 @@ import { Pressable, View, Text, StyleSheet, StyleProp, ViewStyle, Alert } from "
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useTheme } from "@react-navigation/native";
+import { ensureError } from "@/utils/methods";
 
 interface CCardProps {
   /** Nadpis karty (např. "Beginner") */
@@ -50,6 +51,8 @@ const CCard: React.FC<CCardProps> = ({
       : (leftIcon ?? null);
   } catch (e) {
     if (__DEV__) {
+      const error = ensureError(e);
+      console.log(error.message);
       Alert.alert("Error: CCheckCard -> leftIconWithColor");
     }
   }
@@ -62,7 +65,7 @@ const CCard: React.FC<CCardProps> = ({
   //   };
 
   return (
-    <Pressable onPress={onPress}>
+    <Pressable style={({ pressed }) => [pressed && styles.pressed]} onPress={onPress}>
       <View
         style={[
           styles.cardContainer,
@@ -122,6 +125,9 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     marginRight: 8,
+  },
+  pressed: {
+    opacity: 0.8,
   },
 });
 
