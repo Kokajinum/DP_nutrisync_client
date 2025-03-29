@@ -1,8 +1,10 @@
 import { supabase } from "@/utils/supabase";
+import { Session } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
+import NetInfo from "@react-native-community/netinfo";
 
 export interface AuthContextType {
-  session: any | null;
+  session: Session | null;
   user: any | null;
   loading: boolean;
   error: string | null;
@@ -13,14 +15,6 @@ export interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -44,6 +38,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const loadSession = async () => {
       if (!isSubscribed) return;
+
+      let isOnline: boolean = true;
+      NetInfo.fetch().then((state) => {
+        if (!state.isConnected) {
+          isOnline = false;
+        }
+      });
 
       try {
         const {
@@ -93,6 +94,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadSession();
     setupAuthSubscription();
 
+    //cleanup funkce
+    //provolá se, když se komponenta odmountuje
     return () => {
       isSubscribed = false;
       clearTimeout(timeoutId);
@@ -173,4 +176,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

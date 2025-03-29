@@ -1,16 +1,56 @@
 import { View, Text, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CAccordion from "@/components/text/CAccordion";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CCheckCard } from "@/components/cards/CCheckCard";
 import CIndicator from "@/components/indicators/CStepIndicator";
 import CStepIndicator from "@/components/indicators/CStepIndicator";
 import CCard from "@/components/cards/CCard";
+import { useAuth } from "@/context/AuthProvider";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
+import { UserProfileData } from "@/models/interfaces/UserProfileData";
+import { ensureError } from "@/utils/methods";
+import { useRestManager } from "@/context/RestManagerProvider";
 
 const HomeScreen = () => {
   const [selected, setSelected] = useState(false);
+  const { session } = useAuth();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  //const restManager = useRestManager();
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  // const fetchUserProfile = async (): Promise<UserProfileData | null> => {
+  //   try {
+  //     const response = await restManager.get<UserProfileData>("/users/profile");
+  //     return response.data;
+  //   } catch (exception) {
+  //     const error: Error = ensureError(exception);
+  //     console.error(error.message);
+  //     return null;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const getProfileData = async () => {
+  //     console.log(session);
+
+  //     const profile = await queryClient.fetchQuery({
+  //       queryKey: ["profileData"],
+  //       queryFn: fetchUserProfile,
+  //     });
+
+  //     if (profile) {
+  //       console.log(profile);
+  //     } else {
+  //       console.log("chyba");
+  //     }
+  //   };
+
+  //   getProfileData();
+  // }, [session]);
 
   return (
     <ScrollView style={{ paddingHorizontal: 20 }}>

@@ -22,6 +22,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 import CButton from "@/components/button/CButton";
 import CCheckBox from "@/components/checkbox/CCheckBox";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import apiClient from "@/utils/api/apiClient";
+import { UserProfileData } from "@/models/interfaces/UserProfileData";
+import { useQueryClient } from "@tanstack/react-query";
+import { ensureError } from "@/utils/methods";
+import { useRestManager } from "@/context/RestManagerProvider";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -29,9 +34,11 @@ const LoginScreen = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isEmailErrorVisible, setIsEmailErrorVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
-  const { signIn, loading, error } = useAuth();
+  const { signIn, loading, error, session } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const restManager = useRestManager();
 
   //colors
   const linkColor = useThemeColor({}, "primary");
@@ -40,20 +47,43 @@ const LoginScreen = () => {
   const colorScheme = useColorScheme();
 
   const handleSignIn = async () => {
-    if (!email || !password) {
-      Alert.alert(t(TranslationKeys.error), t(TranslationKeys.enter_email_password));
-      return;
-    }
+    try {
+      if (!email || !password) {
+        Alert.alert(t(TranslationKeys.error), t(TranslationKeys.enter_email_password));
+        return;
+      }
 
-    const success = await signIn(email, password);
+      const success = await signIn(email, password);
 
-    if (!success && !loading) {
-      Alert.alert(t(TranslationKeys.login_failed), t(TranslationKeys.incorrect_email_password), [
-        { text: t(TranslationKeys.try_again), style: "cancel" },
-        { text: t(TranslationKeys.sign_up), onPress: () => router.replace("/RegisterScreen") },
-      ]);
-    } else if (success) {
-      router.replace("/HomeScreen");
+      if (!success && !loading) {
+        Alert.alert(t(TranslationKeys.login_failed), t(TranslationKeys.incorrect_email_password), [
+          { text: t(TranslationKeys.try_again), style: "cancel" },
+          { text: t(TranslationKeys.sign_up), onPress: () => router.replace("/RegisterScreen") },
+        ]);
+      } else if (success) {
+        // const profile = await queryClient.fetchQuery({
+        //   queryKey: ["profileData"],
+        //   queryFn: fetchUserProfile,
+        // });
+        // const queryState = queryClient.getQueryState(["profileData"]);
+        // console.log(queryState);
+        // if (profile) {
+        //   router.replace("/HomeScreen");
+        // } else {
+        //   router.replace("/onboarding");
+        // }
+      }
+    } catch (err: any) {}
+  };
+
+  const fetchUserProfile = async (): Promise<UserProfileData | null> => {
+    try {
+      const response = await restManager.get<UserProfileData>("/users/profile");
+      return response.data;
+    } catch (exception) {
+      const error: Error = ensureError(exception);
+      console.error(error.message);
+      return null;
     }
   };
 

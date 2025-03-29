@@ -8,7 +8,7 @@ interface RestManagerOptions {
 
 class RestManager {
   private axiosInstance: AxiosInstance;
-  private authToken: string | null = null;
+  private authToken: string | undefined = undefined;
 
   /**
    *
@@ -27,6 +27,8 @@ class RestManager {
         if (this.authToken) {
           //config.headers = config.headers || {};
           config.headers.Authorization = `Bearer ${this.authToken}`;
+        } else {
+          console.error(`[API REQUEST] undefined token`);
         }
         console.log(`[API REQUEST] ${config.method?.toUpperCase()} ${config.url}`, config);
         return config;
@@ -49,7 +51,7 @@ class RestManager {
         if (error.response) {
           // Server vrátil odpověď s chybovým kódem
           console.error(
-            `[API RESPONSE ERROR] ${error.response.status} ${error.config?.url}`,
+            `[API RESPONSE ERROR] ${error.response.status} ${error.config?.baseURL}${error.config?.url}`,
             error.response.data
           );
           // Tady by se mohlo implementovat přesměrování uživatele na login
@@ -70,7 +72,7 @@ class RestManager {
     );
   }
 
-  public setToken(token: string | null): void {
+  public setToken(token: string | undefined): void {
     this.authToken = token;
   }
 

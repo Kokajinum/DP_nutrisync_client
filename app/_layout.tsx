@@ -1,6 +1,5 @@
-import { Slot, Stack, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { Stack, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import * as SplashScreen from "expo-splash-screen";
 import {
@@ -11,15 +10,12 @@ import {
   Quicksand_600SemiBold,
   Quicksand_700Bold,
 } from "@expo-google-fonts/quicksand";
-import { delay } from "@/utils/methods";
 import { AuthProvider, useAuth } from "@/context/AuthProvider";
-import { getStorageItem } from "@/utils/storage";
-import { STORAGE_KEY_HAS_LAUNCHED } from "@/constants/Global";
-import { ThemeProvider } from "@/context/ThemeContext";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ThemeProvider } from "@/context/ThemeProvider";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/translations/i18n";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RestManagerProvider } from "@/context/RestManagerProvider";
 
 // export const unstable_settings = {
 //   // Ensure that reloading on `/modal` keeps a back button present.
@@ -44,6 +40,7 @@ export default function RootLayout() {
     Quicksand_700Bold,
   });
   const [appReady, setAppReady] = useState(false);
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     async function prepareApp() {
@@ -68,25 +65,29 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <I18nextProvider i18n={i18n}>
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
-            <Stack.Screen name="WelcomeScreen" options={{ headerShown: false }}></Stack.Screen>
-            <Stack.Screen
-              name="RegisterScreen"
-              options={
-                {
-                  //headerStyle: { backgroundColor: "transparent" },
-                  //headerTransparent: true,
-                }
-              }></Stack.Screen>
-            <Stack.Screen name="LoginScreen"></Stack.Screen>
-          </Stack>
-          <ThemedStatusBar />
-        </I18nextProvider>
-      </ThemeProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RestManagerProvider>
+          <ThemeProvider>
+            <I18nextProvider i18n={i18n}>
+              <Stack>
+                <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
+                <Stack.Screen name="WelcomeScreen" options={{ headerShown: false }}></Stack.Screen>
+                <Stack.Screen
+                  name="RegisterScreen"
+                  options={
+                    {
+                      //headerStyle: { backgroundColor: "transparent" },
+                      //headerTransparent: true,
+                    }
+                  }></Stack.Screen>
+                <Stack.Screen name="LoginScreen"></Stack.Screen>
+              </Stack>
+              <ThemedStatusBar />
+            </I18nextProvider>
+          </ThemeProvider>
+        </RestManagerProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

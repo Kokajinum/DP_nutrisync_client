@@ -51,7 +51,7 @@ const RegistrationScreen = () => {
         { text: "Sign In", onPress: () => router.replace("/LoginScreen") },
       ]);
     } else if (success) {
-      router.replace("/HomeScreen");
+      router.replace("/onboarding");
     }
   };
 
