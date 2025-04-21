@@ -1,5 +1,5 @@
 {
-    "welcome": "Welcome to",
+    "welcome": "Welcome to NutriSync",
     "app_name": "NutriSync",
     "personal_guide": "Your personal guide to a healthy lifestyle.",
     "track_calories": "Track calorie intake",
@@ -69,5 +69,13 @@
     "enter_email_password": "Please enter email and password.",
     "login_failed": "Login Failed",
     "incorrect_email_password": "Incorrect email or password. You can try again or sign up.",
-    "passwords_do_not_match": "Passwords do not match."
+    "passwords_do_not_match": "Passwords do not match.",
+    "onboarding_pre_onboarding_heading": "To create a personalized fitness plan, we need some information from you.",
+    "onboarding_first_header": "Account Setup",
+    "onboarding_first_heading": "What is your fitness goal?",
+    "onboarding_first_heading2": "What is your target weight?",
+    "error_required": "This field is required.",
+    "error_invalid_number": "Please enter a valid number.",
+    "error_range": "Value must be between {{min}} and {{max}} kg.",
+    "onboarding_first_placeholder_weight": "Your target weight"
 }

@@ -8,6 +8,12 @@ import {
   Alert,
   ActivityIndicator,
   Pressable,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  ScrollView,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthProvider";
@@ -22,11 +28,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import CButton from "@/components/button/CButton";
 import CCheckBox from "@/components/checkbox/CCheckBox";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import apiClient from "@/utils/api/apiClient";
 import { UserProfileData } from "@/models/interfaces/UserProfileData";
 import { useQueryClient } from "@tanstack/react-query";
 import { ensureError } from "@/utils/methods";
 import { useRestManager } from "@/context/RestManagerProvider";
+import TestButton from "@/components/button/TestButton";
+import { ThemedStackScreen } from "@/components/ThemedStackScreen";
+import { globalStyles } from "@/utils/global-styles";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -45,6 +53,8 @@ const LoginScreen = () => {
   const onBackground = useThemeColor({}, "onBackground");
   const background = useThemeColor({}, "background");
   const colorScheme = useColorScheme();
+
+  const [text, onChangeText] = React.useState("Useless Text");
 
   const handleSignIn = async () => {
     try {
@@ -76,109 +86,100 @@ const LoginScreen = () => {
     } catch (err: any) {}
   };
 
-  const fetchUserProfile = async (): Promise<UserProfileData | null> => {
-    try {
-      const response = await restManager.get<UserProfileData>("/users/profile");
-      return response.data;
-    } catch (exception) {
-      const error: Error = ensureError(exception);
-      console.error(error.message);
-      return null;
-    }
-  };
-
   return (
-    <ThemedView style={styles.container}>
-      <Stack.Screen
+    <KeyboardAvoidingView
+      style={styles.keyboardView}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <ThemedStackScreen
         options={{
           title: t(TranslationKeys.log_in),
-          headerTitleAlign: "center",
-          headerTintColor: onBackground,
-          headerStyle: { backgroundColor: colorScheme === "dark" ? "black" : "white" },
-        }}></Stack.Screen>
+        }}></ThemedStackScreen>
       <ThemedStatusBar></ThemedStatusBar>
+      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        </TouchableWithoutFeedback> */}
 
-      {/* Email Input */}
-      <CTextInput
-        placeholder={t(TranslationKeys.enter_email)}
-        value={email}
-        onChangeText={(val) => setEmail(val)}
-        rightIcon={<MaterialIcons name="close" size={20} color={onBackground} />}
-        onRightIconPress={() => {
-          setEmail("");
-        }}
-        containerStyle={styles.inputContainer}></CTextInput>
-      <ThemedText style={[styles.helperText, { display: isEmailErrorVisible ? "flex" : "none" }]}>
-        Enter your email/Invalid email address
-      </ThemedText>
-
-      {/* Password Input */}
-      <CTextInput
-        placeholder={t(TranslationKeys.enter_password)}
-        value={password}
-        onChangeText={(val) => setPassword(val)}
-        rightIcon={
-          isPasswordVisible ? (
-            <MaterialIcons name="visibility" size={20} color={onBackground} />
-          ) : (
-            <MaterialIcons name="visibility-off" size={20} color={onBackground} />
-          )
-        }
-        isPassword={!isPasswordVisible}
-        onRightIconPress={() => setIsPasswordVisible(!isPasswordVisible)}
-        containerStyle={styles.inputContainer}
-      />
-      <ThemedText style={[styles.helperText, { display: "none" }]}>Enter your password</ThemedText>
-
-      {/* Remember Me and Forgot Password */}
-      <View style={styles.rememberForgotContainer}>
-        <CCheckBox
-          label={t(TranslationKeys.remember)}
-          boxColor="#333"
-          checkColor="#fff"
-          defaultChecked={rememberMe}
-          onChange={setRememberMe}
-        />
-        <Pressable onPress={() => router.push("/PasswordRecoveryScreen")}>
-          <ThemedText style={[styles.forgotPassword, { color: linkColor }]}>
-            {t(TranslationKeys.forgot_password)}
+      <ThemedView style={[styles.container, globalStyles.globalMainContent]}>
+        <ScrollView>
+          {/* Email Input */}
+          <CTextInput
+            placeholder={t(TranslationKeys.enter_email)}
+            value={email}
+            onChangeText={(val) => setEmail(val)}
+            rightIcon={<MaterialIcons name="close" size={20} color={onBackground} />}
+            onRightIconPress={() => {
+              setEmail("");
+            }}
+            containerStyle={styles.inputContainer}></CTextInput>
+          <ThemedText
+            style={[styles.helperText, { display: isEmailErrorVisible ? "flex" : "none" }]}>
+            Enter your email/Invalid email address
           </ThemedText>
-        </Pressable>
-      </View>
 
-      <View style={styles.buttons}>
-        {/* Sign Up Button */}
-        <CButton
-          title={loading ? t(TranslationKeys.loading) : t(TranslationKeys.log_in)}
-          onPress={handleSignIn}
-          icon={<MaterialIcons name="login" size={24} />}
-          style={styles.signInButton}
-        />
+          {/* Password Input */}
+          <CTextInput
+            placeholder={t(TranslationKeys.enter_password)}
+            value={password}
+            onChangeText={(val) => setPassword(val)}
+            rightIcon={
+              isPasswordVisible ? (
+                <MaterialIcons name="visibility" size={20} color={onBackground} />
+              ) : (
+                <MaterialIcons name="visibility-off" size={20} color={onBackground} />
+              )
+            }
+            isPassword={!isPasswordVisible}
+            onRightIconPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            containerStyle={styles.inputContainer}
+          />
 
-        {/* don't have an account link */}
-        <Pressable
-          style={styles.loginLinkContainer}
-          onPress={() => router.replace("/RegisterScreen")}>
-          <ThemedText style={[styles.loginLink, { color: linkColor }]}>
-            {t(TranslationKeys.dont_have_account)}
+          <ThemedText style={[styles.helperText, { display: "none" }]}>
+            Enter your password
           </ThemedText>
-        </Pressable>
-      </View>
 
-      {loading && <ActivityIndicator style={styles.loading} />}
-    </ThemedView>
+          <Pressable
+            style={[styles.forgotPasswordContainer]}
+            onPress={() => router.push("/PasswordRecoveryScreen")}>
+            <ThemedText style={[styles.forgotPassword, { color: linkColor }]}>
+              {t(TranslationKeys.forgot_password)}
+            </ThemedText>
+          </Pressable>
+
+          {loading && <ActivityIndicator style={styles.loading} />}
+        </ScrollView>
+        <View style={styles.buttons}>
+          {/* Sign Up Button */}
+          <CButton
+            style={styles.signInButton}
+            title={loading ? t(TranslationKeys.loading) : t(TranslationKeys.log_in)}
+            onPress={handleSignIn}
+            icon={<MaterialIcons name="login" size={24} />}
+          />
+
+          {/* don't have an account link */}
+          <Pressable
+            style={styles.loginLinkContainer}
+            onPress={() => router.replace("/RegisterScreen")}>
+            <ThemedText style={[styles.loginLink, { color: linkColor }]}>
+              {t(TranslationKeys.dont_have_account)}
+            </ThemedText>
+          </Pressable>
+        </View>
+      </ThemedView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
+  keyboardView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 20,
-    paddingBottom: 60,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // padding: 20,
+    //alignItems: "center",
+    //justifyContent: "center",
   },
   title: {
     fontSize: 24,
@@ -238,10 +239,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginVertical: 16,
+    marginVertical: 20,
   },
   forgotPassword: {
     fontSize: 14,
+  },
+  forgotPasswordContainer: {
+    marginVertical: 20,
+    alignItems: "flex-end",
   },
 });
 

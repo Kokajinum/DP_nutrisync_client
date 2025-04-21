@@ -11,6 +11,7 @@
         "monochromeImage": "./assets/icons/adaptive-icon.png",
         // "backgroundImage": "./assets/icons/adaptive-icon.png"
       },
+      "softwareKeyboardLayoutMode": "pan",
       "package": "com.syncsoft.nutrisync"
     },
     "web": {

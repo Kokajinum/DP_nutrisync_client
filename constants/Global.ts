@@ -1,4 +1,4 @@
-export const STORAGE_KEY_THEME: string = "settings.theme"
+export const STORAGE_KEY_THEME: string = "settings.theme";
 export const STORAGE_KEY_LANGUAGE: string = "settings.lang";
 export const STORAGE_KEY_HAS_LAUNCHED: string = "app.has_launched";
 export const STORAGE_KEY_AUTH_TOKEN: string = "auth.token";

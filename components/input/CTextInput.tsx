@@ -23,38 +23,27 @@ const AnimatedText = Animated.createAnimatedComponent(Animated.Text);
 
 //omit vynechá uvedené atributy z TextInputProps
 interface CTextInputProps extends Omit<TextInputProps, "placeholder" | "onChangeText" | "value"> {
-  /** Hodnota pole (řízená komponenta) */
   value?: string;
-  /** Callback při změně textu */
+
   onChangeText?: (text: string) => void;
 
-  /** Text placeholderu, který se bude animovat (plavat nahoru) */
   placeholder?: string;
-  /** Barva placeholderu */
+
   placeholderColor?: string;
-  /** Barva orámování */
+
   borderColor?: string;
 
   //barva borderu při focusu
   focusedBorderColor?: string;
 
-  /** Styl kontejneru obalujícího vstup */
   containerStyle?: StyleProp<ViewStyle>;
-  /** Styl samotného text inputu */
+
   inputStyle?: StyleProp<TextStyle>;
 
-  /**
-   * Volitelný React prvek pro zobrazení vpravo (např. <MaterialIcons name="close" size={20} />).
-   * Pokud není vyplněno, ikona se nezobrazí.
-   */
   rightIcon?: React.ReactNode;
-  /**
-   * Callback při stisku ikony vpravo (pokud je ikona definovaná).
-   * Pokud není definován, ikona nebude tlačítko, ale pouze statický prvek.
-   */
+
   onRightIconPress?: () => void;
 
-  /** Zda se jedná o heslo (skryté zadávání) */
   isPassword?: boolean;
 }
 
@@ -157,6 +146,7 @@ export default CTextInput;
 
 const styles = StyleSheet.create({
   wrapper: {
+    //flex: 1,
     width: "100%",
     marginTop: 30,
   },

@@ -22,7 +22,7 @@ export function ThemedText({
     <Text
       style={[
         { fontFamily: _500Medium },
-        { color },
+        { color: color },
         type === "default" ? styles.default : undefined,
         type === "title" ? styles.title : undefined,
         type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,

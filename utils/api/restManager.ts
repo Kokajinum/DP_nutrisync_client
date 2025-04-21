@@ -99,7 +99,7 @@ class RestManager {
    */
   public async post<T>(
     url: string,
-    data?: any,
+    data?: T,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     try {
@@ -118,7 +118,7 @@ class RestManager {
    */
   public async put<T>(
     url: string,
-    data?: any,
+    data?: T,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     try {

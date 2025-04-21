@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,32 +7,29 @@ import Animated, {
   interpolateColor,
 } from "react-native-reanimated";
 
-// Import ikony z @expo/vector-icons
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "../ThemedText";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
-// Vytvoříme si "animovatelnou" verzi MaterialIcons
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcons);
 
-interface CCheckBox {
-  /** Popisek checkboxu */
+interface CCheckBoxProps {
   label: string;
-  /** Barva ikony checku */
   checkColor?: string;
   /** Barva rámečku a vyplněného pozadí */
   boxColor?: string;
-  /** Výchozí stav (zaškrtnutý / nezaškrtnutý) */
   defaultChecked?: boolean;
-  /** Callback volaný při změně stavu */
   onChange?: (checked: boolean) => void;
+  style?: StyleProp<ViewStyle>;
 }
 
-const CCheckBox: React.FC<CCheckBox> = ({
+const CCheckbox: React.FC<CCheckBoxProps> = ({
   label,
   checkColor = "#fff",
   boxColor = "#000",
   defaultChecked = false,
   onChange,
+  style,
 }) => {
   const [checked, setChecked] = useState<boolean>(defaultChecked);
 
@@ -69,7 +66,7 @@ const CCheckBox: React.FC<CCheckBox> = ({
   });
 
   return (
-    <Pressable style={styles.container} onPress={handlePress}>
+    <Pressable style={[styles.container, style]} onPress={handlePress}>
       <Animated.View style={[styles.box, animatedBoxStyle]}>
         <AnimatedIcon name="check" size={16} style={[animatedIconStyle, { color: checkColor }]} />
       </Animated.View>
@@ -78,7 +75,7 @@ const CCheckBox: React.FC<CCheckBox> = ({
   );
 };
 
-export default CCheckBox;
+export default CCheckbox;
 
 const styles = StyleSheet.create({
   container: {

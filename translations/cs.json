@@ -1,5 +1,5 @@
 {
-    "welcome": "Vítejte",
+    "welcome": "Vítejte v aplikaci NutriSync",
     "app_name": "NutriSynq",
     "personal_guide": "Váš osobní průvodce zdravým životním stylem.",
     "track_calories": "Sledujte příjem kalorií",
@@ -69,5 +69,13 @@
     "enter_email_password": "Zadejte e-mail a heslo.",
     "login_failed": "Přihlášení selhalo",
     "incorrect_email_password": "Nesprávný e-mail nebo heslo. Můžete to zkusit znovu nebo se zaregistrovat.",
-    "passwords_do_not_match": "Hesla se neshodují."
+    "passwords_do_not_match": "Hesla se neshodují.",
+    "onboarding_pre_onboarding_heading": "Pro vytvoření personalizovaného fitness plánu od tebe potřebujeme několik informací.",
+    "onboarding_first_header": "Nastavení účtu",
+    "onboarding_first_heading": "Jaký je váš fitness cíl?",
+    "onboarding_first_heading2": "Jaká je vaše cílová hmotnost?",
+    "error_required": "Toto pole je povinné.",
+    "error_invalid_number": "Zadejte platné číslo.",
+    "error_range": "Hodnota musí být mezi {{min}} a {{max}} kg.",
+    "onboarding_first_placeholder_weight": "Vaše vysněná hmotnost"
 }

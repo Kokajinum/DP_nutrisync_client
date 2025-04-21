@@ -1,6 +1,7 @@
 import CButton from "@/components/button/CButton";
 import CCheckBox from "@/components/checkbox/CCheckBox";
 import CTextInput from "@/components/input/CTextInput";
+import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -8,11 +9,12 @@ import { useAuth } from "@/context/AuthProvider";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { TranslationKeys } from "@/translations/translations";
+import { globalStyles } from "@/utils/global-styles";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, StyleSheet, View, Pressable } from "react-native";
+import { Alert, StyleSheet, View, Pressable, KeyboardAvoidingView } from "react-native";
 
 const RegistrationScreen = () => {
   const [email, setEmail] = useState("");
@@ -60,18 +62,14 @@ const RegistrationScreen = () => {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <Stack.Screen
+    <KeyboardAvoidingView style={styles.keyboardView}>
+      <ThemedStackScreen
         options={{
           title: t(TranslationKeys.get_free_account),
-          headerTitleAlign: "center",
-          headerTintColor: onBackground,
-          headerStyle: { backgroundColor: colorScheme === "dark" ? "black" : "white" },
         }}
       />
       <ThemedStatusBar />
-
-      <View style={styles.formContainer}>
+      <ThemedView style={[styles.container, globalStyles.globalMainContent]}>
         {/* Email Input */}
         <CTextInput
           placeholder={t(TranslationKeys.enter_email)}
@@ -128,36 +126,44 @@ const RegistrationScreen = () => {
         </ThemedText>
 
         {/* Remember Me and Forgot Password */}
-        <View style={styles.rememberForgotContainer}>
-          <CCheckBox
-            label={t(TranslationKeys.remember)}
-            boxColor="#333"
-            checkColor="#fff"
-            defaultChecked={rememberMe}
-            onChange={setRememberMe}
-          />
-          <Pressable onPress={() => router.push("/PasswordRecoveryScreen")}>
-            <ThemedText style={[styles.forgotPassword, { color: linkColor }]}>
-              {t(TranslationKeys.forgot_password)}
-            </ThemedText>
-          </Pressable>
-        </View>
+        {/* <ThemedView style={styles.rememberForgotContainer}>
+        <CCheckBox
+          label={t(TranslationKeys.remember)}
+          boxColor="#333"
+          checkColor="#fff"
+          defaultChecked={rememberMe}
+          onChange={setRememberMe}
+        />
+        <Pressable onPress={() => router.push("/PasswordRecoveryScreen")}>
+          <ThemedText style={[styles.forgotPassword, { color: linkColor }]}>
+            {t(TranslationKeys.forgot_password)}
+          </ThemedText>
+        </Pressable>
+      </ThemedView> */}
+
+        <Pressable
+          style={[styles.forgotPasswordContainer]}
+          onPress={() => router.push("/PasswordRecoveryScreen")}>
+          <ThemedText style={[styles.forgotPassword, { color: linkColor }]}>
+            {t(TranslationKeys.forgot_password)}
+          </ThemedText>
+        </Pressable>
 
         <View style={styles.buttons}>
           {/* Sign Up Button */}
           <CButton
+            style={styles.signUpButton}
             title={loading ? "Loading..." : t(TranslationKeys.sign_up)}
             onPress={handleSignUp}
             icon={<MaterialIcons name="email" size={24} />}
-            style={styles.signUpButton}
           />
 
           {/* Continue Without Account Button */}
           <CButton
+            style={styles.continueButton}
             title={t(TranslationKeys.continue_without_account)}
             onPress={handleContinueWithoutAccount}
             icon={<MaterialIcons name="rocket-launch" size={24} />}
-            style={styles.continueButton}
           />
 
           {/* Already have an account link */}
@@ -169,19 +175,17 @@ const RegistrationScreen = () => {
             </ThemedText>
           </Pressable>
         </View>
-      </View>
-    </ThemedView>
+      </ThemedView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  keyboardView: {
     flex: 1,
   },
-  formContainer: {
+  container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 60,
   },
   inputLabel: {
     fontSize: 16,
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   continueButton: {
-    marginBottom: 24,
+    marginBottom: 12,
   },
   loginLinkContainer: {
     alignItems: "center",
@@ -219,6 +223,10 @@ const styles = StyleSheet.create({
   },
   buttons: {
     marginTop: "auto",
+  },
+  forgotPasswordContainer: {
+    marginVertical: 20,
+    alignItems: "flex-end",
   },
 });
 

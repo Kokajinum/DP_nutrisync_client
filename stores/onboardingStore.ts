@@ -1,6 +1,7 @@
 import { UserProfileData } from "@/models/interfaces/UserProfileData";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface OnboardingState {
   currentStep: number;
@@ -22,6 +23,7 @@ export const useOnboardingStore = create<OnboardingState>()(
     }),
     {
       name: "onboarding-storage",
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );

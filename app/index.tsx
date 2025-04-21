@@ -17,15 +17,16 @@ const IndexPage = () => {
 
         //await delay(10000);
 
-        if (!loading) {
-          if (session) {
-            router.replace("/HomeScreen");
-          } else if (hasLaunchedBefore) {
-            router.replace("/LoginScreen");
-          } else {
-            router.replace("/WelcomeScreen");
-          }
-        }
+        // if (!loading) {
+        //   if (session) {
+        //     router.replace("/HomeScreen");
+        //   } else if (hasLaunchedBefore) {
+        //     router.replace("/LoginScreen");
+        //   } else {
+        //     router.replace("/WelcomeScreen");
+        //   }
+        // }
+        router.replace("/onboarding");
       } catch (e) {
         console.error("Error in checkFirstLaunchAndAuth:", e);
         router.replace("/LoginScreen");

@@ -3,24 +3,27 @@ import React, { useEffect, useState } from "react";
 import CAccordion from "@/components/text/CAccordion";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CCheckCard } from "@/components/cards/CCheckCard";
-import CIndicator from "@/components/indicators/CStepIndicator";
 import CStepIndicator from "@/components/indicators/CStepIndicator";
 import CCard from "@/components/cards/CCard";
 import { useAuth } from "@/context/AuthProvider";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { UserProfileData } from "@/models/interfaces/UserProfileData";
 import { ensureError } from "@/utils/methods";
 import { useRestManager } from "@/context/RestManagerProvider";
+import { fetchUserProfile } from "@/utils/api/apiClient";
+import { CSegmentedButton } from "@/components/button/CSegmentedButton";
 
 const HomeScreen = () => {
   const [selected, setSelected] = useState(false);
   const { session } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
-  //const restManager = useRestManager();
+  const restManager = useRestManager();
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedSegmentedIndex, setSelectedSegmentedIndex] = useState(0);
+  const segments = ["První", "Druhý", "Třetí"];
+  const segments2 = ["Kg", "Lbs"];
 
   // const fetchUserProfile = async (): Promise<UserProfileData | null> => {
   //   try {
@@ -33,24 +36,24 @@ const HomeScreen = () => {
   //   }
   // };
 
-  // useEffect(() => {
-  //   const getProfileData = async () => {
-  //     console.log(session);
+  useEffect(() => {
+    const getProfileData = async () => {
+      console.log(session);
 
-  //     const profile = await queryClient.fetchQuery({
-  //       queryKey: ["profileData"],
-  //       queryFn: fetchUserProfile,
-  //     });
+      const profile = await queryClient.fetchQuery({
+        queryKey: ["profileData"],
+        queryFn: () => fetchUserProfile(restManager),
+      });
 
-  //     if (profile) {
-  //       console.log(profile);
-  //     } else {
-  //       console.log("chyba");
-  //     }
-  //   };
+      if (profile) {
+        console.log(profile);
+      } else {
+        console.log("chyba");
+      }
+    };
 
-  //   getProfileData();
-  // }, [session]);
+    getProfileData();
+  }, [session]);
 
   return (
     <ScrollView style={{ paddingHorizontal: 20 }}>
@@ -93,6 +96,17 @@ const HomeScreen = () => {
         isSelected={selectedIndex === 1}
         onPress={() => setSelectedIndex(1)}
       />
+
+      {/* <CSegmentedButton
+        segments={segments}
+        currentIndex={selectedSegmentedIndex}
+        onChange={setSelectedSegmentedIndex}></CSegmentedButton> */}
+
+      <CSegmentedButton
+        segments={segments2}
+        currentIndex={selectedSegmentedIndex}
+        onChange={setSelectedSegmentedIndex}
+        containerStyle={{ width: "50%" }}></CSegmentedButton>
     </ScrollView>
   );
 };
