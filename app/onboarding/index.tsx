@@ -14,13 +14,21 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/ThemedView";
 import { globalStyles } from "@/utils/global-styles";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
+import { useOnboardingStore } from "@/stores/onboardingStore";
 
 const index = () => {
   const { t } = useTranslation();
+  const { setStep } = useOnboardingStore();
 
   const colorScheme = useColorScheme();
   const onBackground = useThemeColor({}, "onBackground");
   const background = useThemeColor({}, "background");
+
+  const handleSubmit = () => {
+    setStep(1);
+
+    router.push("/onboarding/onboarding-first");
+  };
 
   return (
     <ThemedView style={[styles.mainContainer, globalStyles.globalMainContent]}>
@@ -58,9 +66,7 @@ const index = () => {
         style={styles.buttonContainer}
         icon={<MaterialIcons name="rocket-launch"></MaterialIcons>}
         title="Start"
-        onPress={() => {
-          router.push("/onboarding/onboarding-first");
-        }}></CButton>
+        onPress={handleSubmit}></CButton>
     </ThemedView>
   );
 };

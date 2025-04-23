@@ -17,24 +17,25 @@ import { globalStyles } from "@/utils/global-styles";
 import CButton from "@/components/button/CButton";
 import { HeightUnitEnum, WeightUnitEnum } from "@/models/enums/enums";
 import { useOnboardingStore } from "@/stores/onboardingStore";
+import { convertHeight, convertWeight } from "@/utils/methods";
 
 // Default validation ranges
 const MIN_HEIGHT_CM = 100;
 const MAX_HEIGHT_CM = 250;
-const MIN_HEIGHT_FT = 3.28; // ~100cm
-const MAX_HEIGHT_FT = 8.2; // ~250cm
+const MIN_HEIGHT_FT = convertHeight(MIN_HEIGHT_CM, "cm", "ft", 2); // ~100cm
+const MAX_HEIGHT_FT = convertHeight(MAX_HEIGHT_CM, "cm", "ft", 2); // ~250cm
 
 const MIN_WEIGHT_KG = 30;
 const MAX_WEIGHT_KG = 300;
-const MIN_WEIGHT_LBS = 66; // ~30kg
-const MAX_WEIGHT_LBS = 661; // ~300kg
+const MIN_WEIGHT_LBS = convertWeight(MIN_WEIGHT_KG, "kg", "lbs", 0); // ~30kg
+const MAX_WEIGHT_LBS = convertWeight(MAX_WEIGHT_KG, "kg", "lbs", 0); // ~300kg
 
 const MIN_AGE = 13;
 const MAX_AGE = 120;
 
 const OnboardingFirst = () => {
   const { t } = useTranslation();
-  const { updateData } = useOnboardingStore();
+  const { updateData, setStep } = useOnboardingStore();
 
   const colorScheme = useColorScheme();
   const onBackground = useThemeColor({}, "onBackground");
@@ -182,6 +183,8 @@ const OnboardingFirst = () => {
       age: parseInt(age, 10),
     });
 
+    setStep(2);
+
     router.push("/onboarding/onboarding-second");
   };
 
@@ -217,6 +220,7 @@ const OnboardingFirst = () => {
           <CTextInput
             containerStyle={styles.textInputContainer}
             keyboardType="numeric"
+            maxLength={3}
             value={height}
             onChangeText={handleHeightChange}
             rightIcon={
@@ -241,6 +245,7 @@ const OnboardingFirst = () => {
           <CTextInput
             containerStyle={styles.textInputContainer}
             keyboardType="numeric"
+            maxLength={3}
             value={weight}
             onChangeText={handleWeightChange}
             rightIcon={
@@ -265,6 +270,7 @@ const OnboardingFirst = () => {
           <CTextInput
             containerStyle={styles.textInputContainer}
             keyboardType="numeric"
+            maxLength={3}
             value={age}
             onChangeText={handleAgeChange}
             rightIcon={age ? <MaterialIcons name="close" size={20} color={onBackground} /> : null}

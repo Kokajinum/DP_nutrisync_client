@@ -26,7 +26,7 @@ const IndexPage = () => {
         //     router.replace("/WelcomeScreen");
         //   }
         // }
-        router.replace("/onboarding");
+        router.replace("/onboarding/onboarding-third");
       } catch (e) {
         console.error("Error in checkFirstLaunchAndAuth:", e);
         router.replace("/LoginScreen");

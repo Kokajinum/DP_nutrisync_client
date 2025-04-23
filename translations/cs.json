@@ -37,6 +37,11 @@
     "moderately_active": "Středně aktivní",
     "very_active": "Velmi aktivní",
     "extremely_active": "Extrémně aktivní",
+    "sedentary_description": "Většinou sedavý nebo vleže, minimální fyzická aktivita (např. kancelářská práce)",
+    "lightly_active_description": "Lehká fyzická aktivita, stání nebo chůze část dne (např. učitel, prodejce)",
+    "moderately_active_description": "Pravidelná fyzická aktivita, stání nebo chůze většinu dne (např. sestra, číšník)",
+    "very_active_description": "Fyzicky náročná práce s významným pohybem (např. stavební dělník, kurýr)",
+    "extremely_active_description": "Vysoce fyzická práce s těžkým zvedáním nebo intenzivní fyzickou námahou (např. profesionální sportovec, farmář)",
     "personal_info": "Zadejte své základní údaje",
     "height": "Výška",
     "weight": "Váha",
@@ -76,6 +81,13 @@
     "onboarding_first_heading2": "Jaká je vaše cílová hmotnost?",
     "error_required": "Toto pole je povinné.",
     "error_invalid_number": "Zadejte platné číslo.",
-    "error_range": "Hodnota musí být mezi {{min}} a {{max}} kg.",
-    "onboarding_first_placeholder_weight": "Vaše vysněná hmotnost"
+    "error_range": "Hodnota musí být mezi {{min}} a {{max}}.",
+    "onboarding_first_placeholder_weight": "Vaše vysněná hmotnost",
+    "onboarding_third_heading": "Jste začátečník nebo pokročilý?",
+    "beginner_title": "Začátečník",
+    "beginner_description": "Teprve začínám s cvičením nebo mám omezené zkušenosti. Chci se naučit základy a vybudovat zdravé návyky.",
+    "experienced_title": "Pokročilý",
+    "experienced_description": "Cvičím pravidelně již několik měsíců nebo let. Mám jasné cíle a hledám efektivní způsoby, jak jich dosáhnout.",
+    "finalize": "Dokončit",
+    "error_saving_profile": "Chyba při ukládání profilu. Zkuste to prosím znovu."
 }

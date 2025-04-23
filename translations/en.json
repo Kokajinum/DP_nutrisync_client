@@ -37,6 +37,11 @@
     "moderately_active": "Moderately Active",
     "very_active": "Very Active",
     "extremely_active": "Extremely Active",
+    "sedentary_description": "Mostly sitting or lying down, minimal physical activity (e.g., desk job)",
+    "lightly_active_description": "Light physical activity, standing or walking for part of the day (e.g., teacher, salesperson)",
+    "moderately_active_description": "Regular physical activity, standing or walking most of the day (e.g., nurse, server)",
+    "very_active_description": "Physically demanding job with significant movement (e.g., construction worker, delivery person)",
+    "extremely_active_description": "Highly physical job with heavy lifting or intense physical labor (e.g., professional athlete, farmer)",
     "personal_info": "Provide some information about yourself",
     "height": "Height",
     "weight": "Weight",
@@ -76,6 +81,13 @@
     "onboarding_first_heading2": "What is your target weight?",
     "error_required": "This field is required.",
     "error_invalid_number": "Please enter a valid number.",
-    "error_range": "Value must be between {{min}} and {{max}} kg.",
-    "onboarding_first_placeholder_weight": "Your target weight"
+    "error_range": "Value must be between {{min}} and {{max}}.",
+    "onboarding_first_placeholder_weight": "Your target weight",
+    "onboarding_third_heading": "Are you a beginner or experienced?",
+    "beginner_title": "Beginner",
+    "beginner_description": "I'm just starting with exercise or have limited experience. I want to learn the basics and build healthy habits.",
+    "experienced_title": "Experienced",
+    "experienced_description": "I have been working out regularly for several months or years. I have clear goals and seek effective ways to achieve them.",
+    "finalize": "Finalize",
+    "error_saving_profile": "Error saving profile. Please try again."
 }

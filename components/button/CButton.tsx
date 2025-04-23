@@ -9,6 +9,7 @@ import {
   TextStyle,
   Image,
   ImageStyle,
+  ActivityIndicator,
 } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { _500Medium, _600SemiBold, _700Bold } from "@/constants/Global";
@@ -17,7 +18,7 @@ interface IconProps {
   style?: StyleProp<ViewStyle | TextStyle | ImageStyle>;
 }
 
-interface CButtonProps {
+export interface CButtonProps {
   title: string;
   onPress: () => void;
   icon?: React.ReactElement<IconProps> | React.ReactNode;
@@ -32,6 +33,8 @@ interface CButtonProps {
   iconDarkColor?: string;
   backgroundLightColor?: string;
   backgroundDarkColor?: string;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 const CButton = ({
@@ -49,6 +52,8 @@ const CButton = ({
   iconDarkColor,
   backgroundLightColor,
   backgroundDarkColor,
+  loading = false,
+  disabled = false,
 }: CButtonProps) => {
   const foregroundColor = useThemeColor(
     { light: textLightColor, dark: textDarkColor },
@@ -91,12 +96,27 @@ const CButton = ({
         { backgroundColor },
         style,
         pressed && styles.buttonPressed,
+        disabled && styles.buttonDisabled,
       ]}
-      onPress={onPress}>
+      onPress={onPress}
+      disabled={disabled || loading}>
       <View style={styles.buttonContent}>
-        {isIconLeft && renderIcon()}
-        <Text style={[styles.text, { color: foregroundColor }, textStyle]}>{title}</Text>
-        {isIconRight && renderIcon()}
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator
+              size="small"
+              color={foregroundColor}
+              style={styles.loadingIndicator}
+            />
+            <Text style={[styles.text, { color: foregroundColor }, textStyle]}>{title}</Text>
+          </View>
+        ) : (
+          <>
+            {isIconLeft && renderIcon()}
+            <Text style={[styles.text, { color: foregroundColor }, textStyle]}>{title}</Text>
+            {isIconRight && renderIcon()}
+          </>
+        )}
       </View>
     </Pressable>
   );
@@ -109,6 +129,17 @@ const styles = StyleSheet.create({
   },
   buttonPressed: {
     opacity: 0.8,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
+  },
+  loadingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingIndicator: {
+    marginRight: 8,
   },
   buttonContent: {
     flexDirection: "row",
