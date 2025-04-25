@@ -71,17 +71,7 @@ const LoginScreen = () => {
           { text: t(TranslationKeys.sign_up), onPress: () => router.replace("/RegisterScreen") },
         ]);
       } else if (success) {
-        // const profile = await queryClient.fetchQuery({
-        //   queryKey: ["profileData"],
-        //   queryFn: fetchUserProfile,
-        // });
-        // const queryState = queryClient.getQueryState(["profileData"]);
-        // console.log(queryState);
-        // if (profile) {
-        //   router.replace("/HomeScreen");
-        // } else {
-        //   router.replace("/onboarding");
-        // }
+        router.replace("/(tabs)/home-screen");
       }
     } catch (err: any) {}
   };

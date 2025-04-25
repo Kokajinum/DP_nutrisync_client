@@ -1,6 +1,7 @@
 import {
   ActivityLevelEnum,
   CalorieUnitEnum,
+  ExperienceLevelEnum,
   GoalEnum,
   HeightUnitEnum,
   WeightUnitEnum,
@@ -36,6 +37,8 @@ export interface UserProfileData {
   target_weight_unit?: WeightUnitEnum;
 
   activity_level?: ActivityLevelEnum;
+
+  experience_level?: ExperienceLevelEnum;
 
   goal?: GoalEnum;
 

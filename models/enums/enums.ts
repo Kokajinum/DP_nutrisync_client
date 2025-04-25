@@ -16,6 +16,12 @@ export enum ActivityLevelEnum {
   EXTREME = "extreme",
 }
 
+export enum ExperienceLevelEnum {
+  BEGINNER = "beginner",
+  INTERMEDIATE = "intermediate",
+  ADVANCED = "advanced",
+}
+
 export enum GoalEnum {
   LOSE_FAT = "lose_fat",
   MAINTAIN_WEIGHT = "maintain_weight",
@@ -25,4 +31,10 @@ export enum GoalEnum {
 export enum CalorieUnitEnum {
   KCAL = "kcal",
   KJ = "kj",
+}
+
+export enum GenderEnum {
+  MALE = "male",
+  FEMALE = "female",
+  OTHER = "other",
 }

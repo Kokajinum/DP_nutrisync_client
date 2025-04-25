@@ -1,18 +1,18 @@
-import { useRestManager } from "@/context/RestManagerProvider";
-import { UserProfileRepository } from "@/utils/repositories/userProfileRepository";
-import { useMemo } from "react";
+// import { useRestManager } from "@/context/RestManagerProvider";
+// import { UserProfileRepository } from "@/utils/repositories/userProfileRepository";
+// import { useMemo } from "react";
 
-/**
- * Hook for accessing the UserProfileRepository
- * @returns An instance of UserProfileRepository
- */
-export const useUserProfileRepository = () => {
-  const restManager = useRestManager();
+// /**
+//  * Hook for accessing the UserProfileRepository
+//  * @returns An instance of UserProfileRepository
+//  */
+// export const useUserProfileRepository = () => {
+//   const restManager = useRestManager();
 
-  const userProfileRepository = useMemo(
-    () => new UserProfileRepository(restManager),
-    [restManager]
-  );
+//   const userProfileRepository = useMemo(
+//     () => new UserProfileRepository(restManager),
+//     [restManager]
+//   );
 
-  return userProfileRepository;
-};
+//   return userProfileRepository;
+// };

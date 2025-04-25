@@ -90,4 +90,7 @@ export enum TranslationKeys {
   extremely_active_description = "extremely_active_description",
   finalize = "finalize",
   error_saving_profile = "error_saving_profile",
+  error_user_not_authenticated = "error_user_not_authenticated",
+  profile_incomplete = "profile_incomplete",
+  no_profile_data = "no_profile_data",
 }

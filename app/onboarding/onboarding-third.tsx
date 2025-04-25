@@ -14,7 +14,7 @@ import CCard from "@/components/cards/CCard";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { globalStyles } from "@/utils/global-styles";
 import CButton from "@/components/button/CButton";
-import { ActivityLevelEnum } from "@/models/enums/enums";
+import { ActivityLevelEnum, ExperienceLevelEnum } from "@/models/enums/enums";
 import { useOnboardingStore } from "@/stores/onboardingStore";
 
 const OnboardingThird = () => {
@@ -42,12 +42,12 @@ const OnboardingThird = () => {
     // Map the selected experience to an activity level
     // Beginner -> LIGHT or MODERATE
     // Experienced -> HIGH
-    const activityLevel =
-      selectedExperience === 0 ? ActivityLevelEnum.MODERATE : ActivityLevelEnum.HIGH;
+    const experienceLevel =
+      selectedExperience === 0 ? ExperienceLevelEnum.BEGINNER : ExperienceLevelEnum.INTERMEDIATE;
 
     // Save to store
     updateData({
-      activity_level: activityLevel,
+      experience_level: experienceLevel,
     });
 
     setStep(4);

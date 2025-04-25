@@ -89,5 +89,8 @@
     "experienced_title": "Pokročilý",
     "experienced_description": "Cvičím pravidelně již několik měsíců nebo let. Mám jasné cíle a hledám efektivní způsoby, jak jich dosáhnout.",
     "finalize": "Dokončit",
-    "error_saving_profile": "Chyba při ukládání profilu. Zkuste to prosím znovu."
+    "error_saving_profile": "Chyba při ukládání profilu. Zkuste to prosím znovu.",
+    "error_user_not_authenticated": "Pro uložení profilu musíte být přihlášeni.",
+    "profile_incomplete": "Váš profil je neúplný. Musíte dokončit proces nastavení.",
+    "no_profile_data": "Žádná profilová data nejsou k dispozici"
 }

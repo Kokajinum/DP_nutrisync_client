@@ -16,6 +16,8 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "@/translations/i18n";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RestManagerProvider } from "@/context/RestManagerProvider";
+import { RepositoriesProvider } from "@/context/RepositoriesProvider";
+import { initDb } from "@/utils/sqliteHelper";
 
 // export const unstable_settings = {
 //   // Ensure that reloading on `/modal` keeps a back button present.
@@ -45,8 +47,10 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepareApp() {
       try {
+        // Initialize database schema
+        await initDb();
       } catch (e) {
-        console.warn("Error loading fonts:", e);
+        console.warn("Error initializing app:", e);
       } finally {
         setAppReady(true);
       }
@@ -68,24 +72,28 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <RestManagerProvider>
-          <ThemeProvider>
-            <I18nextProvider i18n={i18n}>
-              <Stack>
-                <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
-                <Stack.Screen name="WelcomeScreen" options={{ headerShown: false }}></Stack.Screen>
-                <Stack.Screen
-                  name="RegisterScreen"
-                  options={
-                    {
-                      //headerStyle: { backgroundColor: "transparent" },
-                      //headerTransparent: true,
-                    }
-                  }></Stack.Screen>
-                <Stack.Screen name="LoginScreen"></Stack.Screen>
-              </Stack>
-              <ThemedStatusBar />
-            </I18nextProvider>
-          </ThemeProvider>
+          <RepositoriesProvider>
+            <ThemeProvider>
+              <I18nextProvider i18n={i18n}>
+                <Stack>
+                  <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
+                  <Stack.Screen
+                    name="WelcomeScreen"
+                    options={{ headerShown: false }}></Stack.Screen>
+                  <Stack.Screen
+                    name="RegisterScreen"
+                    options={
+                      {
+                        //headerStyle: { backgroundColor: "transparent" },
+                        //headerTransparent: true,
+                      }
+                    }></Stack.Screen>
+                  <Stack.Screen name="LoginScreen"></Stack.Screen>
+                </Stack>
+                <ThemedStatusBar />
+              </I18nextProvider>
+            </ThemeProvider>
+          </RepositoriesProvider>
         </RestManagerProvider>
       </AuthProvider>
     </QueryClientProvider>

@@ -1,6 +1,5 @@
 import { StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import React, { useState } from "react";
-import { useUserProfileRepository } from "@/hooks/useUserProfileRepository";
 import { ThemedView } from "@/components/ThemedView";
 import { useTranslation } from "react-i18next";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -16,17 +15,26 @@ import CButton from "@/components/button/CButton";
 import CCard from "@/components/cards/CCard";
 import { ActivityLevelEnum } from "@/models/enums/enums";
 import { useOnboardingStore } from "@/stores/onboardingStore";
+// Import the new hooks
+import { useSaveUserProfile } from "@/hooks/useUserProfile";
+import { useAuth } from "@/context/AuthProvider";
+import { UserProfileData } from "@/models/interfaces/UserProfileData";
 
 const OnboardingFourth = () => {
   const { t } = useTranslation();
   const { updateData, data } = useOnboardingStore();
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
   const [showError, setShowError] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Get the user ID from auth context
+  const { session } = useAuth();
+  const userId = session?.user?.id;
+
+  // Use the React Query mutation hook
+  const { mutate: saveProfile, isPending: isSubmitting } = useSaveUserProfile();
+
   const background = useThemeColor({}, "background");
-  const userProfileRepository = useUserProfileRepository();
 
   const handleSelection = (index: number): void => {
     setSelectedLevel(index);
@@ -39,8 +47,11 @@ const OnboardingFourth = () => {
       return;
     }
 
-    // Set loading state
-    setIsSubmitting(true);
+    if (!userId) {
+      setSubmitError(t(TranslationKeys.error_user_not_authenticated));
+      return;
+    }
+
     setSubmitError(null);
 
     const levelEnumMap = [
@@ -55,26 +66,23 @@ const OnboardingFourth = () => {
     // Update local store
     updateData({ activity_level: activityLevel, onboarding_completed: true });
 
-    // Get the complete profile data from the store
-    const profileData = { ...data, activity_level: activityLevel, onboarding_completed: true };
+    const profileData: UserProfileData = {
+      ...data,
+      activity_level: activityLevel,
+      onboarding_completed: true,
+      user_id: userId,
+    };
 
-    try {
-      // Save profile to server and refresh
-      const result = await userProfileRepository.saveAndRefreshProfile(profileData);
-
-      if (result) {
-        // Navigate to tabs screen on success
-        router.push("/(tabs)");
-      } else {
-        // Handle error
+    // Use the mutation to update the profile
+    saveProfile(profileData, {
+      onSuccess: () => {
+        router.push("/(tabs)/home-screen");
+      },
+      onError: (error) => {
+        console.error("Error saving profile:", error);
         setSubmitError(t(TranslationKeys.error_saving_profile));
-      }
-    } catch (error) {
-      console.error("Error saving profile:", error);
-      setSubmitError(t(TranslationKeys.error_saving_profile));
-    } finally {
-      setIsSubmitting(false);
-    }
+      },
+    });
   };
 
   return (

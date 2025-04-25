@@ -13,7 +13,7 @@ import { useRestManager } from "@/context/RestManagerProvider";
 import { fetchUserProfile } from "@/utils/api/apiClient";
 import { CSegmentedButton } from "@/components/button/CSegmentedButton";
 
-const HomeScreen = () => {
+const TestScreen = () => {
   const [selected, setSelected] = useState(false);
   const { session } = useAuth();
   const router = useRouter();
@@ -111,4 +111,4 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+export default TestScreen;

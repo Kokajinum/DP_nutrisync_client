@@ -89,5 +89,8 @@
     "experienced_title": "Experienced",
     "experienced_description": "I have been working out regularly for several months or years. I have clear goals and seek effective ways to achieve them.",
     "finalize": "Finalize",
-    "error_saving_profile": "Error saving profile. Please try again."
+    "error_saving_profile": "Error saving profile. Please try again.",
+    "error_user_not_authenticated": "You need to be logged in to save your profile.",
+    "profile_incomplete": "Your profile is incomplete. You need to complete the onboarding process.",
+    "no_profile_data": "No profile data available"
 }
