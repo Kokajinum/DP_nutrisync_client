@@ -106,7 +106,7 @@ const OnboardingFirst = () => {
     const max = heightUnit === 0 ? MAX_HEIGHT_CM : MAX_HEIGHT_FT;
 
     if (num < min || num > max) {
-      return t(TranslationKeys.error_range, { min, max });
+      return t(TranslationKeys.error_range_between, { min, max });
     }
     return "";
   };
@@ -124,7 +124,7 @@ const OnboardingFirst = () => {
     const max = weightUnit === 0 ? MAX_WEIGHT_KG : MAX_WEIGHT_LBS;
 
     if (num < min || num > max) {
-      return t(TranslationKeys.error_range, { min, max });
+      return t(TranslationKeys.error_range_between, { min, max });
     }
     return "";
   };
@@ -143,7 +143,7 @@ const OnboardingFirst = () => {
       return t(TranslationKeys.validation_invalid_age);
     }
     if (num < MIN_AGE || num > MAX_AGE) {
-      return t(TranslationKeys.error_range, { min: MIN_AGE, max: MAX_AGE });
+      return t(TranslationKeys.error_range_between, { min: MIN_AGE, max: MAX_AGE });
     }
     return "";
   };

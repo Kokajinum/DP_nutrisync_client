@@ -1,4 +1,22 @@
 import * as SQLite from "expo-sqlite";
+import { ensureError } from "./methods";
+
+type ColumnDefinition =
+  | "TEXT"
+  | "TEXT NOT NULL"
+  | "INTEGER"
+  | "INTEGER NOT NULL"
+  | "REAL"
+  | "REAL NOT NULL"
+  | "BOOLEAN"
+  | "BOOLEAN NOT NULL"
+  | "TEXT PRIMARY KEY"
+  | "TEXT PRIMARY KEY NOT NULL";
+
+type TableSchema = {
+  name: string;
+  columns: Record<string, ColumnDefinition>;
+};
 
 // Create a wrapper class for the database
 class AsyncSQLiteDatabase {
@@ -40,36 +58,96 @@ class AsyncSQLiteDatabase {
     const db = await this.getDb();
     return db.execAsync(query);
   }
+
+  async saveToSqlite(tableName: string, data: Record<string, any>): Promise<void> {
+    try {
+      const keys = Object.keys(data);
+      const columns = keys.join(", ");
+      const placeholders = keys.map(() => "?").join(", ");
+      const values = keys.map((key) => {
+        const val = data[key];
+        if (typeof val === "boolean") return val ? 1 : 0;
+        if (val === undefined) return null;
+        return val;
+      });
+      const sql = `INSERT OR REPLACE INTO ${tableName} (${columns}) VALUES (${placeholders})`;
+      await db.runAsync(sql, values);
+    } catch (err) {
+      const error: Error = ensureError(err);
+      console.error(`Failed to save data to SQLite table "${tableName}":`, error.message);
+      throw err;
+    }
+  }
+
+  async createTableIfNotExists(schema: TableSchema): Promise<void> {
+    const db = await this.getDb();
+    const columnsSql = Object.entries(schema.columns)
+      .map(([name, type]) => `${name} ${type}`)
+      .join(", ");
+
+    const sql = `CREATE TABLE IF NOT EXISTS ${schema.name} (${columnsSql});`;
+    await db.runAsync(sql);
+  }
 }
 
 // db singleton instance
-export const db = new AsyncSQLiteDatabase("fitness.db");
+export const db = new AsyncSQLiteDatabase("nutrisync_fitness.db");
 
 // database schema
 export async function initDb() {
-  await db.runAsync(`
-    CREATE TABLE IF NOT EXISTS user_profiles(
-      id TEXT PRIMARY KEY NOT NULL,
-      created_at TEXT,
-      updated_at TEXT,
-      user_id TEXT,
-      onboarding_completed INTEGER,
-      first_name TEXT,
-      last_name TEXT,
-      age INTEGER,
-      height_value REAL,
-      height_unit TEXT,
-      weight_value REAL,
-      weight_unit TEXT,
-      target_weight_value REAL,
-      target_weight_unit TEXT,
-      activity_level TEXT,
-      goal TEXT,
-      calorie_goal_value REAL,
-      calorie_goal_unit TEXT,
-      protein_ratio REAL,
-      fat_ratio REAL,
-      carbs_ratio REAL,
-      notifications_enabled INTEGER
-    );`);
+  await db.createTableIfNotExists(userProfilesSchema);
+  // await db.runAsync(`
+  //   CREATE TABLE IF NOT EXISTS user_profiles(
+  //     id TEXT PRIMARY KEY NOT NULL,
+  //     created_at TEXT,
+  //     updated_at TEXT,
+  //     user_id TEXT,
+  //     onboarding_completed INTEGER,
+  //     first_name TEXT,
+  //     last_name TEXT,
+  //     age INTEGER,
+  //     height_value REAL,
+  //     height_unit TEXT,
+  //     weight_value REAL,
+  //     weight_unit TEXT,
+  //     target_weight_value REAL,
+  //     target_weight_unit TEXT,
+  //     activity_level TEXT,
+  //     goal TEXT,
+  //     calorie_goal_value REAL,
+  //     calorie_goal_unit TEXT,
+  //     protein_ratio REAL,
+  //     fat_ratio REAL,
+  //     carbs_ratio REAL,
+  //     notifications_enabled INTEGER
+  //   );`);
 }
+
+const userProfilesSchema: TableSchema = {
+  name: "user_profiles",
+  columns: {
+    id: "TEXT PRIMARY KEY NOT NULL",
+    created_at: "TEXT",
+    updated_at: "TEXT",
+    user_id: "TEXT",
+    onboarding_completed: "INTEGER",
+    first_name: "TEXT",
+    last_name: "TEXT",
+    age: "INTEGER",
+    height_value: "REAL",
+    height_unit: "TEXT",
+    weight_value: "REAL",
+    weight_unit: "TEXT",
+    target_weight_value: "REAL",
+    target_weight_unit: "TEXT",
+    activity_level: "TEXT",
+    experience_level: "TEXT",
+    goal: "TEXT",
+    calorie_goal_value: "REAL",
+    calorie_goal_unit: "TEXT",
+    protein_ratio: "REAL",
+    fat_ratio: "REAL",
+    carbs_ratio: "REAL",
+    notifications_enabled: "INTEGER",
+  },
+};

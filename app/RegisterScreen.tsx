@@ -58,7 +58,7 @@ const RegistrationScreen = () => {
   };
 
   const handleContinueWithoutAccount = () => {
-    router.replace("/HomeScreen");
+    router.replace("/home-screen");
   };
 
   return (

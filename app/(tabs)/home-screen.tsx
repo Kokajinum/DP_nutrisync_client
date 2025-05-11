@@ -22,26 +22,25 @@ const HomeScreen = () => {
   // Fetch user profile data using the hook
   const { data: profileData, isLoading, error } = useUserProfile(user?.id);
 
+  const createRedirectDialog = () =>
+    Alert.alert(t(TranslationKeys.account_setup), t(TranslationKeys.profile_incomplete), [
+      {
+        text: t(TranslationKeys.understand),
+        onPress: () => {
+          // Reset onboarding step and redirect
+          setStep(1);
+          router.push("/onboarding");
+        },
+      },
+    ]);
+
   useEffect(() => {
     // Check if profile data exists and if onboarding is completed
-    if (profileData == null || !profileData.onboarding_completed) {
+    if (!isLoading && (profileData == null || !profileData.onboarding_completed)) {
       // Show dialog before redirecting
-      Alert.alert(t(TranslationKeys.account_setup), t(TranslationKeys.profile_incomplete), [
-        {
-          text: t(TranslationKeys.cancel),
-          style: "cancel",
-        },
-        {
-          text: t(TranslationKeys.understand),
-          onPress: () => {
-            // Reset onboarding step and redirect
-            setStep(1);
-            router.push("/onboarding");
-          },
-        },
-      ]);
+      createRedirectDialog();
     }
-  }, [profileData]);
+  }, [profileData, isLoading]);
 
   // Render loading state
   if (isLoading) {

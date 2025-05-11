@@ -20,7 +20,7 @@ import { useOnboardingStore } from "@/stores/onboardingStore"; // Import Zustand
 import { GoalEnum, WeightUnitEnum } from "@/models/enums/enums";
 
 //default values in kgs
-const MIN_WEIGHT = 20;
+const MIN_WEIGHT = 40;
 const MAX_WEIGHT = 300;
 
 const OnboardingSecond = () => {
@@ -66,8 +66,18 @@ const OnboardingSecond = () => {
     if (isNaN(num)) {
       return t(TranslationKeys.error_invalid_number);
     }
+
+    if (data.weight_value !== undefined) {
+      if (selectedIndex === 0 && num > data.weight_value) {
+        return t(TranslationKeys.error_range_less, { max: data.weight_value });
+      }
+      if (selectedIndex === 2 && num < data.weight_value) {
+        return t(TranslationKeys.error_range_more, { min: data.weight_value });
+      }
+    }
+
     if (num < MIN_WEIGHT || num > MAX_WEIGHT) {
-      return t(TranslationKeys.error_range, { min: MIN_WEIGHT, max: MAX_WEIGHT });
+      return t(TranslationKeys.error_range_between, { min: MIN_WEIGHT, max: MAX_WEIGHT });
     }
     return "";
   };
