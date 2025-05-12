@@ -89,6 +89,9 @@ export default function RootLayout() {
                       }
                     }></Stack.Screen>
                   <Stack.Screen name="LoginScreen"></Stack.Screen>
+                  <Stack.Screen
+                    name="food-creation-screen"
+                    options={{ headerShown: true }}></Stack.Screen>
                 </Stack>
                 <ThemedStatusBar />
               </I18nextProvider>

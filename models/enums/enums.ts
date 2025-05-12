@@ -38,3 +38,24 @@ export enum GenderEnum {
   FEMALE = "female",
   OTHER = "other",
 }
+
+export enum FoodCategoryEnum {
+  FRUIT = "fruit",
+  VEGETABLES = "vegetables",
+  MEAT = "meat",
+  FISH_AND_SEAFOOD = "fish_and_seafood",
+  DAIRY = "dairy",
+  EGGS = "eggs",
+  BREAD_AND_BAKERY = "bread_and_bakery",
+  CEREALS_AND_GRAINS = "cereals_and_grains",
+  LEGUMES = "legumes",
+  NUTS_AND_SEEDS = "nuts_and_seeds",
+  FATS_AND_OILS = "fats_and_oils",
+  SWEETS = "sweets",
+  SNACKS = "snacks",
+  BEVERAGES = "beverages",
+  ALCOHOL = "alcohol",
+  CONDIMENTS = "condiments",
+  PREPARED_MEALS = "prepared_meals",
+  OTHER = "other",
+}
