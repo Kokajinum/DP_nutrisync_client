@@ -33,7 +33,7 @@ const IndexPage = () => {
     };
 
     checkFirstLaunchAndAuth();
-  }, [session, loading, router]);
+  }, [loading]);
 
   if (loading) {
     return (

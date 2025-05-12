@@ -46,18 +46,19 @@ export class ProfileRepository implements UserProfileRepository {
    * Saves a user profile to both remote and local repositories
    * @param profile The user profile data to save
    */
-  async save(profile: UserProfileData): Promise<void> {
+  async save(profile: UserProfileData): Promise<UserProfileData | null> {
     try {
       // Save to remote first
-      await this.remoteRepository.save(profile);
+      const newData: UserProfileData | null = await this.remoteRepository.save(profile);
 
-      // Then save to local regardless of remote success
-      await this.localRepository.save(profile);
+      if (newData !== null) await this.localRepository.save(newData);
+
+      return newData;
     } catch (error) {
       console.error("Error in remote save:", error);
       // Still try to save locally even if remote fails
-      await this.localRepository.save(profile);
-      throw error;
+      const newData: UserProfileData | null = await this.localRepository.save(profile);
+      return newData;
     }
   }
 

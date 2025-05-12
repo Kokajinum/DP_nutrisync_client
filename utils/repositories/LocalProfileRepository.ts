@@ -1,6 +1,6 @@
 import { UserProfileData } from "../../models/interfaces/UserProfileData";
 import { UserProfileRepository } from "./UserProfileDataRepository";
-import { db } from "../sqliteHelper";
+import { db, normalizeForSqlite } from "../sqliteHelper";
 
 export class LocalProfileRepository implements UserProfileRepository {
   /**
@@ -39,7 +39,7 @@ export class LocalProfileRepository implements UserProfileRepository {
    * Saves a user profile to the local SQLite database
    * @param profile The user profile data to save
    */
-  async save(profile: UserProfileData): Promise<void> {
+  async save(profile: UserProfileData): Promise<UserProfileData | null> {
     try {
       // Ensure we have an ID
       if (!profile.id) {
@@ -52,14 +52,25 @@ export class LocalProfileRepository implements UserProfileRepository {
       const updated_at = now;
 
       // Convert boolean values to integers for SQLite
-      const onboarding_completed =
-        profile.onboarding_completed !== undefined ? (profile.onboarding_completed ? 1 : 0) : null;
-      const notifications_enabled =
-        profile.notifications_enabled !== undefined
-          ? profile.notifications_enabled
-            ? 1
-            : 0
-          : null;
+      // const onboarding_completed =
+      //   profile.onboarding_completed !== undefined ? (profile.onboarding_completed ? 1 : 0) : null;
+      // const notifications_enabled =
+      //   profile.notifications_enabled !== undefined
+      //     ? profile.notifications_enabled
+      //       ? 1
+      //       : 0
+      //     : null;
+
+      const withTimestamps: UserProfileData = {
+        ...profile,
+        created_at: created_at,
+        updated_at: updated_at,
+      };
+
+      //const normalizedData = normalizeForSqlite(withTimestamps);
+      await db.saveToSqlite("user_profiles", withTimestamps);
+
+      return withTimestamps;
 
       // Convert undefined values to null for SQLite
       // const params = [
@@ -87,33 +98,33 @@ export class LocalProfileRepository implements UserProfileRepository {
       //   notifications_enabled,
       // ];
 
-      const recordToSave: Record<string, any> = {
-        id: profile.id,
-        created_at: created_at,
-        updated_at: updated_at,
-        user_id: profile.user_id ?? null,
-        onboarding_completed: onboarding_completed,
-        first_name: profile.first_name ?? null,
-        last_name: profile.last_name ?? null,
-        age: profile.age ?? null,
-        height_value: profile.height_value ?? null,
-        height_unit: profile.height_unit ?? null,
-        weight_value: profile.weight_value ?? null,
-        weight_unit: profile.weight_unit ?? null,
-        target_weight_value: profile.target_weight_value ?? null,
-        target_weight_unit: profile.target_weight_unit ?? null,
-        activity_level: profile.activity_level ?? null,
-        experience_level: profile.experience_level ?? null,
-        goal: profile.goal ?? null,
-        calorie_goal_value: profile.calorie_goal_value ?? null,
-        calorie_goal_unit: profile.calorie_goal_unit ?? null,
-        protein_ratio: profile.protein_ratio ?? null,
-        fat_ratio: profile.fat_ratio ?? null,
-        carbs_ratio: profile.carbs_ratio ?? null,
-        notifications_enabled: notifications_enabled,
-      };
+      // const recordToSave: Record<string, any> = {
+      //   id: profile.id,
+      //   created_at: created_at,
+      //   updated_at: updated_at,
+      //   user_id: profile.user_id ?? null,
+      //   onboarding_completed: onboarding_completed,
+      //   first_name: profile.first_name ?? null,
+      //   last_name: profile.last_name ?? null,
+      //   age: profile.age ?? null,
+      //   height_value: profile.height_value ?? null,
+      //   height_unit: profile.height_unit ?? null,
+      //   weight_value: profile.weight_value ?? null,
+      //   weight_unit: profile.weight_unit ?? null,
+      //   target_weight_value: profile.target_weight_value ?? null,
+      //   target_weight_unit: profile.target_weight_unit ?? null,
+      //   activity_level: profile.activity_level ?? null,
+      //   experience_level: profile.experience_level ?? null,
+      //   goal: profile.goal ?? null,
+      //   calorie_goal_value: profile.calorie_goal_value ?? null,
+      //   calorie_goal_unit: profile.calorie_goal_unit ?? null,
+      //   protein_ratio: profile.protein_ratio ?? null,
+      //   fat_ratio: profile.fat_ratio ?? null,
+      //   carbs_ratio: profile.carbs_ratio ?? null,
+      //   notifications_enabled: notifications_enabled,
+      // };
 
-      await db.saveToSqlite("user_profiles", recordToSave);
+      // await db.saveToSqlite("user_profiles", recordToSave);
 
       // Use INSERT OR REPLACE to handle both new and existing records
       // await db.runAsync(

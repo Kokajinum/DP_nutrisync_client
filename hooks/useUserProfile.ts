@@ -14,6 +14,7 @@ export const useUserProfile = (userId: string) => {
     queryKey: ["userProfile", userId],
     queryFn: () => profileRepository.get(userId),
     enabled: !!userId, // Only run the query if userId is provided
+    staleTime: 1000 * 60 * 60 * 2, //data are stale after 2hours
   });
 };
 

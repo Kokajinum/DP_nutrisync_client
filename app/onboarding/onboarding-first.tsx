@@ -15,7 +15,7 @@ import CTextInput from "@/components/input/CTextInput";
 import { CSegmentedButton } from "@/components/button/CSegmentedButton";
 import { globalStyles } from "@/utils/global-styles";
 import CButton from "@/components/button/CButton";
-import { HeightUnitEnum, WeightUnitEnum } from "@/models/enums/enums";
+import { GenderEnum, HeightUnitEnum, WeightUnitEnum } from "@/models/enums/enums";
 import { useOnboardingStore } from "@/stores/onboardingStore";
 import { convertHeight, convertWeight } from "@/utils/methods";
 
@@ -175,12 +175,23 @@ const OnboardingFirst = () => {
       return;
     }
 
+    // Map gender index to GenderEnum
+    let genderValue: GenderEnum;
+    if (gender === 0) {
+      genderValue = GenderEnum.MALE;
+    } else if (gender === 1) {
+      genderValue = GenderEnum.FEMALE;
+    } else {
+      genderValue = GenderEnum.OTHER;
+    }
+
     updateData({
       height_value: parseFloat(height),
       height_unit: heightUnit === 0 ? HeightUnitEnum.CM : HeightUnitEnum.INCH,
       weight_value: parseFloat(weight),
       weight_unit: weightUnit === 0 ? WeightUnitEnum.KG : WeightUnitEnum.LBS,
       age: parseInt(age, 10),
+      gender: genderValue,
     });
 
     setStep(2);

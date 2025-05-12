@@ -13,12 +13,13 @@ import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { globalStyles } from "@/utils/global-styles";
 import CButton from "@/components/button/CButton";
 import CCard from "@/components/cards/CCard";
-import { ActivityLevelEnum } from "@/models/enums/enums";
+import { ActivityLevelEnum, CalorieUnitEnum, GenderEnum, GoalEnum } from "@/models/enums/enums";
 import { useOnboardingStore } from "@/stores/onboardingStore";
 // Import the new hooks
 import { useSaveUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from "@/context/AuthProvider";
 import { UserProfileData } from "@/models/interfaces/UserProfileData";
+import { UserMetrics, CaloricGoalOptions, calculateCaloricGoal } from "@/utils/calorieCalculator";
 
 const OnboardingFourth = () => {
   const { t } = useTranslation();
@@ -66,11 +67,49 @@ const OnboardingFourth = () => {
     // Update local store
     updateData({ activity_level: activityLevel, onboarding_completed: true });
 
+    // Create UserMetrics object from collected data
+    const userMetrics: UserMetrics = {
+      age: data.age || 30, // Default age if missing
+      gender: data.gender || GenderEnum.OTHER,
+      weight: data.weight_value || 70, // Default weight if missing
+      height: data.height_value || 170, // Default height if missing
+      activityLevel: activityLevel,
+    };
+
+    // Create CaloricGoalOptions based on user's goal
+    const goalOptions: CaloricGoalOptions = {
+      goal: data.goal || GoalEnum.MAINTAIN_WEIGHT, // Default to maintain if missing
+      adjustment: 0.2, // Default 20% adjustment
+    };
+
+    // Calculate calorie goal
+    const calorieGoal = calculateCaloricGoal(userMetrics, goalOptions);
+
+    // Set default macro ratios based on goal
+    let proteinRatio = 30;
+    let fatRatio = 30;
+    let carbsRatio = 40;
+
+    if (data.goal === GoalEnum.LOSE_FAT) {
+      proteinRatio = 35;
+      fatRatio = 30;
+      carbsRatio = 35;
+    } else if (data.goal === GoalEnum.GAIN_MUSCLE) {
+      proteinRatio = 30;
+      fatRatio = 25;
+      carbsRatio = 45;
+    }
+
     const profileData: UserProfileData = {
       ...data,
       activity_level: activityLevel,
       onboarding_completed: true,
-      user_id: userId,
+      //user_id: userId,
+      calorie_goal_value: calorieGoal,
+      calorie_goal_unit: CalorieUnitEnum.KCAL,
+      protein_ratio: proteinRatio,
+      fat_ratio: fatRatio,
+      carbs_ratio: carbsRatio,
     };
 
     // Use the mutation to update the profile

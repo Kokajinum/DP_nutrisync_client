@@ -143,11 +143,33 @@ const userProfilesSchema: TableSchema = {
     activity_level: "TEXT",
     experience_level: "TEXT",
     goal: "TEXT",
+    gender: "TEXT",
     calorie_goal_value: "REAL",
     calorie_goal_unit: "TEXT",
     protein_ratio: "REAL",
     fat_ratio: "REAL",
     carbs_ratio: "REAL",
     notifications_enabled: "INTEGER",
+    email: "TEXT",
   },
 };
+
+/**
+ * Normalizuje hodnoty objektu pro SQLite:
+ * - undefined → null
+ * - boolean → 0/1
+ */
+export function normalizeForSqlite<T extends Record<string, any>>(obj: T): Record<string, any> {
+  const result: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    // if (typeof value === "boolean") {
+    //   result[key] = value ? 1 : 0;
+    // }
+    if (value !== undefined && value !== null) {
+      result[key] = value;
+    }
+  }
+
+  return result;
+}

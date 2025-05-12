@@ -30,9 +30,10 @@ export class RemoteProfileRepository implements UserProfileRepository {
    * Saves a user profile to the remote API
    * @param profile The user profile data to save
    */
-  async save(profile: UserProfileData): Promise<void> {
+  async save(profile: UserProfileData): Promise<UserProfileData | null> {
     try {
-      await updateUserProfile(this.restManager, profile);
+      const data: UserProfileData | null = await updateUserProfile(this.restManager, profile);
+      return data;
     } catch (error) {
       console.error("Error saving user profile to remote API:", error);
       throw error;

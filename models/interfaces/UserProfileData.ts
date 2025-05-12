@@ -2,6 +2,7 @@ import {
   ActivityLevelEnum,
   CalorieUnitEnum,
   ExperienceLevelEnum,
+  GenderEnum,
   GoalEnum,
   HeightUnitEnum,
   WeightUnitEnum,
@@ -52,5 +53,9 @@ export interface UserProfileData {
 
   carbs_ratio?: number;
 
+  gender?: GenderEnum;
+
   notifications_enabled?: boolean;
+
+  email?: string;
 }
