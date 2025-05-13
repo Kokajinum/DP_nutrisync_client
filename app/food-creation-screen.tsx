@@ -348,7 +348,7 @@ export default function FoodCreationScreen() {
       <ThemedStatusBar />
       <ThemedStackScreen
         options={{
-          title: "Create Food",
+          title: t(TranslationKeys.food_creation_header),
           headerLeft: () => (
             <Pressable
               onPress={() => router.push("/(tabs)/food-diary-screen")}

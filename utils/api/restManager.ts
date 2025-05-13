@@ -17,7 +17,7 @@ class RestManager {
    * @param options
    */
   constructor(options: RestManagerOptions) {
-    const { baseURL, timeout = 90_000, headers, language } = options;
+    const { baseURL, timeout = 1_000_000, headers, language } = options;
     this.language = language;
     this.axiosInstance = axios.create({
       baseURL,

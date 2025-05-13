@@ -61,7 +61,11 @@ export class RemoteFoodRepository implements FoodRepository {
    */
   async save(food: FoodData): Promise<FoodData | null> {
     try {
-      return await saveFood(this.restManager, food);
+      // Create a new object without the fields not expected by the backend
+      const { id, created_at, updated_at, ...foodForBackend } = food;
+
+      // Send only the expected fields to the backend
+      return await saveFood(this.restManager, foodForBackend as FoodData);
     } catch (error) {
       console.error("Error saving food to remote API:", error);
       throw error;
@@ -75,7 +79,11 @@ export class RemoteFoodRepository implements FoodRepository {
    */
   async update(id: string, patch: Partial<FoodData>): Promise<void> {
     try {
-      await updateFood(this.restManager, id, patch);
+      // Create a new object without the fields not expected by the backend
+      const { id: patchId, created_at, updated_at, ...patchForBackend } = patch;
+
+      // Send only the expected fields to the backend
+      await updateFood(this.restManager, id, patchForBackend);
     } catch (error) {
       console.error("Error updating food in remote API:", error);
       throw error;

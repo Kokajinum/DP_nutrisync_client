@@ -28,9 +28,9 @@ export default function FoodDiaryScreen() {
 
       <View style={styles.buttonContainer}>
         <CButton
-          title="Add New Food"
-          icon={<MaterialCommunityIcons name="food-apple" size={20} />}
-          onPress={() => router.push("/food-creation-screen")}
+          title="Add New Entry"
+          icon={<MaterialCommunityIcons name="plus" size={20} />}
+          onPress={() => router.push("/food-diary-entry-screen")}
           style={styles.addButton}
         />
       </View>

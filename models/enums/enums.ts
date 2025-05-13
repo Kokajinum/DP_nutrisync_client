@@ -39,6 +39,13 @@ export enum GenderEnum {
   OTHER = "other",
 }
 
+export enum MealTypeEnum {
+  BREAKFAST = "breakfast",
+  LUNCH = "lunch",
+  DINNER = "dinner",
+  SNACK = "snack",
+}
+
 export enum FoodCategoryEnum {
   FRUIT = "fruit",
   VEGETABLES = "vegetables",

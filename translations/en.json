@@ -97,5 +97,17 @@
     "no_profile_data": "No profile data available",
     "food_creation_header": "Create Food",
     "food_creation_main_information_header": "Main Information",
-    "food_creation_nutritional_information_header": "Nutritional Information"
+    "food_creation_nutritional_information_header": "Nutritional Information",
+    "food_diary_entry_header": "Add Food Entry",
+    "food_diary_entry_search_placeholder": "Search for food...",
+    "food_diary_entry_history": "History",
+    "food_diary_entry_search_results": "Search Results",
+    "food_diary_entry_create_new": "Create New Food",
+    "food_diary_entry_load_more": "Load More",
+    "food_diary_entry_breakfast": "Breakfast",
+    "food_diary_entry_lunch": "Lunch",
+    "food_diary_entry_dinner": "Dinner",
+    "food_diary_entry_snack": "Snack",
+    "food_diary_entry_no_results": "No search results found",
+    "food_diary_entry_no_history": "No food history available"
 }
