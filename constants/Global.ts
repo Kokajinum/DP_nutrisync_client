@@ -1,5 +1,6 @@
 export const STORAGE_KEY_THEME: string = "settings.theme";
 export const STORAGE_KEY_LANGUAGE: string = "settings.lang";
+export const STORAGE_KEY_LANGUAGE_EXPLICITLY_SELECTED: string = "settings.lang.explicit";
 export const STORAGE_KEY_HAS_LAUNCHED: string = "app.has_launched";
 export const STORAGE_KEY_AUTH_TOKEN: string = "auth.token";
 export const STORAGE_KEY_AUTH_REFRESH_TOKEN: string = "auth.refresh_token";
