@@ -94,5 +94,8 @@
     "error_saving_profile": "Error saving profile. Please try again.",
     "error_user_not_authenticated": "You need to be logged in to save your profile.",
     "profile_incomplete": "Your profile is incomplete. You need to complete the onboarding process.",
-    "no_profile_data": "No profile data available"
+    "no_profile_data": "No profile data available",
+    "food_creation_header": "Create Food",
+    "food_creation_main_information_header": "Main Information",
+    "food_creation_nutritional_information_header": "Nutritional Information"
 }

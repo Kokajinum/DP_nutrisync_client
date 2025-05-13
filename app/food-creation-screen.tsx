@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ScrollView, View, StyleSheet, Pressable, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialIcons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { useFoodRepository } from "@/hooks/useFoodRepository";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
@@ -15,21 +16,9 @@ import CFoodAttributeInput from "@/components/input/CFoodAttributeInput";
 import CDropdown from "@/components/input/CDropdown";
 import CServingSizeInput from "@/components/input/CServingSizeInput";
 
-interface FoodData {
-  name: string;
-  category: string;
-  servingSizeValue: string;
-  servingSizeUnit: "g" | "ml";
-  brand: string;
-  barcode: string;
-  calories: string;
-  fats: string;
-  carbs: string;
-  sugar: string;
-  fiber: string;
-  protein: string;
-  salt: string;
-}
+import { FoodData } from "@/models/interfaces/FoodData";
+import { useTranslation } from "react-i18next";
+import { TranslationKeys } from "@/translations/translations";
 
 // Constants for validation
 const MAX_NAME_LENGTH = 100;
@@ -48,12 +37,30 @@ const BARCODE_REGEX = /^[0-9]{8,14}$/; // basic types EAN-8, EAN-13, UPC-A, ...
 
 export default function FoodCreationScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
+
   const cardBackgroundColor = useThemeColor({}, "surface");
   const borderColor = useThemeColor({}, "outline");
   const sectionTitleColor = useThemeColor({}, "primary");
   const iconColor = useThemeColor({}, "onBackground");
 
-  const [foodData, setFoodData] = useState<FoodData>({
+  interface FoodFormData {
+    name: string;
+    category: string;
+    servingSizeValue: string;
+    servingSizeUnit: "g" | "ml";
+    brand: string;
+    barcode: string;
+    calories: string;
+    fats: string;
+    carbs: string;
+    sugar: string;
+    fiber: string;
+    protein: string;
+    salt: string;
+  }
+
+  const [foodData, setFoodData] = useState<FoodFormData>({
     name: "",
     category: FoodCategoryEnum.FRUIT,
     servingSizeValue: "",
@@ -209,7 +216,7 @@ export default function FoodCreationScreen() {
     return crossErrors;
   };
 
-  const updateFoodData = (field: keyof FoodData, value: string) => {
+  const updateFoodData = (field: keyof FoodFormData, value: string) => {
     // For text fields, trim the input
     const processedValue = field === "name" || field === "brand" ? value : value; // For numeric fields, we will keep the original input for better UX
 
@@ -266,7 +273,7 @@ export default function FoodCreationScreen() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    const fields = Object.keys(foodData) as Array<keyof FoodData>;
+    const fields = Object.keys(foodData) as Array<keyof FoodFormData>;
 
     // Validate each field
     fields.forEach((field) => {
@@ -284,22 +291,36 @@ export default function FoodCreationScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSaveFood = () => {
+  const { saveFood: saveFoodToRepository } = useFoodRepository();
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveFood = async () => {
     setFormTouched(true);
     if (validate()) {
-      // Prepare data for save
-      const preparedData = {
-        ...foodData,
-        name: foodData.name.trim(),
-        brand: foodData.brand.trim(),
-      };
+      try {
+        setIsSaving(true);
+        // Prepare data for save
+        const preparedData: Omit<FoodData, "id" | "created_at" | "updated_at"> = {
+          ...foodData,
+          name: foodData.name.trim(),
+          brand: foodData.brand.trim(),
+        };
 
-      //todo save to database (remote and local)
-      console.log("Food data to save:", preparedData);
-      resetFoodData();
-      router.push("/(tabs)/food-diary-screen");
+        // Save to repository (which handles both remote and local storage)
+        await saveFoodToRepository(preparedData);
+
+        console.log("Food data saved successfully:", preparedData);
+        resetFoodData();
+        router.push("/(tabs)/food-diary-screen");
+      } catch (error) {
+        console.error("Error saving food:", error);
+        Alert.alert("Save Error", "There was a problem saving your food. Please try again.", [
+          { text: "OK" },
+        ]);
+      } finally {
+        setIsSaving(false);
+      }
     } else {
-      // Scroll to the first error
       Alert.alert("Validation Error", "Please correct the errors before saving.", [{ text: "OK" }]);
     }
   };
@@ -330,7 +351,6 @@ export default function FoodCreationScreen() {
           title: "Create Food",
           headerLeft: () => (
             <Pressable
-              // Modified: Navigate directly to food-diary-screen instead of using router.back()
               onPress={() => router.push("/(tabs)/food-diary-screen")}
               style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.7 : 1 }]}>
               <MaterialIcons name="arrow-back" size={24} color={iconColor} />
@@ -350,7 +370,7 @@ export default function FoodCreationScreen() {
         {/* Main attributes section */}
         <View style={[styles.section, { backgroundColor: cardBackgroundColor, borderColor }]}>
           <ThemedText type="subtitle" style={[styles.sectionTitle, { color: sectionTitleColor }]}>
-            Main Information
+            {t(TranslationKeys.food_creation_main_information_header)}
           </ThemedText>
 
           <CFoodAttributeInput

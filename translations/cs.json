@@ -94,5 +94,8 @@
     "error_saving_profile": "Chyba při ukládání profilu. Zkuste to prosím znovu.",
     "error_user_not_authenticated": "Pro uložení profilu musíte být přihlášeni.",
     "profile_incomplete": "Váš profil je neúplný. Musíte dokončit proces nastavení.",
-    "no_profile_data": "Žádná profilová data nejsou k dispozici"
+    "no_profile_data": "Žádná profilová data nejsou k dispozici",
+    "food_creation_header": "Vytvořit Potravinu",
+    "food_creation_main_information_header": "Hlavní informace",
+    "food_creation_nutritional_information_header": "Výživové údaje"
 }

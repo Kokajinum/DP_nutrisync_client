@@ -4,18 +4,21 @@ interface RestManagerOptions {
   baseURL: string;
   timeout?: number;
   headers?: Record<string, string>;
+  language?: string;
 }
 
 class RestManager {
   private axiosInstance: AxiosInstance;
   private authToken: string | undefined = undefined;
+  private language: string | undefined = undefined;
 
   /**
    *
    * @param options
    */
   constructor(options: RestManagerOptions) {
-    const { baseURL, timeout = 90_000, headers } = options;
+    const { baseURL, timeout = 90_000, headers, language } = options;
+    this.language = language;
     this.axiosInstance = axios.create({
       baseURL,
       timeout,
@@ -24,11 +27,17 @@ class RestManager {
 
     this.axiosInstance.interceptors.request.use(
       (config) => {
+        // Set authorization header if token exists
         if (this.authToken) {
           //config.headers = config.headers || {};
           config.headers.Authorization = `Bearer ${this.authToken}`;
         } else {
           console.error(`[API REQUEST] undefined token`);
+        }
+
+        // Set language header if language exists
+        if (this.language) {
+          config.headers["Accept-Language"] = this.language;
         }
         console.log(`[API REQUEST] ${config.method?.toUpperCase()} ${config.url}`, config);
         return config;
@@ -74,6 +83,10 @@ class RestManager {
 
   public setToken(token: string | undefined): void {
     this.authToken = token;
+  }
+
+  public setLanguage(language: string | undefined): void {
+    this.language = language;
   }
 
   /**

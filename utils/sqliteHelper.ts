@@ -1,5 +1,6 @@
 import * as SQLite from "expo-sqlite";
 import { ensureError } from "./methods";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 
 type ColumnDefinition =
   | "TEXT"
@@ -32,7 +33,7 @@ class AsyncSQLiteDatabase {
     return this.dbInstance;
   }
 
-  private async getDb(): Promise<SQLite.SQLiteDatabase> {
+  async getDbAsync(): Promise<SQLite.SQLiteDatabase> {
     if (!this.dbPromise) {
       this.dbPromise = this.initialize();
     }
@@ -40,22 +41,22 @@ class AsyncSQLiteDatabase {
   }
 
   async runAsync(query: string, params: any[] = []): Promise<any> {
-    const db = await this.getDb();
+    const db = await this.getDbAsync();
     return db.runAsync(query, params);
   }
 
   async getFirstAsync<T>(query: string, params: any[] = []): Promise<T | null> {
-    const db = await this.getDb();
+    const db = await this.getDbAsync();
     return db.getFirstAsync<T>(query, params);
   }
 
   async getAllAsync<T>(query: string, params: any[] = []): Promise<T[]> {
-    const db = await this.getDb();
+    const db = await this.getDbAsync();
     return db.getAllAsync<T>(query, params);
   }
 
   async execAsync(query: string): Promise<any> {
-    const db = await this.getDb();
+    const db = await this.getDbAsync();
     return db.execAsync(query);
   }
 
@@ -80,7 +81,7 @@ class AsyncSQLiteDatabase {
   }
 
   async createTableIfNotExists(schema: TableSchema): Promise<void> {
-    const db = await this.getDb();
+    const db = await this.getDbAsync();
     const columnsSql = Object.entries(schema.columns)
       .map(([name, type]) => `${name} ${type}`)
       .join(", ");
@@ -96,31 +97,7 @@ export const db = new AsyncSQLiteDatabase("nutrisync_fitness.db");
 // database schema
 export async function initDb() {
   await db.createTableIfNotExists(userProfilesSchema);
-  // await db.runAsync(`
-  //   CREATE TABLE IF NOT EXISTS user_profiles(
-  //     id TEXT PRIMARY KEY NOT NULL,
-  //     created_at TEXT,
-  //     updated_at TEXT,
-  //     user_id TEXT,
-  //     onboarding_completed INTEGER,
-  //     first_name TEXT,
-  //     last_name TEXT,
-  //     age INTEGER,
-  //     height_value REAL,
-  //     height_unit TEXT,
-  //     weight_value REAL,
-  //     weight_unit TEXT,
-  //     target_weight_value REAL,
-  //     target_weight_unit TEXT,
-  //     activity_level TEXT,
-  //     goal TEXT,
-  //     calorie_goal_value REAL,
-  //     calorie_goal_unit TEXT,
-  //     protein_ratio REAL,
-  //     fat_ratio REAL,
-  //     carbs_ratio REAL,
-  //     notifications_enabled INTEGER
-  //   );`);
+  await db.createTableIfNotExists(foodSchema);
 }
 
 const userProfilesSchema: TableSchema = {
@@ -151,6 +128,28 @@ const userProfilesSchema: TableSchema = {
     carbs_ratio: "REAL",
     notifications_enabled: "INTEGER",
     email: "TEXT",
+  },
+};
+
+const foodSchema: TableSchema = {
+  name: "foods",
+  columns: {
+    id: "TEXT PRIMARY KEY NOT NULL",
+    created_at: "TEXT",
+    updated_at: "TEXT",
+    name: "TEXT NOT NULL",
+    category: "TEXT NOT NULL",
+    servingSizeValue: "TEXT NOT NULL",
+    servingSizeUnit: "TEXT NOT NULL",
+    brand: "TEXT",
+    barcode: "TEXT",
+    calories: "TEXT",
+    fats: "TEXT",
+    carbs: "TEXT",
+    sugar: "TEXT",
+    fiber: "TEXT",
+    protein: "TEXT",
+    salt: "TEXT",
   },
 };
 

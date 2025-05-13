@@ -95,4 +95,7 @@ export enum TranslationKeys {
   error_user_not_authenticated = "error_user_not_authenticated",
   profile_incomplete = "profile_incomplete",
   no_profile_data = "no_profile_data",
+  food_creation_header = "food_creation_header",
+  food_creation_main_information_header = "food_creation_main_information_header",
+  food_creation_nutritional_information_header = "food_creation_nutritional_information_header",
 }
