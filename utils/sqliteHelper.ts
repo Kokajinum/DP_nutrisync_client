@@ -98,9 +98,10 @@ export const db = new AsyncSQLiteDatabase("nutrisync_fitness.db");
 export async function initDb() {
   await db.createTableIfNotExists(userProfilesSchema);
   await db.createTableIfNotExists(foodSchema);
+  await db.createTableIfNotExists(foodDiaryEntrySchema);
 }
 
-const userProfilesSchema: TableSchema = {
+export const userProfilesSchema: TableSchema = {
   name: "user_profiles",
   columns: {
     id: "TEXT PRIMARY KEY NOT NULL",
@@ -131,7 +132,7 @@ const userProfilesSchema: TableSchema = {
   },
 };
 
-const foodSchema: TableSchema = {
+export const foodSchema: TableSchema = {
   name: "foods",
   columns: {
     id: "TEXT PRIMARY KEY NOT NULL",
@@ -150,6 +151,28 @@ const foodSchema: TableSchema = {
     fiber: "TEXT",
     protein: "TEXT",
     salt: "TEXT",
+  },
+};
+
+export const foodDiaryEntrySchema: TableSchema = {
+  name: "food_diary_entries",
+  columns: {
+    id: "TEXT PRIMARY KEY",
+    created_at: "TEXT",
+    updated_at: "TEXT",
+    user_id: "TEXT",
+    date: "TEXT NOT NULL",
+    food_id: "TEXT NOT NULL",
+    food_name: "TEXT NOT NULL",
+    brand: "TEXT",
+    meal_type: "TEXT NOT NULL",
+    serving_size: "REAL NOT NULL",
+    serving_unit: "TEXT NOT NULL",
+    servings: "REAL NOT NULL",
+    calories: "REAL NOT NULL",
+    protein: "REAL NOT NULL",
+    carbs: "REAL NOT NULL",
+    fat: "REAL NOT NULL",
   },
 };
 

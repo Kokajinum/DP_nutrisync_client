@@ -1,6 +1,11 @@
 import { UserProfileData } from "@/models/interfaces/UserProfileData";
 import { FoodData } from "@/models/interfaces/FoodData";
+import { FoodDiaryEntry } from "@/models/interfaces/FoodDiaryEntry";
 import { SearchOptions, SearchResult } from "@/utils/repositories/FoodDataRepository";
+import {
+  SearchOptions as FoodDiaryEntrySearchOptions,
+  SearchResult as FoodDiaryEntrySearchResult,
+} from "@/utils/repositories/FoodDiaryEntryDataRepository";
 import RestManager from "./restManager";
 import { ensureError } from "../methods";
 
@@ -93,6 +98,107 @@ export const deleteFood = async (restManager: RestManager, id: string): Promise<
   } catch (exception) {
     const error: Error = ensureError(exception);
     console.error("Error deleting food:", error.message);
+    throw error;
+  }
+};
+
+// Food Diary Entry API functions
+export const fetchFoodDiaryEntry = async (
+  restManager: RestManager,
+  id: string
+): Promise<FoodDiaryEntry | null> => {
+  try {
+    const response = await restManager.get<FoodDiaryEntry>(`/food-diary-entries/${id}`);
+    return response.data;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error fetching food diary entry:", error.message);
+    return null;
+  }
+};
+
+export const fetchFoodDiaryEntriesByDate = async (
+  restManager: RestManager,
+  date: string
+): Promise<FoodDiaryEntry[]> => {
+  try {
+    const response = await restManager.get<FoodDiaryEntry[]>(`/food-diary-entries/date/${date}`);
+    return response.data;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error fetching food diary entries by date:", error.message);
+    return [];
+  }
+};
+
+export const searchFoodDiaryEntries = async (
+  restManager: RestManager,
+  options: FoodDiaryEntrySearchOptions
+): Promise<FoodDiaryEntrySearchResult<FoodDiaryEntry>> => {
+  try {
+    const { page = 1, limit = 10, date, meal_type } = options;
+    const queryParams = new URLSearchParams();
+
+    queryParams.append("page", page.toString());
+    queryParams.append("limit", limit.toString());
+    if (date) {
+      queryParams.append("date", date);
+    }
+    if (meal_type) {
+      queryParams.append("meal_type", meal_type);
+    }
+
+    const response = await restManager.get<FoodDiaryEntrySearchResult<FoodDiaryEntry>>(
+      `/food-diary-entries/search?${queryParams.toString()}`
+    );
+    return response.data;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error searching food diary entries:", error.message);
+    return {
+      items: [],
+      totalCount: 0,
+      page: options.page || 1,
+      limit: options.limit || 10,
+      hasMore: false,
+    };
+  }
+};
+
+export const saveFoodDiaryEntry = async (
+  restManager: RestManager,
+  entry: FoodDiaryEntry
+): Promise<FoodDiaryEntry | null> => {
+  try {
+    const response = await restManager.post<FoodDiaryEntry>("/food-diary-entries", entry);
+    return response.data;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error saving food diary entry:", error.message);
+    return null;
+  }
+};
+
+export const updateFoodDiaryEntry = async (
+  restManager: RestManager,
+  id: string,
+  patch: Partial<FoodDiaryEntry>
+): Promise<void> => {
+  try {
+    await restManager.put<any>(`/food-diary-entries/${id}`, patch);
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error updating food diary entry:", error.message);
+    throw error;
+  }
+};
+
+export const deleteFoodDiaryEntry = async (restManager: RestManager, id: string): Promise<void> => {
+  try {
+    await restManager.delete<void>(`/food-diary-entries/${id}`);
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error deleting food diary entry:", error.message);
     throw error;
   }
 };

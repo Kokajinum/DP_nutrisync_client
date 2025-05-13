@@ -109,5 +109,21 @@
     "food_diary_entry_dinner": "Večeře",
     "food_diary_entry_snack": "Svačina",
     "food_diary_entry_no_results": "Žádné výsledky vyhledávání",
-    "food_diary_entry_no_history": "Žádná historie jídel"
+    "food_diary_entry_no_history": "Žádná historie jídel",
+    "food_diary_entry_servings": "Počet porcí",
+    "food_diary_entry_serving_size": "Velikost porce",
+    "food_diary_entry_nutrition": "Výživové hodnoty",
+    "food_diary_entry_protein": "Bílkoviny",
+    "food_diary_entry_carbs": "Sacharidy",
+    "food_diary_entry_fat": "Tuky",
+    "food_diary_entry_add": "Přidat do deníku",
+    "food_diary_header": "Jídelníček",
+    "food_diary_macronutrients": "Makroživiny",
+    "food_diary_entries": "Záznamy jídel",
+    "food_diary_no_entries": "Žádné záznamy jídel pro",
+    "food_diary_goal": "Cíl",
+    "food_diary_food": "Jídlo",
+    "food_diary_exercise": "Cvičení",
+    "food_diary_remaining": "Zbývá",
+    "food_diary_add_entry": "Přidat nový záznam"
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, StyleSheet, FlatList, Pressable, ActivityIndicator } from "react-native";
+import { View, StyleSheet, FlatList, Pressable, ActivityIndicator, Text } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,54 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { useFoodRepository } from "@/hooks/useFoodRepository";
 import { FoodData } from "@/models/interfaces/FoodData";
 import { MealTypeEnum } from "@/models/enums/enums";
+import { useDateStore } from "@/stores/dateStore";
+
+// Helper function to determine meal type based on current time
+const getMealTypeFromTime = (): MealTypeEnum => {
+  const hour = new Date().getHours();
+
+  if (hour >= 5 && hour < 11) {
+    return MealTypeEnum.BREAKFAST;
+  } else if (hour >= 11 && hour < 15) {
+    return MealTypeEnum.LUNCH;
+  } else if (hour >= 15 && hour < 19) {
+    return MealTypeEnum.DINNER;
+  } else {
+    return MealTypeEnum.SNACK;
+  }
+};
+
+// Helper function to convert meal type enum to index
+const mealTypeToIndex = (mealType: MealTypeEnum): number => {
+  switch (mealType) {
+    case MealTypeEnum.BREAKFAST:
+      return 0;
+    case MealTypeEnum.LUNCH:
+      return 1;
+    case MealTypeEnum.DINNER:
+      return 2;
+    case MealTypeEnum.SNACK:
+      return 3;
+    default:
+      return 0;
+  }
+};
+
+// Helper function to convert index to meal type enum
+const indexToMealType = (index: number): MealTypeEnum => {
+  switch (index) {
+    case 0:
+      return MealTypeEnum.BREAKFAST;
+    case 1:
+      return MealTypeEnum.LUNCH;
+    case 2:
+      return MealTypeEnum.DINNER;
+    case 3:
+      return MealTypeEnum.SNACK;
+    default:
+      return MealTypeEnum.BREAKFAST;
+  }
+};
 
 export default function FoodDiaryEntryScreen() {
   const router = useRouter();
@@ -26,8 +74,10 @@ export default function FoodDiaryEntryScreen() {
   const borderColor = useThemeColor({}, "outline");
   const primaryColor = useThemeColor({}, "primary");
 
-  // State for meal type selection
-  const [selectedMealTypeIndex, setSelectedMealTypeIndex] = useState(0);
+  // State for meal type selection - automatically set based on time of day
+  const [selectedMealTypeIndex, setSelectedMealTypeIndex] = useState(() =>
+    mealTypeToIndex(getMealTypeFromTime())
+  );
   const mealTypes = [
     t(TranslationKeys.food_diary_entry_breakfast),
     t(TranslationKeys.food_diary_entry_lunch),
@@ -112,6 +162,39 @@ export default function FoodDiaryEntryScreen() {
     }
   };
 
+  // Navigate to food details screen
+  const navigateToFoodDetails = useCallback(
+    (food: FoodData) => {
+      console.log("Navigating to food details for:", food.name);
+
+      // Get the current meal type
+      const mealType = indexToMealType(selectedMealTypeIndex);
+
+      // Navigate to food details screen with food data as params
+      router.push({
+        pathname: "/food-details-screen",
+        params: {
+          id: food.id || "",
+          name: food.name,
+          category: food.category || "",
+          brand: food.brand || "",
+          barcode: food.barcode || "",
+          calories: food.calories || "0",
+          protein: food.protein || "0",
+          carbs: food.carbs || "0",
+          fats: food.fats || "0",
+          sugar: food.sugar || "0",
+          fiber: food.fiber || "0",
+          salt: food.salt || "0",
+          servingSizeValue: food.servingSizeValue || "100",
+          servingSizeUnit: food.servingSizeUnit || "g",
+          mealType: mealType,
+        },
+      });
+    },
+    [router, selectedMealTypeIndex]
+  );
+
   // Render food item
   const renderFoodItem = ({ item }: { item: FoodData }) => (
     <Pressable
@@ -120,14 +203,34 @@ export default function FoodDiaryEntryScreen() {
         { backgroundColor: surfaceColor, borderColor },
         pressed && { opacity: 0.7 },
       ]}
-      onPress={() => handleSelectFood(item)}>
+      onPress={() => {
+        console.log("Food item pressed:", item.name);
+        navigateToFoodDetails(item);
+      }}>
       <View style={styles.foodItemContent}>
         <ThemedText type="subtitle" style={styles.foodName}>
           {item.name}
         </ThemedText>
-        {item.brand && <ThemedText style={styles.foodBrand}>{item.brand}</ThemedText>}
+
+        <View style={styles.foodInfoContainer}>
+          <ThemedText style={styles.foodCalories}>
+            {item.calories} kcal
+            <Text style={styles.perServingText}>
+              {" "}
+              / {item.servingSizeValue}
+              {item.servingSizeUnit}
+            </Text>
+          </ThemedText>
+
+          {item.brand && (
+            <>
+              <View style={styles.separator} />
+              <ThemedText style={styles.foodBrand}>{item.brand}</ThemedText>
+            </>
+          )}
+        </View>
+
         <View style={styles.foodDetails}>
-          <ThemedText style={styles.foodCalories}>{item.calories} kcal</ThemedText>
           <View style={styles.macros}>
             <ThemedText style={styles.macroText}>P: {item.protein}g</ThemedText>
             <ThemedText style={styles.macroText}>C: {item.carbs}g</ThemedText>
@@ -137,12 +240,6 @@ export default function FoodDiaryEntryScreen() {
       </View>
     </Pressable>
   );
-
-  // Handle food selection
-  const handleSelectFood = (food: FoodData) => {
-    //todo
-    router.back();
-  };
 
   // Render list header
   const renderListHeader = useCallback(() => {
@@ -277,6 +374,34 @@ export default function FoodDiaryEntryScreen() {
             onPress={() => router.push("/food-creation-screen")}
             style={styles.createButton}
           />
+
+          {/* Test button for food details */}
+          <CButton
+            title="Test Food Details"
+            onPress={() => {
+              console.log("Test button pressed");
+              // Create a dummy food item
+              const testFood: FoodData = {
+                id: "test-food",
+                name: "Test Food",
+                category: "test",
+                brand: "Test Brand",
+                barcode: "123456789",
+                calories: "100",
+                protein: "10",
+                carbs: "10",
+                fats: "5",
+                sugar: "2",
+                fiber: "1",
+                salt: "0.1",
+                servingSizeValue: "100",
+                servingSizeUnit: "g",
+              };
+
+              navigateToFoodDetails(testFood);
+            }}
+            style={[styles.createButton, { marginTop: 8, backgroundColor: "red" }]}
+          />
         </View>
       </View>
     </ThemedView>
@@ -329,10 +454,15 @@ const styles = StyleSheet.create({
   foodName: {
     marginBottom: 4,
   },
+  foodInfoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    flexWrap: "wrap",
+  },
   foodBrand: {
     fontSize: 14,
     opacity: 0.7,
-    marginBottom: 8,
   },
   foodDetails: {
     flexDirection: "row",
@@ -343,6 +473,18 @@ const styles = StyleSheet.create({
   foodCalories: {
     fontSize: 14,
     fontWeight: "500",
+  },
+  perServingText: {
+    fontSize: 12,
+    opacity: 0.7,
+  },
+  separator: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#000",
+    opacity: 0.5,
+    marginHorizontal: 8,
   },
   macros: {
     flexDirection: "row",

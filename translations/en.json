@@ -109,5 +109,21 @@
     "food_diary_entry_dinner": "Dinner",
     "food_diary_entry_snack": "Snack",
     "food_diary_entry_no_results": "No search results found",
-    "food_diary_entry_no_history": "No food history available"
+    "food_diary_entry_no_history": "No food history available",
+    "food_diary_entry_servings": "Servings",
+    "food_diary_entry_serving_size": "Serving Size",
+    "food_diary_entry_nutrition": "Nutrition",
+    "food_diary_entry_protein": "Protein",
+    "food_diary_entry_carbs": "Carbs",
+    "food_diary_entry_fat": "Fat",
+    "food_diary_entry_add": "Add to Diary",
+    "food_diary_header": "Food Diary",
+    "food_diary_macronutrients": "Macronutrients",
+    "food_diary_entries": "Food Entries",
+    "food_diary_no_entries": "No food entries for",
+    "food_diary_goal": "Goal",
+    "food_diary_food": "Food",
+    "food_diary_exercise": "Exercise",
+    "food_diary_remaining": "Remaining",
+    "food_diary_add_entry": "Add New Entry"
 }
