@@ -2,6 +2,7 @@ import { UserProfileData } from "../../models/interfaces/UserProfileData";
 import { UserProfileRepository } from "../../models/interfaces/UserProfileDataRepository";
 import { LocalProfileRepository } from "./local/LocalProfileRepository";
 import { RemoteProfileRepository } from "./remote/RemoteProfileRepository";
+import NetInfo from "@react-native-community/netinfo";
 
 /**
  * A composite repository that combines local and remote repositories
@@ -24,16 +25,19 @@ export class ProfileRepository implements UserProfileRepository {
    */
   async get(id: string): Promise<UserProfileData | null> {
     try {
-      // Try to get from remote first
-      const remoteProfile = await this.remoteRepository.get(id);
+      const netState = await NetInfo.fetch();
 
-      if (remoteProfile) {
-        // If remote succeeds, update local and return remote data
-        await this.localRepository.save(remoteProfile);
-        return remoteProfile;
+      if (netState.isConnected && netState.isInternetReachable) {
+        const remoteProfile = await this.remoteRepository.get(id);
+
+        if (remoteProfile) {
+          // If remote succeeds, update local and return remote data
+          await this.localRepository.save(remoteProfile);
+          return remoteProfile;
+        }
       }
 
-      // If remote returns null, fall back to local
+      // If remote returns null or is offline, fall back to local
       const localProfile = await this.localRepository.get(id);
       return localProfile;
     } catch (error) {

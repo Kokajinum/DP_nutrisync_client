@@ -366,7 +366,7 @@ export default function FoodCreationScreen() {
         }}
       />
 
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1, paddingBottom: 80 }}>
         {/* Main attributes section */}
         <View style={[styles.section, { backgroundColor: cardBackgroundColor, borderColor }]}>
           <ThemedText type="subtitle" style={[styles.sectionTitle, { color: sectionTitleColor }]}>

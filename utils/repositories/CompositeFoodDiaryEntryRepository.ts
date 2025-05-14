@@ -35,7 +35,7 @@ export class CompositeFoodDiaryEntryRepository implements FoodDiaryEntryReposito
       const netState = await NetInfo.fetch();
 
       // If online, try remote first
-      if (netState.isConnected && netState.isInternetReachable !== false) {
+      if (netState.isConnected && netState.isInternetReachable) {
         const remoteEntry = await this.remoteRepository.get(id);
         if (remoteEntry) {
           // Cache the remote entry locally
