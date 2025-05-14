@@ -3,8 +3,8 @@ import {
   FoodDiaryEntryRepository,
   SearchOptions,
   SearchResult,
-} from "./FoodDiaryEntryDataRepository";
-import RestManager from "../api/restManager";
+} from "../../../models/interfaces/FoodDiaryEntryDataRepository";
+import RestManager from "../../api/restManager";
 import {
   fetchFoodDiaryEntry,
   fetchFoodDiaryEntriesByDate,
@@ -12,7 +12,7 @@ import {
   saveFoodDiaryEntry,
   updateFoodDiaryEntry,
   deleteFoodDiaryEntry,
-} from "../api/apiClient";
+} from "../../api/apiClient";
 
 export class RemoteFoodDiaryEntryRepository implements FoodDiaryEntryRepository {
   private restManager: RestManager;

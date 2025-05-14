@@ -1,7 +1,11 @@
 import { FoodData } from "@/models/interfaces/FoodData";
-import { FoodRepository, SearchOptions, SearchResult } from "./FoodDataRepository";
-import RestManager from "../api/restManager";
-import { fetchFood, searchFoods, saveFood, updateFood, deleteFood } from "../api/apiClient";
+import {
+  FoodRepository,
+  SearchOptions,
+  SearchResult,
+} from "../../../models/interfaces/FoodDataRepository";
+import RestManager from "../../api/restManager";
+import { fetchFood, searchFoods, saveFood, updateFood, deleteFood } from "../../api/apiClient";
 
 export class RemoteFoodRepository implements FoodRepository {
   private restManager: RestManager;

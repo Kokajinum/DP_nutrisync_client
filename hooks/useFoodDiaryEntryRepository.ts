@@ -1,6 +1,6 @@
 import { useFoodDiaryEntryRepository as useRepositoryContext } from "@/context/RepositoriesProvider";
 import { FoodDiaryEntry } from "@/models/interfaces/FoodDiaryEntry";
-import { SearchOptions, SearchResult } from "@/utils/repositories/FoodDiaryEntryDataRepository";
+import { SearchOptions, SearchResult } from "@/models/interfaces/FoodDiaryEntryDataRepository";
 import { useCallback } from "react";
 
 /**

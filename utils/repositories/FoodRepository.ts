@@ -1,7 +1,11 @@
 import { FoodData } from "@/models/interfaces/FoodData";
-import { FoodRepository, SearchOptions, SearchResult } from "./FoodDataRepository";
-import { LocalFoodRepository } from "./LocalFoodRepository";
-import { RemoteFoodRepository } from "./RemoteFoodRepository";
+import {
+  FoodRepository,
+  SearchOptions,
+  SearchResult,
+} from "../../models/interfaces/FoodDataRepository";
+import { LocalFoodRepository } from "./local/LocalFoodRepository";
+import { RemoteFoodRepository } from "./remote/RemoteFoodRepository";
 
 /**
  * A composite repository that combines local and remote repositories for food data

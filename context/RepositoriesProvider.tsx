@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { useRestManager } from "./RestManagerProvider";
 import { ProfileRepository } from "../utils/repositories/ProfileRepository";
-import { LocalProfileRepository } from "../utils/repositories/LocalProfileRepository";
-import { RemoteProfileRepository } from "../utils/repositories/RemoteProfileRepository";
+import { LocalProfileRepository } from "../utils/repositories/local/LocalProfileRepository";
+import { RemoteProfileRepository } from "../utils/repositories/remote/RemoteProfileRepository";
 import { CompositeFoodRepository } from "../utils/repositories/FoodRepository";
-import { LocalFoodRepository } from "../utils/repositories/LocalFoodRepository";
-import { RemoteFoodRepository } from "../utils/repositories/RemoteFoodRepository";
-import { FoodRepository } from "../utils/repositories/FoodDataRepository";
+import { LocalFoodRepository } from "../utils/repositories/local/LocalFoodRepository";
+import { RemoteFoodRepository } from "../utils/repositories/remote/RemoteFoodRepository";
+import { FoodRepository } from "../models/interfaces/FoodDataRepository";
 import { CompositeFoodDiaryEntryRepository } from "../utils/repositories/CompositeFoodDiaryEntryRepository";
-import { FoodDiaryEntryRepository } from "../utils/repositories/FoodDiaryEntryDataRepository";
-import { LocalFoodDiaryEntryRepository } from "../utils/repositories/LocalFoodDiaryEntryRepository";
-import { RemoteFoodDiaryEntryRepository } from "../utils/repositories/RemoteFoodDiaryEntryRepository";
+import { FoodDiaryEntryRepository } from "../models/interfaces/FoodDiaryEntryDataRepository";
+import { LocalFoodDiaryEntryRepository } from "../utils/repositories/local/LocalFoodDiaryEntryRepository";
+import { RemoteFoodDiaryEntryRepository } from "../utils/repositories/remote/RemoteFoodDiaryEntryRepository";
 
 interface RepositoriesContextType {
   profileRepository: ProfileRepository;

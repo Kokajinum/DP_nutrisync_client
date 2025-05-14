@@ -1,11 +1,11 @@
 import { UserProfileData } from "@/models/interfaces/UserProfileData";
 import { FoodData } from "@/models/interfaces/FoodData";
 import { FoodDiaryEntry } from "@/models/interfaces/FoodDiaryEntry";
-import { SearchOptions, SearchResult } from "@/utils/repositories/FoodDataRepository";
+import { SearchOptions, SearchResult } from "@/models/interfaces/FoodDataRepository";
 import {
   SearchOptions as FoodDiaryEntrySearchOptions,
   SearchResult as FoodDiaryEntrySearchResult,
-} from "@/utils/repositories/FoodDiaryEntryDataRepository";
+} from "@/models/interfaces/FoodDiaryEntryDataRepository";
 import RestManager from "./restManager";
 import { ensureError } from "../methods";
 

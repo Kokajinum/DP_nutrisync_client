@@ -3,9 +3,9 @@ import {
   FoodDiaryEntryRepository,
   SearchOptions,
   SearchResult,
-} from "./FoodDiaryEntryDataRepository";
-import { LocalFoodDiaryEntryRepository } from "./LocalFoodDiaryEntryRepository";
-import { RemoteFoodDiaryEntryRepository } from "./RemoteFoodDiaryEntryRepository";
+} from "../../models/interfaces/FoodDiaryEntryDataRepository";
+import { LocalFoodDiaryEntryRepository } from "./local/LocalFoodDiaryEntryRepository";
+import { RemoteFoodDiaryEntryRepository } from "./remote/RemoteFoodDiaryEntryRepository";
 import NetInfo from "@react-native-community/netinfo";
 
 /**
@@ -55,15 +55,36 @@ export class CompositeFoodDiaryEntryRepository implements FoodDiaryEntryReposito
 
   /**
    * Retrieves all food diary entries for a specific date
-   * Tries remote first if online, falls back to local
+   * Uses local-first approach: returns local data immediately, then updates with remote data if available
    * @param date The date in ISO format (YYYY-MM-DD)
    * @returns Array of food diary entries for the specified date
    */
   async getByDate(date: string): Promise<FoodDiaryEntry[]> {
     try {
+      // First get local data immediately
+      const localEntries = await this.localRepository.getByDate(date);
+
+      // Start fetching remote data in the background
+      this.fetchRemoteEntriesAndUpdateLocal(date);
+
+      // Return local data immediately
+      return localEntries;
+    } catch (error) {
+      console.error("Error in CompositeFoodDiaryEntryRepository.getByDate:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Fetches remote entries for a specific date and updates local storage
+   * This is meant to be called without awaiting the result
+   * @param date The date in ISO format (YYYY-MM-DD)
+   */
+  private async fetchRemoteEntriesAndUpdateLocal(date: string): Promise<void> {
+    try {
       const netState = await NetInfo.fetch();
 
-      // If online, try remote first
+      // Only proceed if online
       if (netState.isConnected && netState.isInternetReachable !== false) {
         const remoteEntries = await this.remoteRepository.getByDate(date);
         if (remoteEntries && remoteEntries.length > 0) {
@@ -71,16 +92,14 @@ export class CompositeFoodDiaryEntryRepository implements FoodDiaryEntryReposito
           for (const entry of remoteEntries) {
             await this.localRepository.save(entry);
           }
-          return remoteEntries;
+
+          // Here you could emit an event to notify that data has been updated
+          // For example, using a global event emitter or a callback system
+          console.log("Remote data fetched and local storage updated for date:", date);
         }
       }
-
-      // Fall back to local or if offline
-      return await this.localRepository.getByDate(date);
     } catch (error) {
-      console.error("Error in CompositeFoodDiaryEntryRepository.getByDate:", error);
-      // Fall back to local in case of error
-      return await this.localRepository.getByDate(date);
+      console.error("Error fetching remote entries in background:", error);
     }
   }
 

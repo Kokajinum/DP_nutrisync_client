@@ -1,6 +1,10 @@
 import { FoodData } from "@/models/interfaces/FoodData";
-import { FoodRepository, SearchOptions, SearchResult } from "./FoodDataRepository";
-import { db } from "../sqliteHelper";
+import {
+  FoodRepository,
+  SearchOptions,
+  SearchResult,
+} from "../../../models/interfaces/FoodDataRepository";
+import { db } from "../../sqliteHelper";
 
 export class LocalFoodRepository implements FoodRepository {
   /**

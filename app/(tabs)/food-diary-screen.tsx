@@ -3,7 +3,7 @@ import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { View, StyleSheet, FlatList, Pressable, Text } from "react-native";
+import { View, StyleSheet, FlatList, Pressable, Text, ActivityIndicator } from "react-native";
 import CDatePicker from "@/components/pickers/CDatePicker";
 import { useDateStore } from "@/stores/dateStore";
 import { useTranslation } from "react-i18next";
@@ -170,163 +170,172 @@ export default function FoodDiaryScreen() {
 
       <CDatePicker dateFormat="long" style={styles.datePicker} />
 
-      <FlatList
-        data={entries}
-        renderItem={renderFoodDiaryEntry}
-        keyExtractor={(item) => item.id || `entry-${item.food_id}-${item.created_at}`}
-        contentContainerStyle={styles.listContent}
-        ListHeaderComponent={
-          <View>
-            {/* Calorie Summary Card */}
-            <View style={[styles.summaryCard, { backgroundColor: surfaceColor, borderColor }]}>
-              <View style={styles.calorieCircleContainer}>
-                <Progress.Circle
-                  size={120}
-                  progress={calorieProgress}
-                  thickness={10}
-                  color={primaryColor}
-                  unfilledColor="#F0F0F0"
-                  borderWidth={0}
-                  strokeCap="round"
-                  showsText={false}
-                  style={styles.calorieCircle}
-                />
-                <View style={styles.calorieTextContainer}>
-                  <ThemedText style={styles.calorieValue}>{nutritionSummary.calories}</ThemedText>
-                  <ThemedText style={styles.calorieLabel}>kcal</ThemedText>
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={primaryColor} />
+          <ThemedText style={styles.loadingText}>
+            {t(TranslationKeys.loading) || "Loading..."}
+          </ThemedText>
+        </View>
+      ) : (
+        <FlatList
+          data={entries}
+          renderItem={renderFoodDiaryEntry}
+          keyExtractor={(item) => item.id || `entry-${item.food_id}-${item.created_at}`}
+          contentContainerStyle={styles.listContent}
+          ListHeaderComponent={
+            <View>
+              {/* Calorie Summary Card */}
+              <View style={[styles.summaryCard, { backgroundColor: surfaceColor, borderColor }]}>
+                <View style={styles.calorieCircleContainer}>
+                  <Progress.Circle
+                    size={120}
+                    progress={calorieProgress}
+                    thickness={10}
+                    color={primaryColor}
+                    unfilledColor="#F0F0F0"
+                    borderWidth={0}
+                    strokeCap="round"
+                    showsText={false}
+                    style={styles.calorieCircle}
+                  />
+                  <View style={styles.calorieTextContainer}>
+                    <ThemedText style={styles.calorieValue}>{nutritionSummary.calories}</ThemedText>
+                    <ThemedText style={styles.calorieLabel}>kcal</ThemedText>
+                  </View>
+                </View>
+
+                <View style={styles.calorieDetailsContainer}>
+                  <View style={styles.calorieDetailItem}>
+                    <ThemedText style={styles.calorieDetailLabel}>
+                      {t(TranslationKeys.food_diary_goal)}
+                    </ThemedText>
+                    <ThemedText style={styles.calorieDetailValue}>{dailyCalorieGoal}</ThemedText>
+                  </View>
+
+                  <View style={styles.calorieDetailItem}>
+                    <ThemedText style={styles.calorieDetailLabel}>
+                      {t(TranslationKeys.food_diary_food)}
+                    </ThemedText>
+                    <ThemedText style={styles.calorieDetailValue}>
+                      {nutritionSummary.calories}
+                    </ThemedText>
+                  </View>
+
+                  <View style={styles.calorieDetailItem}>
+                    <ThemedText style={styles.calorieDetailLabel}>
+                      {t(TranslationKeys.food_diary_exercise)}
+                    </ThemedText>
+                    <ThemedText style={styles.calorieDetailValue}>{burnedCalories}</ThemedText>
+                  </View>
+
+                  <View style={styles.calorieDetailItem}>
+                    <ThemedText style={styles.calorieDetailLabel}>
+                      {t(TranslationKeys.food_diary_remaining)}
+                    </ThemedText>
+                    <ThemedText
+                      style={[
+                        styles.calorieDetailValue,
+                        { color: remainingCalories < 0 ? "#FF6B6B" : undefined },
+                      ]}>
+                      {remainingCalories}
+                    </ThemedText>
+                  </View>
                 </View>
               </View>
 
-              <View style={styles.calorieDetailsContainer}>
-                <View style={styles.calorieDetailItem}>
-                  <ThemedText style={styles.calorieDetailLabel}>
-                    {t(TranslationKeys.food_diary_goal)}
-                  </ThemedText>
-                  <ThemedText style={styles.calorieDetailValue}>{dailyCalorieGoal}</ThemedText>
-                </View>
+              {/* Macronutrients Card */}
+              <View style={[styles.macroCard, { backgroundColor: surfaceColor, borderColor }]}>
+                <ThemedText type="subtitle" style={styles.macroCardTitle}>
+                  {t(TranslationKeys.food_diary_macronutrients)}
+                </ThemedText>
 
-                <View style={styles.calorieDetailItem}>
-                  <ThemedText style={styles.calorieDetailLabel}>
-                    {t(TranslationKeys.food_diary_food)}
-                  </ThemedText>
-                  <ThemedText style={styles.calorieDetailValue}>
-                    {nutritionSummary.calories}
-                  </ThemedText>
-                </View>
+                <View style={styles.macroCirclesContainer}>
+                  {/* Protein */}
+                  <View style={styles.macroCircleItem}>
+                    <Progress.Circle
+                      size={70}
+                      progress={proteinProgress}
+                      thickness={7}
+                      color="#FF6B6B"
+                      unfilledColor="#F0F0F0"
+                      borderWidth={0}
+                      strokeCap="round"
+                      showsText={false}
+                    />
+                    <View style={styles.macroCircleTextContainer}>
+                      <ThemedText style={styles.macroCircleValue}>
+                        {Math.round(nutritionSummary.protein)}
+                      </ThemedText>
+                      <ThemedText style={styles.macroCircleUnit}>g</ThemedText>
+                    </View>
+                    <ThemedText style={styles.macroCircleLabel}>
+                      {t(TranslationKeys.food_diary_entry_protein)}
+                    </ThemedText>
+                  </View>
 
-                <View style={styles.calorieDetailItem}>
-                  <ThemedText style={styles.calorieDetailLabel}>
-                    {t(TranslationKeys.food_diary_exercise)}
-                  </ThemedText>
-                  <ThemedText style={styles.calorieDetailValue}>{burnedCalories}</ThemedText>
-                </View>
+                  {/* Carbs */}
+                  <View style={styles.macroCircleItem}>
+                    <Progress.Circle
+                      size={70}
+                      progress={carbsProgress}
+                      thickness={7}
+                      color="#4ECDC4"
+                      unfilledColor="#F0F0F0"
+                      borderWidth={0}
+                      strokeCap="round"
+                      showsText={false}
+                    />
+                    <View style={styles.macroCircleTextContainer}>
+                      <ThemedText style={styles.macroCircleValue}>
+                        {Math.round(nutritionSummary.carbs)}
+                      </ThemedText>
+                      <ThemedText style={styles.macroCircleUnit}>g</ThemedText>
+                    </View>
+                    <ThemedText style={styles.macroCircleLabel}>
+                      {t(TranslationKeys.food_diary_entry_carbs)}
+                    </ThemedText>
+                  </View>
 
-                <View style={styles.calorieDetailItem}>
-                  <ThemedText style={styles.calorieDetailLabel}>
-                    {t(TranslationKeys.food_diary_remaining)}
-                  </ThemedText>
-                  <ThemedText
-                    style={[
-                      styles.calorieDetailValue,
-                      { color: remainingCalories < 0 ? "#FF6B6B" : undefined },
-                    ]}>
-                    {remainingCalories}
-                  </ThemedText>
+                  {/* Fat */}
+                  <View style={styles.macroCircleItem}>
+                    <Progress.Circle
+                      size={70}
+                      progress={fatProgress}
+                      thickness={7}
+                      color="#FFD166"
+                      unfilledColor="#F0F0F0"
+                      borderWidth={0}
+                      strokeCap="round"
+                      showsText={false}
+                    />
+                    <View style={styles.macroCircleTextContainer}>
+                      <ThemedText style={styles.macroCircleValue}>
+                        {Math.round(nutritionSummary.fat)}
+                      </ThemedText>
+                      <ThemedText style={styles.macroCircleUnit}>g</ThemedText>
+                    </View>
+                    <ThemedText style={styles.macroCircleLabel}>
+                      {t(TranslationKeys.food_diary_entry_fat)}
+                    </ThemedText>
+                  </View>
                 </View>
               </View>
-            </View>
 
-            {/* Macronutrients Card */}
-            <View style={[styles.macroCard, { backgroundColor: surfaceColor, borderColor }]}>
-              <ThemedText type="subtitle" style={styles.macroCardTitle}>
-                {t(TranslationKeys.food_diary_macronutrients)}
+              {/* Food Entries Header */}
+              <ThemedText type="subtitle" style={styles.entriesHeader}>
+                {t(TranslationKeys.food_diary_entries)}
               </ThemedText>
 
-              <View style={styles.macroCirclesContainer}>
-                {/* Protein */}
-                <View style={styles.macroCircleItem}>
-                  <Progress.Circle
-                    size={70}
-                    progress={proteinProgress}
-                    thickness={7}
-                    color="#FF6B6B"
-                    unfilledColor="#F0F0F0"
-                    borderWidth={0}
-                    strokeCap="round"
-                    showsText={false}
-                  />
-                  <View style={styles.macroCircleTextContainer}>
-                    <ThemedText style={styles.macroCircleValue}>
-                      {Math.round(nutritionSummary.protein)}
-                    </ThemedText>
-                    <ThemedText style={styles.macroCircleUnit}>g</ThemedText>
-                  </View>
-                  <ThemedText style={styles.macroCircleLabel}>
-                    {t(TranslationKeys.food_diary_entry_protein)}
-                  </ThemedText>
-                </View>
-
-                {/* Carbs */}
-                <View style={styles.macroCircleItem}>
-                  <Progress.Circle
-                    size={70}
-                    progress={carbsProgress}
-                    thickness={7}
-                    color="#4ECDC4"
-                    unfilledColor="#F0F0F0"
-                    borderWidth={0}
-                    strokeCap="round"
-                    showsText={false}
-                  />
-                  <View style={styles.macroCircleTextContainer}>
-                    <ThemedText style={styles.macroCircleValue}>
-                      {Math.round(nutritionSummary.carbs)}
-                    </ThemedText>
-                    <ThemedText style={styles.macroCircleUnit}>g</ThemedText>
-                  </View>
-                  <ThemedText style={styles.macroCircleLabel}>
-                    {t(TranslationKeys.food_diary_entry_carbs)}
-                  </ThemedText>
-                </View>
-
-                {/* Fat */}
-                <View style={styles.macroCircleItem}>
-                  <Progress.Circle
-                    size={70}
-                    progress={fatProgress}
-                    thickness={7}
-                    color="#FFD166"
-                    unfilledColor="#F0F0F0"
-                    borderWidth={0}
-                    strokeCap="round"
-                    showsText={false}
-                  />
-                  <View style={styles.macroCircleTextContainer}>
-                    <ThemedText style={styles.macroCircleValue}>
-                      {Math.round(nutritionSummary.fat)}
-                    </ThemedText>
-                    <ThemedText style={styles.macroCircleUnit}>g</ThemedText>
-                  </View>
-                  <ThemedText style={styles.macroCircleLabel}>
-                    {t(TranslationKeys.food_diary_entry_fat)}
-                  </ThemedText>
-                </View>
-              </View>
+              {entries.length === 0 && (
+                <ThemedText style={styles.emptyText}>
+                  {t(TranslationKeys.food_diary_no_entries)} {getFormattedDate("medium")}
+                </ThemedText>
+              )}
             </View>
-
-            {/* Food Entries Header */}
-            <ThemedText type="subtitle" style={styles.entriesHeader}>
-              {t(TranslationKeys.food_diary_entries)}
-            </ThemedText>
-
-            {entries.length === 0 && (
-              <ThemedText style={styles.emptyText}>
-                {t(TranslationKeys.food_diary_no_entries)} {getFormattedDate("medium")}
-              </ThemedText>
-            )}
-          </View>
-        }
-      />
+          }
+        />
+      )}
 
       {/* Add New Entry Button */}
       <View style={styles.buttonContainer}>
@@ -518,5 +527,16 @@ const styles = StyleSheet.create({
   },
   addButton: {
     minWidth: 200,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    opacity: 0.7,
   },
 });

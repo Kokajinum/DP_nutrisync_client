@@ -3,8 +3,8 @@ import {
   FoodDiaryEntryRepository,
   SearchOptions,
   SearchResult,
-} from "./FoodDiaryEntryDataRepository";
-import { db, foodDiaryEntrySchema } from "../sqliteHelper";
+} from "../../../models/interfaces/FoodDiaryEntryDataRepository";
+import { db, foodDiaryEntrySchema } from "../../sqliteHelper";
 
 export class LocalFoodDiaryEntryRepository implements FoodDiaryEntryRepository {
   // constructor() {

@@ -1,6 +1,6 @@
 import { useFoodRepository as useRepositoryContext } from "@/context/RepositoriesProvider";
 import { FoodData } from "@/models/interfaces/FoodData";
-import { SearchOptions, SearchResult } from "@/utils/repositories/FoodDataRepository";
+import { SearchOptions, SearchResult } from "@/models/interfaces/FoodDataRepository";
 import { useCallback } from "react";
 
 /**

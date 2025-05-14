@@ -1,7 +1,7 @@
-import { UserProfileData } from "../../models/interfaces/UserProfileData";
-import { UserProfileRepository } from "./UserProfileDataRepository";
-import RestManager from "../api/restManager";
-import { fetchUserProfile, updateUserProfile } from "../api/apiClient";
+import { UserProfileData } from "../../../models/interfaces/UserProfileData";
+import { UserProfileRepository } from "../../../models/interfaces/UserProfileDataRepository";
+import RestManager from "../../api/restManager";
+import { fetchUserProfile, updateUserProfile } from "../../api/apiClient";
 
 export class RemoteProfileRepository implements UserProfileRepository {
   private restManager: RestManager;

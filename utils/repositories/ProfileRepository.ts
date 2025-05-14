@@ -1,7 +1,7 @@
 import { UserProfileData } from "../../models/interfaces/UserProfileData";
-import { UserProfileRepository } from "./UserProfileDataRepository";
-import { LocalProfileRepository } from "./LocalProfileRepository";
-import { RemoteProfileRepository } from "./RemoteProfileRepository";
+import { UserProfileRepository } from "../../models/interfaces/UserProfileDataRepository";
+import { LocalProfileRepository } from "./local/LocalProfileRepository";
+import { RemoteProfileRepository } from "./remote/RemoteProfileRepository";
 
 /**
  * A composite repository that combines local and remote repositories
