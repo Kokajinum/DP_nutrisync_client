@@ -34,11 +34,13 @@ export class ProfileRepository implements UserProfileRepository {
       }
 
       // If remote returns null, fall back to local
-      return this.localRepository.get(id);
+      const localProfile = await this.localRepository.get(id);
+      return localProfile;
     } catch (error) {
-      console.error("Error in composite get:", error);
+      console.log("ProfileRepository: Error fetching from remote, falling back to local");
       // Fall back to local on error
-      return this.localRepository.get(id);
+      const localProfile = await this.localRepository.get(id);
+      return localProfile;
     }
   }
 

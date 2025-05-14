@@ -18,6 +18,7 @@ import { FoodDiaryEntry } from "@/models/interfaces/FoodDiaryEntry";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { format } from "date-fns";
 import { MealTypeEnum } from "@/models/enums/enums";
+import { useAuth } from "@/context/AuthProvider";
 
 // Helper function to get meal type icon
 const getMealTypeIcon = (mealType: MealTypeEnum): any => {
@@ -40,7 +41,8 @@ export default function FoodDiaryScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { getByDate } = useFoodDiaryEntryRepository();
-  const { data: userProfile } = useUserProfile("current_user");
+  const { user } = useAuth();
+  const { data: userProfile } = useUserProfile(user?.id);
 
   // Theme colors
   const primaryColor = useThemeColor({}, "primary");

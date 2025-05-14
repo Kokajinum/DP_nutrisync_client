@@ -12,7 +12,16 @@ export const useUserProfile = (userId: string) => {
 
   return useQuery({
     queryKey: ["userProfile", userId],
-    queryFn: () => profileRepository.get(userId),
+    queryFn: async () => {
+      if (!userId) {
+        console.error("useUserProfile: No user ID provided");
+        return null;
+      }
+
+      console.log(`useUserProfile: Calling profileRepository.get with ID: ${userId}`);
+      const result = await profileRepository.get(userId);
+      return result;
+    },
     enabled: !!userId, // Only run the query if userId is provided
     staleTime: 1000 * 60 * 60 * 2, //data are stale after 2hours
   });

@@ -10,14 +10,19 @@ export class LocalProfileRepository implements UserProfileRepository {
    */
   async get(id: string): Promise<UserProfileData | null> {
     try {
+      console.log(`LocalProfileRepository: Attempting to get profile with ID ${id} from SQLite`);
+
       const result = await db.getFirstAsync<UserProfileData>(
-        `SELECT * FROM user_profiles WHERE id = ?`,
+        `SELECT * FROM user_profiles WHERE user_id = ?`,
         [id]
       );
 
       if (!result) {
+        console.log(`LocalProfileRepository: No profile found with ID ${id} in SQLite`);
         return null;
       }
+
+      console.log(`LocalProfileRepository: Profile found in SQLite:`, JSON.stringify(result));
 
       // Convert integer values to booleans
       return {
@@ -41,8 +46,11 @@ export class LocalProfileRepository implements UserProfileRepository {
    */
   async save(profile: UserProfileData): Promise<UserProfileData | null> {
     try {
+      console.log(`LocalProfileRepository: Attempting to save profile with ID ${profile.id}`);
+
       // Ensure we have an ID
       if (!profile.id) {
+        console.error("LocalProfileRepository: Cannot save user profile without an ID");
         throw new Error("Cannot save user profile without an ID");
       }
 
@@ -57,8 +65,20 @@ export class LocalProfileRepository implements UserProfileRepository {
         updated_at: updated_at,
       };
 
-      //const normalizedData = normalizeForSqlite(withTimestamps);
-      await db.saveToSqlite("user_profiles", withTimestamps);
+      console.log(
+        `LocalProfileRepository: Saving profile to SQLite:`,
+        JSON.stringify(withTimestamps)
+      );
+
+      // Convert boolean values to integers for SQLite
+      const normalizedData = {
+        ...withTimestamps,
+        onboarding_completed: withTimestamps.onboarding_completed ? 1 : 0,
+        notifications_enabled: withTimestamps.notifications_enabled ? 1 : 0,
+      };
+
+      await db.saveToSqlite("user_profiles", normalizedData);
+      console.log(`LocalProfileRepository: Profile saved successfully to SQLite`);
 
       return withTimestamps;
     } catch (error) {
