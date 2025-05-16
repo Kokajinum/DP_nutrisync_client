@@ -59,6 +59,19 @@ export class RemoteDailyDiaryRepository implements DailyDiaryRepository {
   }
 
   /**
+   * Save a food diary entry to remote storage
+   * This is not directly implemented as the backend handles this automatically
+   * @param entry The food diary entry to save
+   * @returns The saved food diary entry or null if failed
+   */
+  async saveFoodDiaryEntry(
+    entry: FoodDiaryEntryResponseDto
+  ): Promise<FoodDiaryEntryResponseDto | null> {
+    console.warn("saveFoodDiaryEntry called on RemoteDailyDiaryRepository - this is not supported");
+    return entry; // Just return the entry as is, since we don't directly save it
+  }
+
+  /**
    * Delete a food diary entry via the remote API
    * @param id The ID of the food diary entry to delete
    * @returns True if successful, false otherwise

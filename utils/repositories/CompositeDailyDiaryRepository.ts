@@ -6,7 +6,7 @@ import { UserProfileData } from "@/models/interfaces/UserProfileData";
 import NetInfo from "@react-native-community/netinfo";
 import { OfflineManager } from "../managers/OfflineManager";
 import uuid from "react-native-uuid";
-import { CREATE_DAILY_DIARY } from "@/constants/Global";
+import { CREATE_DAILY_DIARY, CREATE_FOOD_DIARY_ENTRY } from "@/constants/Global";
 
 export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
   constructor(
@@ -135,7 +135,7 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
 
   /**
    * Create a food diary entry
-   * Creates entry via remote API and updates local storage
+   * Creates entry via remote API when online, or locally when offline
    * @param entry The food diary entry to create
    * @returns The created food diary entry or null if failed
    */
@@ -145,23 +145,114 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
     try {
       // Check if online
       const netState = await NetInfo.fetch();
-      if (!netState.isConnected || netState.isInternetReachable === false) {
-        console.error("Cannot create food diary entry while offline");
-        return null;
-      }
+      const isOnline = netState.isConnected && netState.isInternetReachable !== false;
 
-      // Create entry via remote API
-      const createdEntry = await this.remoteRepository.createFoodDiaryEntry(entry);
+      if (isOnline) {
+        // ONLINE SCENARIO
+        // Create entry via remote API
+        const createdEntry = await this.remoteRepository.createFoodDiaryEntry(entry);
 
-      if (createdEntry) {
-        // After successful creation, refresh the daily diary to update local storage
+        if (createdEntry) {
+          // Save to local database
+          if (this.localRepository.saveFoodDiaryEntry) {
+            await this.localRepository.saveFoodDiaryEntry(createdEntry);
+          }
+
+          // Get the date from entry or use current date
+          const date = entry.entry_date
+            ? entry.entry_date.split("T")[0]
+            : new Date().toISOString().split("T")[0];
+
+          // Fetch updated daily diary to refresh local storage
+          const updatedDiary = await this.remoteRepository.getDailyDiary(date);
+          if (updatedDiary) {
+            await this.localRepository.saveDailyDiary(updatedDiary);
+          }
+        }
+
+        return createdEntry;
+      } else {
+        // OFFLINE SCENARIO
+        // Generate temporary ID for the entry
+        const tempId = uuid.v4().toString();
+
+        // Get the date from entry or use current date
         const date = entry.entry_date
           ? entry.entry_date.split("T")[0]
           : new Date().toISOString().split("T")[0];
-        //this.fetchRemoteDiaryAndUpdateLocal(date);
-      }
 
-      return createdEntry;
+        // Get current daily diary from local storage
+        let diary = await this.localRepository.getDailyDiary(date);
+
+        if (!diary) {
+          // Create a new diary if it doesn't exist
+          diary = {
+            id: uuid.v4().toString(),
+            user_id: "", // Will be filled on sync
+            day_date: date,
+            calorie_goal: 2000, // Default values
+            calories_consumed: 0,
+            calories_burned: 0,
+            protein_goal_g: 150,
+            carbs_goal_g: 225,
+            fat_goal_g: 67,
+            protein_consumed_g: 0,
+            carbs_consumed_g: 0,
+            fat_consumed_g: 0,
+            protein_ratio: 0.3,
+            carbs_ratio: 0.45,
+            fat_ratio: 0.25,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            food_entries: [],
+          };
+
+          await this.localRepository.saveDailyDiary(diary);
+        }
+
+        // Create a temporary response object
+        const tempResponse: FoodDiaryEntryResponseDto = {
+          id: tempId,
+          user_id: "temp_user_id", // Will be replaced on sync
+          day_id: diary.id,
+          food_id: entry.food_id,
+          food_name: entry.food_name,
+          brand: entry.brand || "",
+          meal_type: entry.meal_type,
+          serving_size: entry.serving_size,
+          serving_unit: entry.serving_unit,
+          calories: entry.calories,
+          protein: entry.protein,
+          carbs: entry.carbs,
+          fat: entry.fat,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        // Save to local database
+        if (this.localRepository.saveFoodDiaryEntry) {
+          await this.localRepository.saveFoodDiaryEntry(tempResponse);
+        }
+
+        // Update daily diary with new values
+        diary.calories_consumed += entry.calories;
+        diary.protein_consumed_g += entry.protein;
+        diary.carbs_consumed_g += entry.carbs;
+        diary.fat_consumed_g += entry.fat;
+        diary.updated_at = new Date().toISOString();
+
+        if (!diary.food_entries) {
+          diary.food_entries = [];
+        }
+        diary.food_entries.push(tempResponse);
+
+        await this.localRepository.saveDailyDiary(diary);
+
+        // Queue for later synchronization
+        await OfflineManager.queueAction(CREATE_FOOD_DIARY_ENTRY, entry);
+
+        return tempResponse;
+      }
     } catch (error) {
       console.error("Error in CompositeDailyDiaryRepository.createFoodDiaryEntry:", error);
       return null;

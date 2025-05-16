@@ -70,8 +70,26 @@ export class LocalDailyDiaryRepository implements DailyDiaryRepository {
   }
 
   /**
+   * Save a food diary entry to local database
+   * @param entry The food diary entry to save
+   * @returns The saved food diary entry or null if failed
+   */
+  async saveFoodDiaryEntry(
+    entry: FoodDiaryEntryResponseDto
+  ): Promise<FoodDiaryEntryResponseDto | null> {
+    try {
+      const normalizedData = normalizeForSqlite(entry);
+      await db.saveToSqlite("diary_food_entries", normalizedData);
+      return entry;
+    } catch (error) {
+      console.error("Error saving food diary entry to local database:", error);
+      return null;
+    }
+  }
+
+  /**
    * Create a food diary entry in local database
-   * This is a placeholder as entries are typically created via the remote API
+   * This is now handled by the composite repository
    * @param entry The food diary entry to create
    * @returns The created food diary entry or null if failed
    */
@@ -79,7 +97,7 @@ export class LocalDailyDiaryRepository implements DailyDiaryRepository {
     entry: CreateFoodDiaryEntryDto
   ): Promise<FoodDiaryEntryResponseDto | null> {
     console.warn(
-      "createFoodDiaryEntry called on LocalDailyDiaryRepository - this should be handled by the remote repository"
+      "createFoodDiaryEntry called directly on LocalDailyDiaryRepository - this should be handled by the composite repository"
     );
     return null;
   }

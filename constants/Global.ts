@@ -19,3 +19,4 @@ export const _700Bold: string = Quicksand_700Bold;
 
 // Action type for offline queue
 export const CREATE_DAILY_DIARY: string = "create_daily_diary";
+export const CREATE_FOOD_DIARY_ENTRY: string = "create_food_diary_entry";

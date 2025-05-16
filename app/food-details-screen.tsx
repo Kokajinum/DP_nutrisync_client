@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
+import CDivider from "@/components/CDivider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -10,9 +11,10 @@ import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import CButton from "@/components/button/CButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
-//import { useFoodDiaryEntryRepository } from "@/hooks/useFoodDiaryEntryRepository";
+import { useCreateFoodDiaryEntry } from "@/hooks/useDailyDiaryRepository";
 import { FoodData } from "@/models/interfaces/FoodData";
 import { MealTypeEnum } from "@/models/enums/enums";
+import { CreateFoodDiaryEntryDto } from "@/models/interfaces/CreateFoodDiaryEntryDto";
 import * as Progress from "react-native-progress";
 import { NumberPicker } from "@/components/pickers/CNumberPicker";
 import CServingSizeInput from "@/components/input/CServingSizeInput";
@@ -24,7 +26,7 @@ export default function FoodDetailsScreen() {
   const { t } = useTranslation();
   const params = useLocalSearchParams();
   const { selectedDate } = useDateStore();
-  //const { save: saveFoodDiaryEntry } = useFoodDiaryEntryRepository();
+  const { mutate: createFoodDiaryEntry } = useCreateFoodDiaryEntry();
 
   const iconColor = useThemeColor({}, "onBackground");
   const primaryColor = useThemeColor({}, "primary");
@@ -73,27 +75,21 @@ export default function FoodDetailsScreen() {
   // Handle saving food diary entry
   const handleSaveFoodDiaryEntry = async () => {
     try {
-      // const entry: FoodDiaryEntry = {
-      //   id: `entry_${Date.now()}`,
-      //   created_at: new Date().toISOString(),
-      //   updated_at: new Date().toISOString(),
-      //   user_id: "current_user", // This should be replaced with actual user ID
-      //   date: new Date(selectedDate).toISOString().split("T")[0],
-      //   food_id: foodData.id || "",
-      //   food_name: foodData.name,
-      //   brand: foodData.brand || "",
-      //   meal_type: mealType,
-      //   serving_size: servingSize,
-      //   serving_unit: servingUnit,
-      //   servings: servings,
-      //   calories: calculatedValues.calories,
-      //   protein: calculatedValues.protein,
-      //   carbs: calculatedValues.carbs,
-      //   fat: calculatedValues.fat,
-      // };
+      const entry: CreateFoodDiaryEntryDto = {
+        food_id: foodData.id || "",
+        food_name: foodData.name,
+        brand: foodData.brand || "",
+        meal_type: mealType,
+        serving_size: servingSize,
+        serving_unit: servingUnit,
+        calories: calculatedValues.calories,
+        protein: calculatedValues.protein,
+        carbs: calculatedValues.carbs,
+        fat: calculatedValues.fat,
+        entry_date: new Date(selectedDate).toISOString(),
+      };
 
-      //TODO
-      //await saveFoodDiaryEntry(entry);
+      await createFoodDiaryEntry(entry);
       router.back();
     } catch (error) {
       console.error("Error saving food diary entry:", error);
@@ -123,7 +119,7 @@ export default function FoodDetailsScreen() {
           {foodData.brand && <Text style={styles.foodBrand}>{foodData.brand}</Text>}
         </View>
 
-        <View style={styles.divider} />
+        <CDivider />
 
         {/* Serving inputs */}
         <View style={styles.servingContainer}>
@@ -155,7 +151,7 @@ export default function FoodDetailsScreen() {
           </View>
         </View>
 
-        <View style={styles.divider} />
+        <CDivider />
 
         {/* Nutrition summary */}
         <View style={styles.nutritionContainer}>
@@ -263,11 +259,6 @@ const styles = StyleSheet.create({
   foodBrand: {
     fontSize: 16,
     opacity: 0.7,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#E0E0E0",
-    marginVertical: 16,
   },
   servingContainer: {
     flexDirection: "row",

@@ -30,6 +30,13 @@ export interface DailyDiaryRepository {
   createFoodDiaryEntry(entry: CreateFoodDiaryEntryDto): Promise<FoodDiaryEntryResponseDto | null>;
 
   /**
+   * Save a food diary entry to storage
+   * @param entry The food diary entry to save
+   * @returns The saved food diary entry or null if failed
+   */
+  saveFoodDiaryEntry?(entry: FoodDiaryEntryResponseDto): Promise<FoodDiaryEntryResponseDto | null>;
+
+  /**
    * Delete a food diary entry
    * @param id The ID of the food diary entry to delete
    * @returns True if successful, false otherwise
