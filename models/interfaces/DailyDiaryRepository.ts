@@ -1,14 +1,19 @@
 import { DailyDiaryResponseDto } from "./DailyDiaryResponseDto";
 import { FoodDiaryEntryResponseDto } from "./FoodDiaryEntryResponseDto";
 import { CreateFoodDiaryEntryDto } from "./CreateFoodDiaryEntryDto";
+import { UserProfileData } from "./UserProfileData";
 
 export interface DailyDiaryRepository {
   /**
    * Get daily diary for a specific date
    * @param date The date in ISO format (YYYY-MM-DD)
+   * @param userProfile Optional user profile data to use for default values
    * @returns The daily diary or null if not found
    */
-  getDailyDiary(date: string): Promise<DailyDiaryResponseDto | null>;
+  getDailyDiary(
+    date: string,
+    userProfile?: UserProfileData | null
+  ): Promise<DailyDiaryResponseDto | null>;
 
   /**
    * Save daily diary

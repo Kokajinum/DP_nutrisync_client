@@ -1,6 +1,7 @@
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
+import OfflineProcessorRegistration from "@/components/OfflineProcessorRegistration";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
@@ -78,6 +79,7 @@ export default function RootLayout() {
           <RepositoriesProvider>
             <ThemeProvider>
               <I18nextProvider i18n={i18n}>
+                <OfflineProcessorRegistration />
                 <Stack>
                   <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
                   <Stack.Screen

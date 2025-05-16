@@ -2,7 +2,11 @@ import { DailyDiaryRepository } from "@/models/interfaces/DailyDiaryRepository";
 import { DailyDiaryResponseDto } from "@/models/interfaces/DailyDiaryResponseDto";
 import { FoodDiaryEntryResponseDto } from "@/models/interfaces/FoodDiaryEntryResponseDto";
 import { CreateFoodDiaryEntryDto } from "@/models/interfaces/CreateFoodDiaryEntryDto";
+import { UserProfileData } from "@/models/interfaces/UserProfileData";
 import NetInfo from "@react-native-community/netinfo";
+import { OfflineManager } from "../managers/OfflineManager";
+import uuid from "react-native-uuid";
+import { CREATE_DAILY_DIARY } from "@/constants/Global";
 
 export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
   constructor(
@@ -15,7 +19,16 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
    * @param date The date in ISO format (YYYY-MM-DD)
    * @returns The daily diary from local/remote storage or null if not found
    */
-  async getDailyDiary(date: string): Promise<DailyDiaryResponseDto | null> {
+  /**
+   * Get daily diary for a specific date
+   * @param date The date in ISO format (YYYY-MM-DD)
+   * @param userProfile Optional user profile data to use for default values
+   * @returns The daily diary from local/remote storage or null if not found
+   */
+  async getDailyDiary(
+    date: string,
+    userProfile?: UserProfileData | null
+  ): Promise<DailyDiaryResponseDto | null> {
     try {
       const netState = await NetInfo.fetch();
 
@@ -34,8 +47,35 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
 
       // Selected local diary is not existing yet and we are offline
       if (!localDiary) {
-        // const newDiary: DailyDiaryResponseDto = {
-        // }
+        // Implement point 2.2 - create a new diary entry when offline
+        const newDiary: DailyDiaryResponseDto = {
+          id: uuid.v4().toString(),
+          user_id: userProfile?.user_id || "",
+          day_date: date,
+          calorie_goal: userProfile?.calorie_goal_value || 2000,
+          calories_consumed: 0,
+          calories_burned: 0,
+          protein_goal_g: userProfile?.protein_goal_g || 150,
+          carbs_goal_g: userProfile?.carbs_goal_g || 225,
+          fat_goal_g: userProfile?.fat_goal_g || 67,
+          protein_consumed_g: 0,
+          carbs_consumed_g: 0,
+          fat_consumed_g: 0,
+          protein_ratio: userProfile?.protein_ratio || 0.3,
+          carbs_ratio: userProfile?.carbs_ratio || 0.45,
+          fat_ratio: userProfile?.fat_ratio || 0.25,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          food_entries: [],
+        };
+
+        // Save to local database
+        await this.localRepository.saveDailyDiary(newDiary);
+
+        // Add to offline queue for later synchronization
+        await OfflineManager.queueAction(CREATE_DAILY_DIARY, { date });
+
+        return newDiary;
       }
 
       return localDiary;

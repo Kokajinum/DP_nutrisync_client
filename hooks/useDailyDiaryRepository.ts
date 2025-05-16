@@ -4,6 +4,7 @@ import { FoodDiaryEntryResponseDto } from "@/models/interfaces/FoodDiaryEntryRes
 import { CreateFoodDiaryEntryDto } from "@/models/interfaces/CreateFoodDiaryEntryDto";
 import { useDailyDiaryRepository } from "@/context/RepositoriesProvider";
 import { useAuth } from "@/context/AuthProvider";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 /**
  * Hook for fetching a daily diary
@@ -13,6 +14,7 @@ import { useAuth } from "@/context/AuthProvider";
 export const useDailyDiary = (date: string) => {
   const dailyDiaryRepository = useDailyDiaryRepository();
   const { user } = useAuth();
+  const { data: userProfile } = useUserProfile(user?.id);
 
   return useQuery({
     queryKey: ["dailyDiary", date],
@@ -23,7 +25,7 @@ export const useDailyDiary = (date: string) => {
       }
 
       console.log(`useDailyDiary: Calling dailyDiaryRepository.getDailyDiary with date: ${date}`);
-      const result = await dailyDiaryRepository.getDailyDiary(date);
+      const result = await dailyDiaryRepository.getDailyDiary(date, userProfile);
       return result;
     },
     enabled: !!date, // Only run the query if date is provided

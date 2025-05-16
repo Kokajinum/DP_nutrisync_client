@@ -2,15 +2,20 @@ import { DailyDiaryRepository } from "@/models/interfaces/DailyDiaryRepository";
 import { DailyDiaryResponseDto } from "@/models/interfaces/DailyDiaryResponseDto";
 import { FoodDiaryEntryResponseDto } from "@/models/interfaces/FoodDiaryEntryResponseDto";
 import { CreateFoodDiaryEntryDto } from "@/models/interfaces/CreateFoodDiaryEntryDto";
+import { UserProfileData } from "@/models/interfaces/UserProfileData";
 import { db, normalizeForSqlite } from "../../sqliteHelper";
 
 export class LocalDailyDiaryRepository implements DailyDiaryRepository {
   /**
    * Get daily diary for a specific date from local database
    * @param date The date in ISO format (YYYY-MM-DD)
+   * @param userProfile Optional user profile data to use for default values
    * @returns The daily diary or null if not found
    */
-  async getDailyDiary(date: string): Promise<DailyDiaryResponseDto | null> {
+  async getDailyDiary(
+    date: string,
+    userProfile?: UserProfileData | null
+  ): Promise<DailyDiaryResponseDto | null> {
     try {
       // Get the diary for the specified date
       const diary = await db.getFirstAsync<DailyDiaryResponseDto>(

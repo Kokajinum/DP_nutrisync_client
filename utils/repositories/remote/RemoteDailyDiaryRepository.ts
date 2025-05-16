@@ -2,6 +2,7 @@ import { DailyDiaryRepository } from "@/models/interfaces/DailyDiaryRepository";
 import { DailyDiaryResponseDto } from "@/models/interfaces/DailyDiaryResponseDto";
 import { FoodDiaryEntryResponseDto } from "@/models/interfaces/FoodDiaryEntryResponseDto";
 import { CreateFoodDiaryEntryDto } from "@/models/interfaces/CreateFoodDiaryEntryDto";
+import { UserProfileData } from "@/models/interfaces/UserProfileData";
 import RestManager from "../../api/restManager";
 import { getDailyDiary, createFoodDiaryEntry, deleteFoodDiaryEntry } from "../../api/apiClient";
 
@@ -15,9 +16,13 @@ export class RemoteDailyDiaryRepository implements DailyDiaryRepository {
   /**
    * Get daily diary for a specific date from the remote API
    * @param date The date in ISO format (YYYY-MM-DD)
+   * @param userProfile Optional user profile data to use for default values
    * @returns The daily diary or null if not found
    */
-  async getDailyDiary(date: string): Promise<DailyDiaryResponseDto | null> {
+  async getDailyDiary(
+    date: string,
+    userProfile?: UserProfileData | null
+  ): Promise<DailyDiaryResponseDto | null> {
     try {
       return await getDailyDiary(this.restManager, date);
     } catch (error) {

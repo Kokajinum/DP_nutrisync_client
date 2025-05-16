@@ -16,3 +16,6 @@ export const _400Regular: string = Quicksand_400Regular;
 export const _500Medium: string = Quicksand_500Medium;
 export const _600SemiBold: string = Quicksand_600SemiBold;
 export const _700Bold: string = Quicksand_700Bold;
+
+// Action type for offline queue
+export const CREATE_DAILY_DIARY: string = "create_daily_diary";

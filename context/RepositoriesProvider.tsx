@@ -11,6 +11,7 @@ import { DailyDiaryRepository } from "../models/interfaces/DailyDiaryRepository"
 import { LocalDailyDiaryRepository } from "../utils/repositories/local/LocalDailyDiaryRepository";
 import { RemoteDailyDiaryRepository } from "../utils/repositories/remote/RemoteDailyDiaryRepository";
 import { CompositeDailyDiaryRepository } from "../utils/repositories/CompositeDailyDiaryRepository";
+import { useAuth } from "./AuthProvider";
 
 interface RepositoriesContextType {
   profileRepository: ProfileRepository;
