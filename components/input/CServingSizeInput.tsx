@@ -12,6 +12,7 @@ import {
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { _400Regular, _500Medium, _600SemiBold } from "@/constants/Global";
+import { ThemedText } from "../ThemedText";
 
 export interface CServingSizeInputProps {
   value: string;
@@ -70,10 +71,10 @@ const CServingSizeInput: React.FC<CServingSizeInputProps> = ({
     <View style={[styles.container, { backgroundColor }, style]}>
       <View style={styles.labelRow}>
         <MaterialCommunityIcons name="food-variant" size={20} color={iconColor} />
-        <Text style={[styles.label, { color: textColor }]}>
-          Default Serving Size
+        <ThemedText style={[styles.label /*{ color: textColor }*/]}>
+          Serving Size
           {isRequired && <Text style={[styles.required, { color: errorColor }]}>*</Text>}
-        </Text>
+        </ThemedText>
       </View>
 
       <View style={[styles.inputRow, { borderColor }]}>
@@ -151,8 +152,8 @@ const styles = StyleSheet.create({
   },
   label: {
     marginLeft: 8,
-    fontSize: 16,
-    fontFamily: _500Medium,
+    //fontSize: 16,
+    //fontFamily: _500Medium,
   },
   required: {
     marginLeft: 4,

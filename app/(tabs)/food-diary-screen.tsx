@@ -230,6 +230,19 @@ export default function FoodDiaryScreen() {
 
                   <View style={styles.calorieDetailItem}>
                     <ThemedText style={styles.calorieDetailLabel}>
+                      {t(TranslationKeys.food_diary_remaining)}
+                    </ThemedText>
+                    <ThemedText
+                      style={[
+                        styles.calorieDetailValue,
+                        { color: remainingCalories < 0 ? "#FF6B6B" : undefined },
+                      ]}>
+                      {remainingCalories}
+                    </ThemedText>
+                  </View>
+
+                  <View style={styles.calorieDetailItem}>
+                    <ThemedText style={styles.calorieDetailLabel}>
                       {t(TranslationKeys.food_diary_food)}
                     </ThemedText>
                     <ThemedText style={styles.calorieDetailValue}>
@@ -242,19 +255,6 @@ export default function FoodDiaryScreen() {
                       {t(TranslationKeys.food_diary_exercise)}
                     </ThemedText>
                     <ThemedText style={styles.calorieDetailValue}>{burnedCalories}</ThemedText>
-                  </View>
-
-                  <View style={styles.calorieDetailItem}>
-                    <ThemedText style={styles.calorieDetailLabel}>
-                      {t(TranslationKeys.food_diary_remaining)}
-                    </ThemedText>
-                    <ThemedText
-                      style={[
-                        styles.calorieDetailValue,
-                        { color: remainingCalories < 0 ? "#FF6B6B" : undefined },
-                      ]}>
-                      {remainingCalories}
-                    </ThemedText>
                   </View>
                 </View>
               </View>

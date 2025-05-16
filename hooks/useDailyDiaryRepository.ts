@@ -42,8 +42,8 @@ export const useCreateFoodDiaryEntry = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (entry: CreateFoodDiaryEntryDto) =>
-      dailyDiaryRepository.createFoodDiaryEntry(entry),
+    mutationFn: async (entry: CreateFoodDiaryEntryDto) =>
+      await dailyDiaryRepository.createFoodDiaryEntry(entry),
     onSuccess: (_, variables) => {
       // Invalidate and refetch
       if (variables.entry_date) {

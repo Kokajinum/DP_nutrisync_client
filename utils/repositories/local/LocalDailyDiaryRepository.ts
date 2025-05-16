@@ -52,7 +52,8 @@ export class LocalDailyDiaryRepository implements DailyDiaryRepository {
   async saveDailyDiary(diary: DailyDiaryResponseDto): Promise<DailyDiaryResponseDto | null> {
     try {
       // First save the diary itself
-      const normalizedData = normalizeForSqlite(diary);
+      const diaryWithoutEntries: DailyDiaryResponseDto = { ...diary, food_entries: [] };
+      const normalizedData = normalizeForSqlite(diaryWithoutEntries);
       await db.saveToSqlite("daily_diaries", normalizedData);
 
       // Then save all food entries if they exist

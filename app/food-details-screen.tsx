@@ -16,7 +16,7 @@ import { FoodData } from "@/models/interfaces/FoodData";
 import { MealTypeEnum } from "@/models/enums/enums";
 import { CreateFoodDiaryEntryDto } from "@/models/interfaces/CreateFoodDiaryEntryDto";
 import * as Progress from "react-native-progress";
-import { NumberPicker } from "@/components/pickers/CNumberPicker";
+import CNumberInput from "@/components/input/CNumberInput";
 import CServingSizeInput from "@/components/input/CServingSizeInput";
 import { useDateStore } from "@/stores/dateStore";
 import { Pressable } from "react-native";
@@ -89,7 +89,7 @@ export default function FoodDetailsScreen() {
         entry_date: new Date(selectedDate).toISOString(),
       };
 
-      await createFoodDiaryEntry(entry);
+      createFoodDiaryEntry(entry);
       router.back();
     } catch (error) {
       console.error("Error saving food diary entry:", error);
@@ -124,23 +124,21 @@ export default function FoodDetailsScreen() {
         {/* Serving inputs */}
         <View style={styles.servingContainer}>
           <View style={styles.servingInputContainer}>
-            <ThemedText style={styles.servingLabel}>
-              {t(TranslationKeys.food_diary_entry_servings)}
-            </ThemedText>
-            <NumberPicker
+            <CNumberInput
               value={servings}
               onChange={setServings}
               min={0.25}
               max={10}
               step={0.25}
+              label={t(TranslationKeys.food_diary_entry_servings)}
               style={styles.servingPicker}
             />
           </View>
 
           <View style={styles.servingInputContainer}>
-            <ThemedText style={styles.servingLabel}>
+            {/* <ThemedText style={styles.servingLabel}>
               {t(TranslationKeys.food_diary_entry_serving_size)}
-            </ThemedText>
+            </ThemedText> */}
             <CServingSizeInput
               value={servingSize.toString()}
               unit={servingUnit}
