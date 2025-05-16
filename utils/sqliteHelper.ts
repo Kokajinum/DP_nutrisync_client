@@ -98,7 +98,10 @@ export const db = new AsyncSQLiteDatabase("nutrisync_fitness.db");
 export async function initDb() {
   await db.createTableIfNotExists(userProfilesSchema);
   await db.createTableIfNotExists(foodSchema);
-  await db.createTableIfNotExists(foodDiaryEntrySchema);
+  //await db.createTableIfNotExists(foodDiaryEntrySchema);
+  await db.createTableIfNotExists(dailyDiarySchema);
+  await db.createTableIfNotExists(diaryFoodEntrySchema);
+  await db.createTableIfNotExists(offlineQueueSchema);
 }
 
 export const userProfilesSchema: TableSchema = {
@@ -127,6 +130,9 @@ export const userProfilesSchema: TableSchema = {
     protein_ratio: "REAL",
     fat_ratio: "REAL",
     carbs_ratio: "REAL",
+    protein_goal_g: "REAL",
+    carbs_goal_g: "REAL",
+    fat_goal_g: "REAL",
     notifications_enabled: "INTEGER",
     email: "TEXT",
   },
@@ -154,41 +160,69 @@ export const foodSchema: TableSchema = {
   },
 };
 
-export const foodDiaryEntrySchema: TableSchema = {
-  name: "food_diary_entries",
+export const dailyDiarySchema: TableSchema = {
+  name: "daily_diaries",
   columns: {
     id: "TEXT PRIMARY KEY",
+    user_id: "TEXT NOT NULL",
+    day_date: "TEXT NOT NULL",
+    calorie_goal: "REAL",
+    calories_consumed: "REAL",
+    calories_burned: "REAL",
+    protein_goal_g: "REAL",
+    carbs_goal_g: "REAL",
+    fat_goal_g: "REAL",
+    protein_consumed_g: "REAL",
+    carbs_consumed_g: "REAL",
+    fat_consumed_g: "REAL",
+    protein_ratio: "REAL",
+    carbs_ratio: "REAL",
+    fat_ratio: "REAL",
     created_at: "TEXT",
     updated_at: "TEXT",
-    user_id: "TEXT",
-    date: "TEXT NOT NULL",
+  },
+};
+
+export const diaryFoodEntrySchema: TableSchema = {
+  name: "diary_food_entries",
+  columns: {
+    id: "TEXT PRIMARY KEY",
+    user_id: "TEXT NOT NULL",
+    day_id: "TEXT NOT NULL",
     food_id: "TEXT NOT NULL",
     food_name: "TEXT NOT NULL",
     brand: "TEXT",
     meal_type: "TEXT NOT NULL",
     serving_size: "REAL NOT NULL",
     serving_unit: "TEXT NOT NULL",
-    servings: "REAL NOT NULL",
     calories: "REAL NOT NULL",
     protein: "REAL NOT NULL",
     carbs: "REAL NOT NULL",
     fat: "REAL NOT NULL",
+    created_at: "TEXT",
+    updated_at: "TEXT",
+  },
+};
+
+export const offlineQueueSchema: TableSchema = {
+  name: "offline_queue",
+  columns: {
+    id: "TEXT PRIMARY KEY",
+    created_at: "TEXT",
+    action_type: "TEXT", //-- např. "create_food_entry", "create_activity_entry"
+    payload: "TEXT", //-- serializovaný JSON objekt
+    status: "TEXT", //'pending', 'processing', 'failed', 'completed'
   },
 };
 
 /**
  * Normalizuje hodnoty objektu pro SQLite:
- * - undefined → null
- * - boolean → 0/1
  */
 export function normalizeForSqlite<T extends Record<string, any>>(obj: T): Record<string, any> {
   const result: Record<string, any> = {};
 
   for (const [key, value] of Object.entries(obj)) {
-    // if (typeof value === "boolean") {
-    //   result[key] = value ? 1 : 0;
-    // }
-    if (value !== undefined && value !== null) {
+    if (value !== undefined && value !== null && value.length !== 0) {
       result[key] = value;
     }
   }

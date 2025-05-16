@@ -71,13 +71,13 @@ export class LocalProfileRepository implements UserProfileRepository {
       );
 
       // Convert boolean values to integers for SQLite
-      const normalizedData = {
-        ...withTimestamps,
-        onboarding_completed: withTimestamps.onboarding_completed ? 1 : 0,
-        notifications_enabled: withTimestamps.notifications_enabled ? 1 : 0,
-      };
+      // const normalizedData = {
+      //   ...withTimestamps,
+      //   onboarding_completed: withTimestamps.onboarding_completed ? 1 : 0,
+      //   notifications_enabled: withTimestamps.notifications_enabled ? 1 : 0,
+      // };
 
-      await db.saveToSqlite("user_profiles", normalizedData);
+      await db.saveToSqlite("user_profiles", withTimestamps);
       console.log(`LocalProfileRepository: Profile saved successfully to SQLite`);
 
       return withTimestamps;

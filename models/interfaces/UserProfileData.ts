@@ -53,6 +53,12 @@ export interface UserProfileData {
 
   carbs_ratio?: number;
 
+  protein_goal_g?: number;
+
+  carbs_goal_g?: number;
+
+  fat_goal_g?: number;
+
   gender?: GenderEnum;
 
   notifications_enabled?: boolean;

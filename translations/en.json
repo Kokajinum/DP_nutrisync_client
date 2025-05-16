@@ -125,5 +125,8 @@
     "food_diary_food": "Food",
     "food_diary_exercise": "Exercise",
     "food_diary_remaining": "Remaining",
-    "food_diary_add_entry": "Add New Entry"
+    "food_diary_add_entry": "Add New Entry",
+    "food_diary_delete_entry_title": "Delete Entry",
+    "food_diary_delete_entry_message": "Are you sure you want to delete this food entry?",
+    "delete": "Delete"
 }

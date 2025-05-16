@@ -1,9 +1,17 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { View, StyleSheet, FlatList, Pressable, Text, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Pressable,
+  Text,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import CDatePicker from "@/components/pickers/CDatePicker";
 import { useDateStore } from "@/stores/dateStore";
 import { useTranslation } from "react-i18next";
@@ -13,9 +21,9 @@ import CButton from "@/components/button/CButton";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { useFoodDiaryEntryRepository } from "@/hooks/useFoodDiaryEntryRepository";
-import { FoodDiaryEntry } from "@/models/interfaces/FoodDiaryEntry";
+import { useDailyDiary, useDeleteFoodDiaryEntry } from "@/hooks/useDailyDiaryRepository";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { FoodDiaryEntryResponseDto } from "@/models/interfaces/FoodDiaryEntryResponseDto";
 import { format } from "date-fns";
 import { MealTypeEnum } from "@/models/enums/enums";
 import { useAuth } from "@/context/AuthProvider";
@@ -40,9 +48,11 @@ export default function FoodDiaryScreen() {
   const { getFormattedDate, selectedDate } = useDateStore();
   const { t } = useTranslation();
   const router = useRouter();
-  const { getByDate } = useFoodDiaryEntryRepository();
   const { user } = useAuth();
   const { data: userProfile } = useUserProfile(user?.id);
+  const dateString = new Date(selectedDate).toISOString().split("T")[0];
+  const { data: dailyDiary, isLoading } = useDailyDiary(dateString);
+  const deleteMutation = useDeleteFoodDiaryEntry();
 
   // Theme colors
   const primaryColor = useThemeColor({}, "primary");
@@ -51,63 +61,65 @@ export default function FoodDiaryScreen() {
   const surfaceColor = useThemeColor({}, "surface");
   const borderColor = useThemeColor({}, "outline");
 
-  // State
-  const [entries, setEntries] = useState<FoodDiaryEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [nutritionSummary, setNutritionSummary] = useState({
-    calories: 0,
-    protein: 0,
-    carbs: 0,
-    fat: 0,
-  });
+  // Calculate nutrition summary from diary data
+  const nutritionSummary = useMemo(() => {
+    if (!dailyDiary) {
+      return {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+      };
+    }
+
+    return {
+      calories: dailyDiary.calories_consumed || 0,
+      protein: dailyDiary.protein_consumed_g || 0,
+      carbs: dailyDiary.carbs_consumed_g || 0,
+      fat: dailyDiary.fat_consumed_g || 0,
+    };
+  }, [dailyDiary]);
 
   // Calculate daily calorie goal
-  const dailyCalorieGoal = userProfile?.calorie_goal_value || 2000;
-  const burnedCalories = 0; // This would come from activity tracking
+  const dailyCalorieGoal = dailyDiary?.calorie_goal || userProfile?.calorie_goal_value || 2000;
+  const burnedCalories = dailyDiary?.calories_burned || 0;
   const remainingCalories = dailyCalorieGoal - nutritionSummary.calories + burnedCalories;
   const calorieProgress = Math.min(nutritionSummary.calories / dailyCalorieGoal, 1);
 
-  // Macro goals (approximate percentages)
-  const proteinGoal = (dailyCalorieGoal * 0.3) / 4; // 30% of calories from protein, 4 calories per gram
-  const carbsGoal = (dailyCalorieGoal * 0.45) / 4; // 45% of calories from carbs, 4 calories per gram
-  const fatGoal = (dailyCalorieGoal * 0.25) / 9; // 25% of calories from fat, 9 calories per gram
+  // Macro goals from diary or approximate percentages
+  const proteinGoal = dailyDiary?.protein_goal_g || (dailyCalorieGoal * 0.3) / 4; // 30% of calories from protein, 4 calories per gram
+  const carbsGoal = dailyDiary?.carbs_goal_g || (dailyCalorieGoal * 0.45) / 4; // 45% of calories from carbs, 4 calories per gram
+  const fatGoal = dailyDiary?.fat_goal_g || (dailyCalorieGoal * 0.25) / 9; // 25% of calories from fat, 9 calories per gram
 
   // Macro progress
   const proteinProgress = Math.min(nutritionSummary.protein / proteinGoal, 1);
   const carbsProgress = Math.min(nutritionSummary.carbs / carbsGoal, 1);
   const fatProgress = Math.min(nutritionSummary.fat / fatGoal, 1);
 
-  // Load food diary entries
-  useEffect(() => {
-    loadEntries();
-  }, [selectedDate]);
+  // Get entries from diary data
+  const entries = useMemo(() => {
+    return dailyDiary?.food_entries || [];
+  }, [dailyDiary]);
 
-  const loadEntries = async () => {
-    try {
-      setIsLoading(true);
-      const dateString = new Date(selectedDate).toISOString().split("T")[0];
-      const fetchedEntries = await getByDate(dateString);
-      setEntries(fetchedEntries);
-
-      // Calculate nutrition summary
-      const summary = fetchedEntries.reduce(
-        (acc, entry) => {
-          return {
-            calories: acc.calories + entry.calories,
-            protein: acc.protein + entry.protein,
-            carbs: acc.carbs + entry.carbs,
-            fat: acc.fat + entry.fat,
-          };
+  // Handle entry deletion
+  const handleDeleteEntry = (id: string) => {
+    Alert.alert(
+      t(TranslationKeys.food_diary_delete_entry_title),
+      t(TranslationKeys.food_diary_delete_entry_message),
+      [
+        {
+          text: t(TranslationKeys.cancel),
+          style: "cancel",
         },
-        { calories: 0, protein: 0, carbs: 0, fat: 0 }
-      );
-
-      setNutritionSummary(summary);
-    } catch (error) {
-      console.error("Error loading food diary entries:", error);
-    } finally {
-      setIsLoading(false);
-    }
+        {
+          text: t(TranslationKeys.delete),
+          style: "destructive",
+          onPress: () => {
+            deleteMutation.mutate({ id, date: dateString });
+          },
+        },
+      ]
+    );
   };
 
   // Format time from ISO string
@@ -117,13 +129,14 @@ export default function FoodDiaryScreen() {
   };
 
   // Render food diary entry
-  const renderFoodDiaryEntry = ({ item }: { item: FoodDiaryEntry }) => (
+  const renderFoodDiaryEntry = ({ item }: { item: FoodDiaryEntryResponseDto }) => (
     <Pressable
       style={({ pressed }) => [
         styles.entryCard,
         { backgroundColor: surfaceColor, borderColor },
         pressed && { opacity: 0.7 },
-      ]}>
+      ]}
+      onLongPress={() => handleDeleteEntry(item.id)}>
       <View style={styles.entryHeader}>
         <View style={styles.entryTitleContainer}>
           <MaterialCommunityIcons
@@ -144,7 +157,7 @@ export default function FoodDiaryScreen() {
       <View style={styles.entryDetails}>
         <View style={styles.entryServingInfo}>
           <ThemedText style={styles.entryServingText}>
-            {item.servings} × {item.serving_size}
+            {item.serving_size}
             {item.serving_unit}
           </ThemedText>
         </View>
@@ -329,7 +342,7 @@ export default function FoodDiaryScreen() {
                 {t(TranslationKeys.food_diary_entries)}
               </ThemedText>
 
-              {entries.length === 0 && (
+              {entries.length === 0 && !isLoading && (
                 <ThemedText style={styles.emptyText}>
                   {t(TranslationKeys.food_diary_no_entries)} {getFormattedDate("medium")}
                 </ThemedText>

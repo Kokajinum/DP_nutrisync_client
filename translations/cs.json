@@ -125,5 +125,8 @@
     "food_diary_food": "Jídlo",
     "food_diary_exercise": "Cvičení",
     "food_diary_remaining": "Zbývá",
-    "food_diary_add_entry": "Přidat nový záznam"
+    "food_diary_add_entry": "Přidat nový záznam",
+    "food_diary_delete_entry_title": "Smazat záznam",
+    "food_diary_delete_entry_message": "Opravdu chcete smazat tento záznam jídla?",
+    "delete": "Smazat"
 }

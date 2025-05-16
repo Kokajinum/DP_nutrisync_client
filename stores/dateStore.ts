@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { format, addDays, startOfDay, isSameDay } from "date-fns";
+import { format, addDays, startOfDay, isSameDay, isAfter } from "date-fns";
 import { enUS, cs } from "date-fns/locale";
 import i18n from "@/translations/i18n";
 
@@ -49,7 +49,12 @@ export const useDateStore = create<DateState>((set, get) => ({
 
   goToNextDay: () => {
     const current = new Date(get().selectedDate);
-    set({ selectedDate: addDays(current, 1).toISOString() });
+    const nextDay = startOfDay(addDays(current, 1));
+    const today = startOfDay(new Date());
+
+    if (!isAfter(nextDay, today)) {
+      set({ selectedDate: nextDay.toISOString() });
+    }
   },
 
   goToPreviousDay: () => {

@@ -126,4 +126,7 @@ export enum TranslationKeys {
   food_diary_exercise = "food_diary_exercise",
   food_diary_remaining = "food_diary_remaining",
   food_diary_add_entry = "food_diary_add_entry",
+  food_diary_delete_entry_title = "food_diary_delete_entry_title",
+  food_diary_delete_entry_message = "food_diary_delete_entry_message",
+  delete = "delete",
 }

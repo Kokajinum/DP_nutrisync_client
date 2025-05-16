@@ -19,7 +19,13 @@ import { useOnboardingStore } from "@/stores/onboardingStore";
 import { useSaveUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from "@/context/AuthProvider";
 import { UserProfileData } from "@/models/interfaces/UserProfileData";
-import { UserMetrics, CaloricGoalOptions, calculateCaloricGoal } from "@/utils/calorieCalculator";
+import {
+  UserMetrics,
+  CaloricGoalOptions,
+  calculateCaloricGoal,
+  calculateMacroGrams,
+  MacroGrams,
+} from "@/utils/calorieCalculator";
 
 const OnboardingFourth = () => {
   const { t } = useTranslation();
@@ -89,7 +95,6 @@ const OnboardingFourth = () => {
     let proteinRatio = 30;
     let fatRatio = 30;
     let carbsRatio = 40;
-
     if (data.goal === GoalEnum.LOSE_FAT) {
       proteinRatio = 35;
       fatRatio = 30;
@@ -99,6 +104,13 @@ const OnboardingFourth = () => {
       fatRatio = 25;
       carbsRatio = 45;
     }
+
+    // Calculate macronutrients grams
+    const macroGrams: MacroGrams = calculateMacroGrams(calorieGoal, {
+      proteinPercent: proteinRatio,
+      fatPercent: fatRatio,
+      carbsPercent: carbsRatio,
+    });
 
     const profileData: UserProfileData = {
       ...data,
@@ -110,6 +122,9 @@ const OnboardingFourth = () => {
       protein_ratio: proteinRatio,
       fat_ratio: fatRatio,
       carbs_ratio: carbsRatio,
+      protein_goal_g: macroGrams.protein,
+      carbs_goal_g: macroGrams.carbs,
+      fat_goal_g: macroGrams.fat,
     };
 
     // Use the mutation to update the profile

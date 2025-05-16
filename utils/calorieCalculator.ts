@@ -123,8 +123,8 @@ export function calculateMacroGrams(
   const carbsCalories = (carbsPercent / 100) * caloricGoal;
 
   return {
-    protein: parseFloat((proteinCalories / 4).toFixed(1)),
-    fat: parseFloat((fatCalories / 9).toFixed(1)),
-    carbs: parseFloat((carbsCalories / 4).toFixed(1)),
+    protein: Math.round(proteinCalories / 4),
+    fat: Math.round(fatCalories / 9),
+    carbs: Math.round(carbsCalories / 4),
   };
 }

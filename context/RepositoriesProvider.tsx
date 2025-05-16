@@ -1,21 +1,21 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { useRestManager } from "./RestManagerProvider";
-import { ProfileRepository } from "../utils/repositories/ProfileRepository";
+import { ProfileRepository } from "../utils/repositories/CompositeProfileRepository";
 import { LocalProfileRepository } from "../utils/repositories/local/LocalProfileRepository";
 import { RemoteProfileRepository } from "../utils/repositories/remote/RemoteProfileRepository";
-import { CompositeFoodRepository } from "../utils/repositories/FoodRepository";
+import { CompositeFoodRepository } from "../utils/repositories/CompositeFoodRepository";
 import { LocalFoodRepository } from "../utils/repositories/local/LocalFoodRepository";
 import { RemoteFoodRepository } from "../utils/repositories/remote/RemoteFoodRepository";
 import { FoodRepository } from "../models/interfaces/FoodDataRepository";
-import { CompositeFoodDiaryEntryRepository } from "../utils/repositories/CompositeFoodDiaryEntryRepository";
-import { FoodDiaryEntryRepository } from "../models/interfaces/FoodDiaryEntryDataRepository";
-import { LocalFoodDiaryEntryRepository } from "../utils/repositories/local/LocalFoodDiaryEntryRepository";
-import { RemoteFoodDiaryEntryRepository } from "../utils/repositories/remote/RemoteFoodDiaryEntryRepository";
+import { DailyDiaryRepository } from "../models/interfaces/DailyDiaryRepository";
+import { LocalDailyDiaryRepository } from "../utils/repositories/local/LocalDailyDiaryRepository";
+import { RemoteDailyDiaryRepository } from "../utils/repositories/remote/RemoteDailyDiaryRepository";
+import { CompositeDailyDiaryRepository } from "../utils/repositories/CompositeDailyDiaryRepository";
 
 interface RepositoriesContextType {
   profileRepository: ProfileRepository;
   foodRepository: FoodRepository;
-  foodDiaryEntryRepository: FoodDiaryEntryRepository;
+  dailyDiaryRepository: DailyDiaryRepository;
   // other repositories
 }
 
@@ -42,17 +42,25 @@ export const RepositoriesProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const foodRepository = new CompositeFoodRepository(localFoodRepository, remoteFoodRepository);
 
     // Create food diary entry repositories
-    const localFoodDiaryEntryRepository = new LocalFoodDiaryEntryRepository();
-    const remoteFoodDiaryEntryRepository = new RemoteFoodDiaryEntryRepository(restManager);
-    const foodDiaryEntryRepository = new CompositeFoodDiaryEntryRepository(
-      localFoodDiaryEntryRepository,
-      remoteFoodDiaryEntryRepository
+    // const localFoodDiaryEntryRepository = new LocalFoodDiaryEntryRepository();
+    // const remoteFoodDiaryEntryRepository = new RemoteFoodDiaryEntryRepository(restManager);
+    // const foodDiaryEntryRepository = new CompositeFoodDiaryEntryRepository(
+    //   localFoodDiaryEntryRepository,
+    //   remoteFoodDiaryEntryRepository
+    // );
+
+    // Create daily diary repositories
+    const localDailyDiaryRepository = new LocalDailyDiaryRepository();
+    const remoteDailyDiaryRepository = new RemoteDailyDiaryRepository(restManager);
+    const dailyDiaryRepository = new CompositeDailyDiaryRepository(
+      localDailyDiaryRepository,
+      remoteDailyDiaryRepository
     );
 
     return {
       profileRepository,
       foodRepository,
-      foodDiaryEntryRepository,
+      dailyDiaryRepository,
       // other repositories
     };
   }, [restManager]);
@@ -78,10 +86,10 @@ export const useFoodRepository = () => {
   return context.foodRepository;
 };
 
-export const useFoodDiaryEntryRepository = () => {
+export const useDailyDiaryRepository = () => {
   const context = useContext(RepositoriesContext);
   if (!context) {
-    throw new Error("useFoodDiaryEntryRepository must be used within a RepositoriesProvider");
+    throw new Error("useDailyDiaryRepository must be used within a RepositoriesProvider");
   }
-  return context.foodDiaryEntryRepository;
+  return context.dailyDiaryRepository;
 };

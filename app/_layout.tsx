@@ -18,11 +18,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RestManagerProvider } from "@/context/RestManagerProvider";
 import { RepositoriesProvider } from "@/context/RepositoriesProvider";
 import { initDb } from "@/utils/sqliteHelper";
-
-// export const unstable_settings = {
-//   // Ensure that reloading on `/modal` keeps a back button present.
-//   initialRouteName: '(tabs)',
-// };
+import { OfflineManager } from "utils/managers/OfflineManager";
+import NetInfo from "@react-native-community/netinfo";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -56,6 +53,12 @@ export default function RootLayout() {
       }
     }
     prepareApp();
+
+    // Initialize offline manager
+    registerOfflineProcessors();
+    // Initialize cleanup function
+    const unsubscribe = setupOfflineSync();
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -102,3 +105,23 @@ export default function RootLayout() {
     </QueryClientProvider>
   );
 }
+
+export const registerOfflineProcessors = () => {
+  OfflineManager.register("create_food_entry", async (payload) => {
+    //await foodDiaryRepository.remote.create(payload);
+  });
+
+  OfflineManager.register("create_activity_entry", async (payload) => {
+    //await activityDiaryRepository.remote.create(payload);
+  });
+};
+
+export const setupOfflineSync = () => {
+  const unsubscribe = NetInfo.addEventListener((state) => {
+    if (state.isConnected) {
+      OfflineManager.processQueue();
+    }
+  });
+
+  return unsubscribe;
+};

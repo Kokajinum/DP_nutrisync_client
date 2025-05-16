@@ -10,13 +10,12 @@ import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import CButton from "@/components/button/CButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { useFoodDiaryEntryRepository } from "@/hooks/useFoodDiaryEntryRepository";
+//import { useFoodDiaryEntryRepository } from "@/hooks/useFoodDiaryEntryRepository";
 import { FoodData } from "@/models/interfaces/FoodData";
 import { MealTypeEnum } from "@/models/enums/enums";
 import * as Progress from "react-native-progress";
 import { NumberPicker } from "@/components/pickers/CNumberPicker";
 import CServingSizeInput from "@/components/input/CServingSizeInput";
-import { FoodDiaryEntry } from "@/models/interfaces/FoodDiaryEntry";
 import { useDateStore } from "@/stores/dateStore";
 import { Pressable } from "react-native";
 
@@ -25,7 +24,7 @@ export default function FoodDetailsScreen() {
   const { t } = useTranslation();
   const params = useLocalSearchParams();
   const { selectedDate } = useDateStore();
-  const { save: saveFoodDiaryEntry } = useFoodDiaryEntryRepository();
+  //const { save: saveFoodDiaryEntry } = useFoodDiaryEntryRepository();
 
   const iconColor = useThemeColor({}, "onBackground");
   const primaryColor = useThemeColor({}, "primary");
@@ -74,26 +73,27 @@ export default function FoodDetailsScreen() {
   // Handle saving food diary entry
   const handleSaveFoodDiaryEntry = async () => {
     try {
-      const entry: FoodDiaryEntry = {
-        id: `entry_${Date.now()}`,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        user_id: "current_user", // This should be replaced with actual user ID
-        date: new Date(selectedDate).toISOString().split("T")[0],
-        food_id: foodData.id || "",
-        food_name: foodData.name,
-        brand: foodData.brand || "",
-        meal_type: mealType,
-        serving_size: servingSize,
-        serving_unit: servingUnit,
-        servings: servings,
-        calories: calculatedValues.calories,
-        protein: calculatedValues.protein,
-        carbs: calculatedValues.carbs,
-        fat: calculatedValues.fat,
-      };
+      // const entry: FoodDiaryEntry = {
+      //   id: `entry_${Date.now()}`,
+      //   created_at: new Date().toISOString(),
+      //   updated_at: new Date().toISOString(),
+      //   user_id: "current_user", // This should be replaced with actual user ID
+      //   date: new Date(selectedDate).toISOString().split("T")[0],
+      //   food_id: foodData.id || "",
+      //   food_name: foodData.name,
+      //   brand: foodData.brand || "",
+      //   meal_type: mealType,
+      //   serving_size: servingSize,
+      //   serving_unit: servingUnit,
+      //   servings: servings,
+      //   calories: calculatedValues.calories,
+      //   protein: calculatedValues.protein,
+      //   carbs: calculatedValues.carbs,
+      //   fat: calculatedValues.fat,
+      // };
 
-      await saveFoodDiaryEntry(entry);
+      //TODO
+      //await saveFoodDiaryEntry(entry);
       router.back();
     } catch (error) {
       console.error("Error saving food diary entry:", error);
