@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, StyleSheet, FlatList, Pressable, ActivityIndicator, Text } from "react-native";
+import { View, StyleSheet, FlatList, Pressable, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,7 @@ import { useFoodRepository } from "@/hooks/useFoodRepository";
 import { FoodData } from "@/models/interfaces/FoodData";
 import { MealTypeEnum } from "@/models/enums/enums";
 import { useDateStore } from "@/stores/dateStore";
+import CFoodSearchResultCard from "@/components/cards/CFoodSearchResultCard";
 
 // Helper function to determine meal type based on current time
 const getMealTypeFromTime = (): MealTypeEnum => {
@@ -197,48 +198,13 @@ export default function FoodDiaryEntryScreen() {
 
   // Render food item
   const renderFoodItem = ({ item }: { item: FoodData }) => (
-    <Pressable
-      style={({ pressed }) => [
-        styles.foodItem,
-        { backgroundColor: surfaceColor, borderColor },
-        pressed && { opacity: 0.7 },
-      ]}
-      onPress={() => {
-        console.log("Food item pressed:", item.name);
-        navigateToFoodDetails(item);
-      }}>
-      <View style={styles.foodItemContent}>
-        <ThemedText type="subtitle" style={styles.foodName}>
-          {item.name}
-        </ThemedText>
-
-        <View style={styles.foodInfoContainer}>
-          <ThemedText style={styles.foodCalories}>
-            {item.calories} kcal
-            <Text style={styles.perServingText}>
-              {" "}
-              / {item.servingSizeValue}
-              {item.servingSizeUnit}
-            </Text>
-          </ThemedText>
-
-          {item.brand && (
-            <>
-              <View style={styles.separator} />
-              <ThemedText style={styles.foodBrand}>{item.brand}</ThemedText>
-            </>
-          )}
-        </View>
-
-        <View style={styles.foodDetails}>
-          <View style={styles.macros}>
-            <ThemedText style={styles.macroText}>P: {item.protein}g</ThemedText>
-            <ThemedText style={styles.macroText}>C: {item.carbs}g</ThemedText>
-            <ThemedText style={styles.macroText}>F: {item.fats}g</ThemedText>
-          </View>
-        </View>
-      </View>
-    </Pressable>
+    <CFoodSearchResultCard
+      item={item}
+      onPress={(food) => {
+        console.log("Food item pressed:", food.name);
+        navigateToFoodDetails(food);
+      }}
+    />
   );
 
   // Render list header
@@ -441,58 +407,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     opacity: 0.7,
-  },
-  foodItem: {
-    borderRadius: 8,
-    borderWidth: 1,
-    marginBottom: 12,
-    overflow: "hidden",
-  },
-  foodItemContent: {
-    padding: 12,
-  },
-  foodName: {
-    marginBottom: 4,
-  },
-  foodInfoContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-    flexWrap: "wrap",
-  },
-  foodBrand: {
-    fontSize: 14,
-    opacity: 0.7,
-  },
-  foodDetails: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 4,
-  },
-  foodCalories: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  perServingText: {
-    fontSize: 12,
-    opacity: 0.7,
-  },
-  separator: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "#000",
-    opacity: 0.5,
-    marginHorizontal: 8,
-  },
-  macros: {
-    flexDirection: "row",
-  },
-  macroText: {
-    fontSize: 14,
-    marginLeft: 8,
-    opacity: 0.8,
   },
   loaderContainer: {
     padding: 20,

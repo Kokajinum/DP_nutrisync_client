@@ -27,6 +27,7 @@ import { FoodDiaryEntryResponseDto } from "@/models/interfaces/FoodDiaryEntryRes
 import { format } from "date-fns";
 import { MealTypeEnum } from "@/models/enums/enums";
 import { useAuth } from "@/context/AuthProvider";
+import CFoodDiaryEntryCard from "@/components/cards/CFoodDiaryEntryCard";
 
 // Helper function to get meal type icon
 const getMealTypeIcon = (mealType: MealTypeEnum): any => {
@@ -130,48 +131,7 @@ export default function FoodDiaryScreen() {
 
   // Render food diary entry
   const renderFoodDiaryEntry = ({ item }: { item: FoodDiaryEntryResponseDto }) => (
-    <Pressable
-      style={({ pressed }) => [
-        styles.entryCard,
-        { backgroundColor: surfaceColor, borderColor },
-        pressed && { opacity: 0.7 },
-      ]}
-      onLongPress={() => handleDeleteEntry(item.id)}>
-      <View style={styles.entryHeader}>
-        <View style={styles.entryTitleContainer}>
-          <MaterialCommunityIcons
-            name={getMealTypeIcon(item.meal_type)}
-            size={20}
-            color={primaryColor}
-            style={styles.mealIcon}
-          />
-          <ThemedText type="subtitle" style={styles.entryTitle}>
-            {item.food_name}
-          </ThemedText>
-        </View>
-        <ThemedText style={styles.entryTime}>{formatTime(item.created_at)}</ThemedText>
-      </View>
-
-      {item.brand && <ThemedText style={styles.entryBrand}>{item.brand}</ThemedText>}
-
-      <View style={styles.entryDetails}>
-        <View style={styles.entryServingInfo}>
-          <ThemedText style={styles.entryServingText}>
-            {item.serving_size}
-            {item.serving_unit}
-          </ThemedText>
-        </View>
-
-        <View style={styles.entryNutrition}>
-          <ThemedText style={styles.entryCalories}>{item.calories} kcal</ThemedText>
-          <View style={styles.entryMacros}>
-            <ThemedText style={styles.macroText}>P: {item.protein}g</ThemedText>
-            <ThemedText style={styles.macroText}>C: {item.carbs}g</ThemedText>
-            <ThemedText style={styles.macroText}>F: {item.fat}g</ThemedText>
-          </View>
-        </View>
-      </View>
-    </Pressable>
+    <CFoodDiaryEntryCard entry={item} onLongPress={handleDeleteEntry} />
   );
 
   return (
@@ -509,66 +469,6 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     marginTop: 20,
     marginBottom: 20,
-  },
-  entryCard: {
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 12,
-    marginBottom: 12,
-  },
-  entryHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  entryTitleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  mealIcon: {
-    marginRight: 8,
-  },
-  entryTitle: {
-    flex: 1,
-  },
-  entryTime: {
-    fontSize: 14,
-    opacity: 0.7,
-  },
-  entryBrand: {
-    fontSize: 14,
-    opacity: 0.7,
-    marginBottom: 8,
-  },
-  entryDetails: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 8,
-  },
-  entryServingInfo: {
-    flex: 1,
-  },
-  entryServingText: {
-    fontSize: 14,
-  },
-  entryNutrition: {
-    alignItems: "flex-end",
-  },
-  entryCalories: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 4,
-  },
-  entryMacros: {
-    flexDirection: "row",
-  },
-  macroText: {
-    fontSize: 14,
-    marginLeft: 8,
-    opacity: 0.8,
   },
   buttonContainer: {
     position: "absolute",
