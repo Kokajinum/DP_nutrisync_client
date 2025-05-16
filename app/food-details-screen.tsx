@@ -115,8 +115,8 @@ export default function FoodDetailsScreen() {
       <ScrollView style={styles.content}>
         {/* Food header */}
         <View style={styles.foodHeader}>
-          <Text style={styles.foodTitle}>{foodData.name}</Text>
-          {foodData.brand && <Text style={styles.foodBrand}>{foodData.brand}</Text>}
+          <ThemedText style={styles.foodTitle}>{foodData.name}</ThemedText>
+          {foodData.brand && <ThemedText style={styles.foodBrand}>{foodData.brand}</ThemedText>}
         </View>
 
         <CDivider />

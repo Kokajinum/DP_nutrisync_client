@@ -201,66 +201,96 @@ export default function FoodDiaryScreen() {
           ListHeaderComponent={
             <View>
               {/* Calorie Summary Card */}
-              <View style={[styles.summaryCard, { backgroundColor: surfaceColor, borderColor }]}>
-                <View style={styles.calorieCircleContainer}>
-                  <Progress.Circle
-                    size={120}
-                    progress={calorieProgress}
-                    thickness={10}
-                    color={primaryColor}
-                    unfilledColor="#F0F0F0"
-                    borderWidth={0}
-                    strokeCap="round"
-                    showsText={false}
-                    style={styles.calorieCircle}
-                  />
-                  <View style={styles.calorieTextContainer}>
-                    <ThemedText style={styles.calorieValue}>{nutritionSummary.calories}</ThemedText>
-                    <ThemedText style={styles.calorieLabel}>kcal</ThemedText>
-                  </View>
-                </View>
-
-                <View style={styles.calorieDetailsContainer}>
-                  <View style={styles.calorieDetailItem}>
-                    <ThemedText style={styles.calorieDetailLabel}>
-                      {t(TranslationKeys.food_diary_goal)}
-                    </ThemedText>
-                    <ThemedText style={styles.calorieDetailValue}>{dailyCalorieGoal}</ThemedText>
-                  </View>
-
-                  <View style={styles.calorieDetailItem}>
-                    <ThemedText style={styles.calorieDetailLabel}>
-                      {t(TranslationKeys.food_diary_remaining)}
-                    </ThemedText>
-                    <ThemedText
-                      style={[
-                        styles.calorieDetailValue,
-                        { color: remainingCalories < 0 ? "#FF6B6B" : undefined },
-                      ]}>
-                      {remainingCalories}
-                    </ThemedText>
+              <View
+                style={[
+                  styles.summaryCard,
+                  {
+                    backgroundColor: surfaceColor,
+                    borderColor,
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 4,
+                    elevation: 3,
+                  },
+                ]}>
+                <View style={styles.calorieCardContent}>
+                  <View style={styles.calorieCircleContainer}>
+                    <Progress.Circle
+                      size={100}
+                      progress={calorieProgress}
+                      thickness={8}
+                      color={primaryColor}
+                      unfilledColor="#F0F0F0"
+                      borderWidth={0}
+                      strokeCap="round"
+                      showsText={false}
+                      style={styles.calorieCircle}
+                    />
+                    <View style={styles.calorieTextContainer}>
+                      <ThemedText style={styles.calorieValue}>
+                        {nutritionSummary.calories}
+                      </ThemedText>
+                      <ThemedText style={styles.calorieLabel}>kcal</ThemedText>
+                    </View>
                   </View>
 
-                  <View style={styles.calorieDetailItem}>
-                    <ThemedText style={styles.calorieDetailLabel}>
-                      {t(TranslationKeys.food_diary_food)}
-                    </ThemedText>
-                    <ThemedText style={styles.calorieDetailValue}>
-                      {nutritionSummary.calories}
-                    </ThemedText>
-                  </View>
+                  <View style={styles.calorieDetailsContainer}>
+                    <View style={styles.calorieDetailRow}>
+                      <View style={styles.calorieDetailItem}>
+                        <ThemedText style={styles.calorieDetailLabel}>
+                          {t(TranslationKeys.food_diary_goal)}
+                        </ThemedText>
+                        <ThemedText style={styles.calorieDetailValue}>
+                          {dailyCalorieGoal}
+                        </ThemedText>
+                      </View>
 
-                  <View style={styles.calorieDetailItem}>
-                    <ThemedText style={styles.calorieDetailLabel}>
-                      {t(TranslationKeys.food_diary_exercise)}
-                    </ThemedText>
-                    <ThemedText style={styles.calorieDetailValue}>{burnedCalories}</ThemedText>
+                      <View style={styles.calorieDetailItem}>
+                        <ThemedText style={styles.calorieDetailLabel}>
+                          {t(TranslationKeys.food_diary_remaining)}
+                        </ThemedText>
+                        <ThemedText style={[styles.calorieDetailValue]}>
+                          {remainingCalories}
+                        </ThemedText>
+                      </View>
+                    </View>
+
+                    <View style={styles.calorieDetailRow}>
+                      <View style={styles.calorieDetailItem}>
+                        <ThemedText style={styles.calorieDetailLabel}>
+                          {t(TranslationKeys.food_diary_food)}
+                        </ThemedText>
+                        <ThemedText style={styles.calorieDetailValue}>
+                          {nutritionSummary.calories}
+                        </ThemedText>
+                      </View>
+
+                      <View style={styles.calorieDetailItem}>
+                        <ThemedText style={styles.calorieDetailLabel}>
+                          {t(TranslationKeys.food_diary_exercise)}
+                        </ThemedText>
+                        <ThemedText style={styles.calorieDetailValue}>{burnedCalories}</ThemedText>
+                      </View>
+                    </View>
                   </View>
                 </View>
               </View>
 
               {/* Macronutrients Card */}
-              <View style={[styles.macroCard, { backgroundColor: surfaceColor, borderColor }]}>
+              <View
+                style={[
+                  styles.macroCard,
+                  {
+                    backgroundColor: surfaceColor,
+                    borderColor,
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 4,
+                    elevation: 3,
+                  },
+                ]}>
                 <ThemedText type="subtitle" style={styles.macroCardTitle}>
                   {t(TranslationKeys.food_diary_macronutrients)}
                 </ThemedText>
@@ -269,9 +299,9 @@ export default function FoodDiaryScreen() {
                   {/* Protein */}
                   <View style={styles.macroCircleItem}>
                     <Progress.Circle
-                      size={70}
+                      size={60}
                       progress={proteinProgress}
-                      thickness={7}
+                      thickness={6}
                       color="#FF6B6B"
                       unfilledColor="#F0F0F0"
                       borderWidth={0}
@@ -292,9 +322,9 @@ export default function FoodDiaryScreen() {
                   {/* Carbs */}
                   <View style={styles.macroCircleItem}>
                     <Progress.Circle
-                      size={70}
+                      size={60}
                       progress={carbsProgress}
-                      thickness={7}
+                      thickness={6}
                       color="#4ECDC4"
                       unfilledColor="#F0F0F0"
                       borderWidth={0}
@@ -315,9 +345,9 @@ export default function FoodDiaryScreen() {
                   {/* Fat */}
                   <View style={styles.macroCircleItem}>
                     <Progress.Circle
-                      size={70}
+                      size={60}
                       progress={fatProgress}
-                      thickness={7}
+                      thickness={6}
                       color="#FFD166"
                       unfilledColor="#F0F0F0"
                       borderWidth={0}
@@ -377,17 +407,20 @@ const styles = StyleSheet.create({
     paddingBottom: 80, // Extra padding for the button
   },
   summaryCard: {
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
-    padding: 16,
+    padding: 12,
     marginBottom: 16,
+  },
+  calorieCardContent: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   calorieCircleContainer: {
-    alignItems: "center",
-    marginBottom: 16,
+    marginRight: 16,
   },
   calorieCircle: {
-    marginBottom: 8,
+    marginBottom: 0,
   },
   calorieTextContainer: {
     position: "absolute",
@@ -399,45 +432,49 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   calorieValue: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
   },
   calorieLabel: {
-    fontSize: 14,
+    fontSize: 12,
     opacity: 0.7,
   },
   calorieDetailsContainer: {
+    flex: 1,
+  },
+  calorieDetailRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    flexWrap: "wrap",
+    marginBottom: 8,
   },
   calorieDetailItem: {
     alignItems: "center",
     width: "48%",
-    marginBottom: 8,
   },
   calorieDetailLabel: {
-    fontSize: 14,
+    fontSize: 12,
     opacity: 0.7,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   calorieDetailValue: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "500",
   },
   macroCard: {
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
-    padding: 16,
+    padding: 12,
     marginBottom: 16,
   },
   macroCardTitle: {
-    marginBottom: 16,
+    marginBottom: 12,
     textAlign: "center",
+    fontSize: 16,
   },
   macroCirclesContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
+    paddingVertical: 4,
   },
   macroCircleItem: {
     alignItems: "center",
@@ -447,22 +484,22 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 30,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
   },
   macroCircleValue: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
   },
   macroCircleUnit: {
-    fontSize: 12,
+    fontSize: 10,
     marginLeft: 1,
   },
   macroCircleLabel: {
-    fontSize: 14,
-    marginTop: 8,
+    fontSize: 12,
+    marginTop: 6,
   },
   entriesHeader: {
     marginBottom: 12,
