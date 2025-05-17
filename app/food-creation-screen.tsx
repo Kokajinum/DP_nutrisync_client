@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, View, StyleSheet, Pressable, Alert } from "react-native";
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  Pressable,
+  Alert,
+  Animated,
+  ActivityIndicator,
+} from "react-native";
 import { useRouter } from "expo-router";
-import { MaterialIcons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons, Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useFoodRepository } from "@/hooks/useFoodRepository";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { GlobalColors } from "@/constants/Colors";
-import { _400Regular, _500Medium, _600SemiBold } from "@/constants/Global";
+import { GlobalColors, Colors } from "@/constants/Colors";
+import { _400Regular, _500Medium, _600SemiBold, _700Bold } from "@/constants/Global";
 import { FoodCategoryEnum } from "@/models/enums/enums";
 import { foodCategoryOptions } from "@/utils/foodCategories";
 import CFoodAttributeInput from "@/components/input/CFoodAttributeInput";
 import CDropdown from "@/components/input/CDropdown";
 import CServingSizeInput from "@/components/input/CServingSizeInput";
+import CDivider from "@/components/CDivider";
 
 import { FoodData } from "@/models/interfaces/FoodData";
 import { useTranslation } from "react-i18next";
@@ -39,9 +49,11 @@ export default function FoodCreationScreen() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const cardBackgroundColor = useThemeColor({}, "surface");
+  const primaryColor = useThemeColor({}, "primary");
+  const surfaceColor = useThemeColor({}, "surface");
+  const surfaceContainerHighest = useThemeColor({}, "surfaceContainerHighest");
   const borderColor = useThemeColor({}, "outline");
-  const sectionTitleColor = useThemeColor({}, "primary");
+  //const sectionTitleColor = useThemeColor({}, "primary");
   const iconColor = useThemeColor({}, "onBackground");
 
   interface FoodFormData {
@@ -346,6 +358,14 @@ export default function FoodCreationScreen() {
   return (
     <ThemedView style={{ flex: 1 }}>
       <ThemedStatusBar />
+      {isSaving && (
+        <View style={styles.loaderContainer}>
+          <View style={[styles.loaderBackground, { backgroundColor: surfaceColor }]}>
+            <ActivityIndicator size="large" color={primaryColor} />
+            <ThemedText style={styles.loaderText}>{t(TranslationKeys.loading)}</ThemedText>
+          </View>
+        </View>
+      )}
       <ThemedStackScreen
         options={{
           title: t(TranslationKeys.food_creation_header),
@@ -356,178 +376,367 @@ export default function FoodCreationScreen() {
               <MaterialIcons name="arrow-back" size={24} color={iconColor} />
             </Pressable>
           ),
-          headerRight: () => (
-            <Pressable
-              onPress={handleSaveFood}
-              style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.7 : 1 }]}>
-              <MaterialIcons name="check" size={24} color={GlobalColors.checkGreen} />
-            </Pressable>
-          ),
+          // headerRight: () => (
+          //   <Pressable
+          //     onPress={handleSaveFood}
+          //     style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.7 : 1 }]}>
+          //     <MaterialIcons name="check" size={28} color={GlobalColors.checkGreen} />
+          //   </Pressable>
+          // ),
         }}
       />
 
-      <ScrollView style={{ flex: 1, paddingBottom: 80 }}>
+      <ScrollView style={{ flex: 1, marginBottom: 80 }}>
         {/* Main attributes section */}
-        <View style={[styles.section, { backgroundColor: cardBackgroundColor, borderColor }]}>
-          <ThemedText type="subtitle" style={[styles.sectionTitle, { color: sectionTitleColor }]}>
-            {t(TranslationKeys.food_creation_main_information_header)}
-          </ThemedText>
+        <View style={styles.sectionContainer}>
+          <LinearGradient
+            colors={[surfaceContainerHighest, surfaceColor]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradientHeader}>
+            <MaterialIcons name="info-outline" size={22} color={primaryColor} />
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
+              {t(TranslationKeys.food_creation_main_information_header)}
+            </ThemedText>
+          </LinearGradient>
 
-          <CFoodAttributeInput
-            icon={<MaterialCommunityIcons name="food-apple" />}
-            label="Food Name"
-            value={foodData.name}
-            onChangeText={(text) => updateFoodData("name", text)}
-            isRequired={true}
-            error={errors.name}
-            maxLength={MAX_NAME_LENGTH}
-            placeholder="Enter food name"
-          />
+          <View style={[styles.section, { backgroundColor: surfaceColor, borderColor }]}>
+            <CFoodAttributeInput
+              icon={<MaterialCommunityIcons name="food-apple" />}
+              label="Food Name"
+              value={foodData.name}
+              onChangeText={(text) => updateFoodData("name", text)}
+              isRequired={true}
+              error={errors.name}
+              maxLength={MAX_NAME_LENGTH}
+              placeholder="Enter food name"
+              style={styles.inputContainer}
+            />
 
-          <CDropdown
-            icon={<MaterialIcons name="category" />}
-            label="Category"
-            options={foodCategoryOptions}
-            selectedValue={foodData.category}
-            onValueChange={(value) => updateFoodData("category", value)}
-            isRequired={true}
-            error={errors.category}
-          />
+            <CDropdown
+              icon={<MaterialIcons name="category" />}
+              label="Category"
+              options={foodCategoryOptions}
+              selectedValue={foodData.category}
+              onValueChange={(value) => updateFoodData("category", value)}
+              isRequired={true}
+              error={errors.category}
+              style={styles.inputContainer}
+            />
 
-          <CServingSizeInput
-            value={foodData.servingSizeValue}
-            unit={foodData.servingSizeUnit}
-            onChangeText={(text) => updateFoodData("servingSizeValue", text)}
-            onUnitChange={(unit) => updateFoodData("servingSizeUnit", unit)}
-            isRequired={true}
-            error={errors.servingSizeValue}
-          />
+            <CServingSizeInput
+              value={foodData.servingSizeValue}
+              unit={foodData.servingSizeUnit}
+              onChangeText={(text) => updateFoodData("servingSizeValue", text)}
+              onUnitChange={(unit) => updateFoodData("servingSizeUnit", unit)}
+              isRequired={true}
+              error={errors.servingSizeValue}
+              style={styles.inputContainer}
+            />
 
-          <CFoodAttributeInput
-            icon={<Ionicons name="pricetag-outline" />}
-            label="Brand (optional)"
-            value={foodData.brand}
-            onChangeText={(text) => updateFoodData("brand", text)}
-          />
+            <CDivider style={styles.divider} />
 
-          <CFoodAttributeInput
-            icon={<MaterialCommunityIcons name="barcode" />}
-            label="Barcode (optional)"
-            value={foodData.barcode}
-            onChangeText={(text) => updateFoodData("barcode", text)}
-            keyboardType="number-pad"
-            placeholder="Enter 8-14 digit barcode"
-            error={errors.barcode}
-          />
+            <View style={styles.optionalFieldsContainer}>
+              <ThemedText style={styles.optionalLabel}>Optional Information</ThemedText>
+
+              <CFoodAttributeInput
+                icon={<Ionicons name="pricetag-outline" />}
+                label="Brand"
+                value={foodData.brand}
+                onChangeText={(text) => updateFoodData("brand", text)}
+                style={styles.inputContainer}
+              />
+
+              <CFoodAttributeInput
+                icon={<MaterialCommunityIcons name="barcode" />}
+                label="Barcode"
+                value={foodData.barcode}
+                onChangeText={(text) => updateFoodData("barcode", text)}
+                keyboardType="number-pad"
+                placeholder="Enter 8-14 digit barcode"
+                error={errors.barcode}
+                style={styles.inputContainer}
+              />
+            </View>
+          </View>
         </View>
 
         {/* Macronutrients section */}
-        <View style={[styles.section, { backgroundColor: cardBackgroundColor, borderColor }]}>
-          <ThemedText type="subtitle" style={[styles.sectionTitle, { color: sectionTitleColor }]}>
-            Nutritional Information (100g)
-          </ThemedText>
+        <View style={styles.sectionContainer}>
+          <LinearGradient
+            colors={[surfaceContainerHighest, surfaceColor]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradientHeader}>
+            <FontAwesome5 name="apple-alt" size={18} color={primaryColor} />
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
+              Nutritional Information (100g)
+            </ThemedText>
+          </LinearGradient>
 
-          <CFoodAttributeInput
-            icon={<MaterialCommunityIcons name="fire" />}
-            label="Calories"
-            value={foodData.calories}
-            onChangeText={(text) => updateFoodData("calories", text)}
-            keyboardType="numeric"
-            isNumeric={true}
-            unit="kcal"
-            error={errors.calories}
-            placeholder="0-900"
-          />
+          <View style={[styles.section, { backgroundColor: surfaceColor, borderColor }]}>
+            <View style={styles.macroRow}>
+              <View style={styles.macroColumn}>
+                <CFoodAttributeInput
+                  icon={<MaterialCommunityIcons name="fire" />}
+                  label="Calories"
+                  value={foodData.calories}
+                  onChangeText={(text) => updateFoodData("calories", text)}
+                  keyboardType="numeric"
+                  isNumeric={true}
+                  unit="kcal"
+                  error={errors.calories}
+                  placeholder="0-900"
+                  style={styles.inputContainer}
+                />
+              </View>
+            </View>
 
-          <CFoodAttributeInput
-            icon={<MaterialCommunityIcons name="oil" />}
-            label="Fats"
-            value={foodData.fats}
-            onChangeText={(text) => updateFoodData("fats", text)}
-            keyboardType="numeric"
-            isNumeric={true}
-            unit="g"
-            error={errors.fats}
-            placeholder="0-100"
-          />
+            <View style={styles.macroGroupLabel}>
+              <ThemedText style={styles.macroGroupText}>Macronutrients</ThemedText>
+            </View>
 
-          <CFoodAttributeInput
-            icon={<MaterialCommunityIcons name="grain" />}
-            label="Carbs"
-            value={foodData.carbs}
-            onChangeText={(text) => updateFoodData("carbs", text)}
-            keyboardType="numeric"
-            isNumeric={true}
-            unit="g"
-            error={errors.carbs}
-            placeholder="0-100"
-          />
+            <View style={styles.macroRow}>
+              <View style={styles.macroColumn}>
+                <CFoodAttributeInput
+                  icon={<MaterialCommunityIcons name="oil" />}
+                  label="Fats"
+                  value={foodData.fats}
+                  onChangeText={(text) => updateFoodData("fats", text)}
+                  keyboardType="numeric"
+                  isNumeric={true}
+                  unit="g"
+                  error={errors.fats}
+                  placeholder="0-100"
+                  style={styles.inputContainer}
+                />
+              </View>
+            </View>
 
-          <CFoodAttributeInput
-            icon={<MaterialCommunityIcons name="cube-outline" />}
-            label="Sugar"
-            value={foodData.sugar}
-            onChangeText={(text) => updateFoodData("sugar", text)}
-            keyboardType="numeric"
-            isNumeric={true}
-            unit="g"
-            error={errors.sugar}
-            placeholder="0-100"
-          />
+            <View style={styles.macroRow}>
+              <View style={styles.macroColumn}>
+                <CFoodAttributeInput
+                  icon={<MaterialCommunityIcons name="grain" />}
+                  label="Carbs"
+                  value={foodData.carbs}
+                  onChangeText={(text) => updateFoodData("carbs", text)}
+                  keyboardType="numeric"
+                  isNumeric={true}
+                  unit="g"
+                  error={errors.carbs}
+                  placeholder="0-100"
+                  style={styles.inputContainer}
+                />
+              </View>
+            </View>
 
-          <CFoodAttributeInput
-            icon={<MaterialCommunityIcons name="nutrition" />}
-            label="Fiber"
-            value={foodData.fiber}
-            onChangeText={(text) => updateFoodData("fiber", text)}
-            keyboardType="numeric"
-            isNumeric={true}
-            unit="g"
-            error={errors.fiber}
-            placeholder="0-50"
-          />
+            <View style={styles.subMacroContainer}>
+              <CFoodAttributeInput
+                icon={<MaterialCommunityIcons name="cube-outline" />}
+                label="Sugar"
+                value={foodData.sugar}
+                onChangeText={(text) => updateFoodData("sugar", text)}
+                keyboardType="numeric"
+                isNumeric={true}
+                unit="g"
+                error={errors.sugar}
+                placeholder="0-100"
+                style={[styles.inputContainer, styles.subMacroInput]}
+              />
 
-          <CFoodAttributeInput
-            icon={<MaterialCommunityIcons name="food-steak" />}
-            label="Protein"
-            value={foodData.protein}
-            onChangeText={(text) => updateFoodData("protein", text)}
-            keyboardType="numeric"
-            isNumeric={true}
-            unit="g"
-            error={errors.protein}
-            placeholder="0-100"
-          />
+              <CFoodAttributeInput
+                icon={<MaterialCommunityIcons name="nutrition" />}
+                label="Fiber"
+                value={foodData.fiber}
+                onChangeText={(text) => updateFoodData("fiber", text)}
+                keyboardType="numeric"
+                isNumeric={true}
+                unit="g"
+                error={errors.fiber}
+                placeholder="0-50"
+                style={[styles.inputContainer, styles.subMacroInput]}
+              />
+            </View>
 
-          <CFoodAttributeInput
-            icon={<MaterialCommunityIcons name="shaker-outline" />}
-            label="Salt"
-            value={foodData.salt}
-            onChangeText={(text) => updateFoodData("salt", text)}
-            keyboardType="numeric"
-            isNumeric={true}
-            unit="g"
-            error={errors.salt}
-            placeholder="0-100"
-          />
+            <View style={styles.macroRow}>
+              <View style={styles.macroColumn}>
+                <CFoodAttributeInput
+                  icon={<MaterialCommunityIcons name="food-steak" />}
+                  label="Protein"
+                  value={foodData.protein}
+                  onChangeText={(text) => updateFoodData("protein", text)}
+                  keyboardType="numeric"
+                  isNumeric={true}
+                  unit="g"
+                  error={errors.protein}
+                  placeholder="0-100"
+                  style={styles.inputContainer}
+                />
+              </View>
+            </View>
+
+            <View style={styles.macroGroupLabel}>
+              <ThemedText style={styles.macroGroupText}>Other</ThemedText>
+            </View>
+
+            <View style={styles.macroRow}>
+              <View style={styles.macroColumn}>
+                <CFoodAttributeInput
+                  icon={<MaterialCommunityIcons name="shaker-outline" />}
+                  label="Salt"
+                  value={foodData.salt}
+                  onChangeText={(text) => updateFoodData("salt", text)}
+                  keyboardType="numeric"
+                  isNumeric={true}
+                  unit="g"
+                  error={errors.salt}
+                  placeholder="0-100"
+                  style={styles.inputContainer}
+                />
+              </View>
+            </View>
+          </View>
         </View>
+
+        {/* Save button at bottom */}
+        <Pressable
+          onPress={handleSaveFood}
+          style={({ pressed }) => [
+            styles.saveButton,
+            {
+              backgroundColor: primaryColor,
+              opacity: pressed ? 0.8 : 1,
+              transform: [{ scale: pressed ? 0.98 : 1 }],
+            },
+          ]}>
+          <MaterialIcons name="save" size={24} color="#fff" />
+          <ThemedText style={styles.saveButtonText} type="defaultSemiBold">
+            Save Food
+          </ThemedText>
+        </Pressable>
       </ScrollView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
+  loaderContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+    backgroundColor: "rgba(0,0,0,0.3)",
+  },
+  loaderBackground: {
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  loaderText: {
+    marginTop: 10,
+    fontFamily: _500Medium,
+  },
+  sectionContainer: {
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 8,
+  },
   section: {
-    margin: 16,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  gradientHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginBottom: 10,
   },
   sectionTitle: {
-    marginBottom: 16,
+    marginLeft: 8,
+    fontFamily: _600SemiBold,
   },
   headerButton: {
     padding: 8,
     marginHorizontal: 8,
+  },
+  inputContainer: {
+    marginBottom: 12,
+    borderRadius: 10,
+  },
+  divider: {
+    marginVertical: 16,
+  },
+  optionalFieldsContainer: {
+    marginTop: 4,
+  },
+  optionalLabel: {
+    fontSize: 14,
+    marginBottom: 12,
+    fontFamily: _500Medium,
+    textAlign: "center",
+  },
+  macroRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  macroColumn: {
+    flex: 1,
+  },
+  subMacroContainer: {
+    marginLeft: 24,
+    marginBottom: 8,
+  },
+  subMacroInput: {
+    marginBottom: 8,
+  },
+  macroGroupLabel: {
+    marginVertical: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    borderRadius: 16,
+    alignSelf: "flex-start",
+  },
+  macroGroupText: {
+    fontSize: 14,
+    fontFamily: _500Medium,
+  },
+  saveButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 24,
+    paddingVertical: 14,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  saveButtonText: {
+    color: "#fff",
+    marginLeft: 8,
+    fontSize: 16,
+    fontFamily: _600SemiBold,
   },
 });
