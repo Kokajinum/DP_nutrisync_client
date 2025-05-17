@@ -40,17 +40,20 @@ export default function ActivityDiaryScreen() {
     getTotalCaloriesBurnedForDate,
     transformToActivitySession,
     startNewSession,
+    loadActiveSession,
   } = useActivityDiaryStore();
 
   // Transform ActivityDiary entries to ActivitySession format for UI
   const sessions: ActivitySession[] = diaryEntries.map(transformToActivitySession);
 
-  // Fetch sessions when selected date changes
+  // Fetch sessions when selected date changes and load active session
   useEffect(() => {
     if (user?.id) {
       getSessionsByDate(user.id, new Date(selectedDate));
+      // Load any active (uncompleted) session
+      loadActiveSession(user.id);
     }
-  }, [user?.id, selectedDate, getSessionsByDate]);
+  }, [user?.id, selectedDate, getSessionsByDate, loadActiveSession]);
 
   // Calculate total calories burned
   const totalCaloriesBurned = getTotalCaloriesBurnedForDate(new Date(selectedDate));
@@ -147,12 +150,12 @@ export default function ActivityDiaryScreen() {
 
                 <View style={styles.calorieDetailsContainer}>
                   <View style={styles.calorieDetailRow}>
-                    <View style={styles.calorieDetailItem}>
+                    {/* <View style={styles.calorieDetailItem}>
                       <ThemedText style={styles.calorieDetailLabel}>
                         {t(TranslationKeys.food_diary_goal)}
                       </ThemedText>
                       <ThemedText style={styles.calorieDetailValue}>{calorieGoal}</ThemedText>
-                    </View>
+                    </View> */}
 
                     <View style={styles.calorieDetailItem}>
                       <ThemedText style={styles.calorieDetailLabel}>

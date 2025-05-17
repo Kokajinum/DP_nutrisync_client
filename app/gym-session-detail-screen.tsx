@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/context/AuthProvider";
 import {
   View,
   Text,
@@ -28,8 +29,16 @@ import { t } from "i18next";
 const GymSessionDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { getSessionById, activeSession, updateSessionNotes, addSet, updateSet, completeSession } =
-    useActivityDiaryStore();
+  const { user } = useAuth();
+  const {
+    getSessionById,
+    activeSession,
+    updateSessionNotes,
+    addSet,
+    updateSet,
+    completeSession,
+    loadActiveSession,
+  } = useActivityDiaryStore();
   const [session, setSession] = useState(activeSession);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(true);
@@ -46,21 +55,42 @@ const GymSessionDetailScreen = () => {
 
   useEffect(() => {
     const loadSession = async () => {
-      if (id) {
-        const loadedSession = await getSessionById(id);
-        if (loadedSession) {
-          setSession(loadedSession);
-          setNotes(loadedSession.notes || "");
+      try {
+        // If we have an ID, try to load that specific session
+        if (id) {
+          const loadedSession = await getSessionById(id);
+          if (loadedSession) {
+            setSession(loadedSession);
+            setNotes(loadedSession.notes || "");
+          }
         }
-      } else if (activeSession) {
-        setSession(activeSession);
-        setNotes(activeSession.notes || "");
+        // If no ID but we have an active session in the store, use that
+        else if (activeSession) {
+          setSession(activeSession);
+          setNotes(activeSession.notes || "");
+        }
+        // If no active session in the store, try to load it from the database
+        else if (user?.id) {
+          // Load the active session into the store
+          await loadActiveSession(user.id);
+
+          // Get the store state again after loading
+          const { activeSession: updatedActiveSession } = useActivityDiaryStore.getState();
+
+          if (updatedActiveSession) {
+            setSession(updatedActiveSession);
+            setNotes(updatedActiveSession.notes || "");
+          }
+        }
+      } catch (error) {
+        console.error("Error loading session:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     loadSession();
-  }, [id, activeSession, getSessionById]);
+  }, [id, activeSession, getSessionById, loadActiveSession, user?.id]);
 
   const handleBackPress = () => {
     router.push("/(tabs)/activity-diary-screen");
