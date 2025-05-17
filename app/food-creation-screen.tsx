@@ -99,83 +99,90 @@ export default function FoodCreationScreen() {
 
     switch (field) {
       case "name":
-        if (!trimmedValue) return "Name is required";
+        if (!trimmedValue) return t(TranslationKeys.validation_name_required);
         if (trimmedValue.length > MAX_NAME_LENGTH)
-          return `Name must be ${MAX_NAME_LENGTH} characters or less`;
+          return t(TranslationKeys.validation_name_length, { max: MAX_NAME_LENGTH });
         return null;
 
       case "category":
-        if (!trimmedValue) return "Category is required";
+        if (!trimmedValue) return t(TranslationKeys.validation_category_required);
         return null;
 
       case "servingSizeValue":
-        if (!trimmedValue) return "Serving size is required";
+        if (!trimmedValue) return t(TranslationKeys.validation_serving_size_required);
         const servingSize = Number(trimmedValue);
-        if (isNaN(servingSize)) return "Must be a valid number";
-        if (servingSize <= 0) return "Must be a positive number";
-        if (servingSize < MIN_SERVING_SIZE) return `Must be at least ${MIN_SERVING_SIZE}`;
-        if (servingSize > MAX_SERVING_SIZE) return `Must be ${MAX_SERVING_SIZE} or less`;
+        if (isNaN(servingSize)) return t(TranslationKeys.validation_valid_number);
+        if (servingSize <= 0) return t(TranslationKeys.validation_positive_number);
+        if (servingSize < MIN_SERVING_SIZE)
+          return t(TranslationKeys.validation_min_value, { min: MIN_SERVING_SIZE });
+        if (servingSize > MAX_SERVING_SIZE)
+          return t(TranslationKeys.validation_max_value, { max: MAX_SERVING_SIZE });
         return null;
 
       case "barcode":
         if (!trimmedValue) return null; // Optional field
-        if (!BARCODE_REGEX.test(trimmedValue)) return "Invalid barcode format";
+        if (!BARCODE_REGEX.test(trimmedValue)) return t(TranslationKeys.validation_invalid_barcode);
         return null;
 
       case "calories":
         if (!trimmedValue) return null; // Optional field
         const calories = Number(trimmedValue);
-        if (isNaN(calories)) return "Must be a valid number";
-        if (calories < 0) return "Cannot be negative";
-        if (calories > MAX_CALORIES) return `Must be ${MAX_CALORIES} or less`;
+        if (isNaN(calories)) return t(TranslationKeys.validation_valid_number);
+        if (calories < 0) return t(TranslationKeys.validation_non_negative);
+        if (calories > MAX_CALORIES)
+          return t(TranslationKeys.validation_max_value, { max: MAX_CALORIES });
         return null;
 
       case "fats":
         if (!trimmedValue) return null; // Optional field
         const fatValue = Number(trimmedValue);
-        if (isNaN(fatValue)) return "Must be a valid number";
-        if (fatValue < 0) return "Cannot be negative";
-        if (fatValue > MAX_FAT) return `Must be ${MAX_FAT}g or less`;
+        if (isNaN(fatValue)) return t(TranslationKeys.validation_valid_number);
+        if (fatValue < 0) return t(TranslationKeys.validation_non_negative);
+        if (fatValue > MAX_FAT) return t(TranslationKeys.validation_max_value, { max: MAX_FAT });
         return null;
 
       case "carbs":
         if (!trimmedValue) return null; // Optional field
         const carbsValue = Number(trimmedValue);
-        if (isNaN(carbsValue)) return "Must be a valid number";
-        if (carbsValue < 0) return "Cannot be negative";
-        if (carbsValue > MAX_CARBS) return `Must be ${MAX_CARBS}g or less`;
+        if (isNaN(carbsValue)) return t(TranslationKeys.validation_valid_number);
+        if (carbsValue < 0) return t(TranslationKeys.validation_non_negative);
+        if (carbsValue > MAX_CARBS)
+          return t(TranslationKeys.validation_max_value, { max: MAX_CARBS });
         return null;
 
       case "protein":
         if (!trimmedValue) return null; // Optional field
         const proteinValue = Number(trimmedValue);
-        if (isNaN(proteinValue)) return "Must be a valid number";
-        if (proteinValue < 0) return "Cannot be negative";
-        if (proteinValue > MAX_PROTEIN) return `Must be ${MAX_PROTEIN}g or less`;
+        if (isNaN(proteinValue)) return t(TranslationKeys.validation_valid_number);
+        if (proteinValue < 0) return t(TranslationKeys.validation_non_negative);
+        if (proteinValue > MAX_PROTEIN)
+          return t(TranslationKeys.validation_max_value, { max: MAX_PROTEIN });
         return null;
 
       case "sugar":
         if (!trimmedValue) return null; // Optional field
         const sugarValue = Number(trimmedValue);
-        if (isNaN(sugarValue)) return "Must be a valid number";
-        if (sugarValue < 0) return "Cannot be negative";
-        if (sugarValue > MAX_SUGAR) return `Must be ${MAX_SUGAR}g or less`;
+        if (isNaN(sugarValue)) return t(TranslationKeys.validation_valid_number);
+        if (sugarValue < 0) return t(TranslationKeys.validation_non_negative);
+        if (sugarValue > MAX_SUGAR)
+          return t(TranslationKeys.validation_max_value, { max: MAX_SUGAR });
         return null;
 
       case "fiber":
         if (!trimmedValue) return null; // Optional field
         const fiberValue = Number(trimmedValue);
-        if (isNaN(fiberValue)) return "Must be a valid number";
-        if (fiberValue < 0) return "Cannot be negative";
-        if (fiberValue > MAX_FIBER) return `Must be ${MAX_FIBER}g or less`;
+        if (isNaN(fiberValue)) return t(TranslationKeys.validation_valid_number);
+        if (fiberValue < 0) return t(TranslationKeys.validation_non_negative);
+        if (fiberValue > MAX_FIBER)
+          return t(TranslationKeys.validation_max_value, { max: MAX_FIBER });
         return null;
 
       case "salt":
         if (!trimmedValue) return null; // Optional field
         const saltValue = Number(trimmedValue);
-        if (isNaN(saltValue)) return "Must be a valid number";
-        if (saltValue < 0) return "Cannot be negative";
-        if (saltValue > MAX_SALT) return `Must be ${MAX_SALT}g or less`;
+        if (isNaN(saltValue)) return t(TranslationKeys.validation_valid_number);
+        if (saltValue < 0) return t(TranslationKeys.validation_non_negative);
+        if (saltValue > MAX_SALT) return t(TranslationKeys.validation_max_value, { max: MAX_SALT });
         return null;
 
       default:
@@ -191,7 +198,7 @@ export default function FoodCreationScreen() {
       const sugar = Number(foodData.sugar);
       const carbs = Number(foodData.carbs);
       if (!isNaN(sugar) && !isNaN(carbs) && sugar > carbs) {
-        crossErrors.sugar = "Sugar cannot exceed total carbs";
+        crossErrors.sugar = t(TranslationKeys.validation_sugar_exceeds_carbs);
       }
     }
 
@@ -200,7 +207,7 @@ export default function FoodCreationScreen() {
       const fiber = Number(foodData.fiber);
       const carbs = Number(foodData.carbs);
       if (!isNaN(fiber) && !isNaN(carbs) && fiber > carbs) {
-        crossErrors.fiber = "Fiber cannot exceed total carbs";
+        crossErrors.fiber = t(TranslationKeys.validation_fiber_exceeds_carbs);
       }
     }
 
@@ -220,7 +227,7 @@ export default function FoodCreationScreen() {
         const upperBound = calculatedCalories * 1.15;
 
         if (calories < lowerBound || calories > upperBound) {
-          crossErrors.calories = "Calories don't match macronutrients (±15% expected)";
+          crossErrors.calories = t(TranslationKeys.validation_calories_macros_mismatch);
         }
       }
     }
@@ -326,14 +333,18 @@ export default function FoodCreationScreen() {
         router.push("/(tabs)/food-diary-screen");
       } catch (error) {
         console.error("Error saving food:", error);
-        Alert.alert("Save Error", "There was a problem saving your food. Please try again.", [
-          { text: "OK" },
+        Alert.alert(t(TranslationKeys.save_error), t(TranslationKeys.save_error_message), [
+          { text: t(TranslationKeys.ok) },
         ]);
       } finally {
         setIsSaving(false);
       }
     } else {
-      Alert.alert("Validation Error", "Please correct the errors before saving.", [{ text: "OK" }]);
+      Alert.alert(
+        t(TranslationKeys.validation_error),
+        t(TranslationKeys.validation_error_message),
+        [{ text: t(TranslationKeys.ok) }]
+      );
     }
   };
 
@@ -403,19 +414,19 @@ export default function FoodCreationScreen() {
           <View style={[styles.section, { backgroundColor: surfaceColor, borderColor }]}>
             <CFoodAttributeInput
               icon={<MaterialCommunityIcons name="food-apple" />}
-              label="Food Name"
+              label={t(TranslationKeys.food_name)}
               value={foodData.name}
               onChangeText={(text) => updateFoodData("name", text)}
               isRequired={true}
               error={errors.name}
               maxLength={MAX_NAME_LENGTH}
-              placeholder="Enter food name"
+              placeholder={t(TranslationKeys.food_name_placeholder)}
               style={styles.inputContainer}
             />
 
             <CDropdown
               icon={<MaterialIcons name="category" />}
-              label="Category"
+              label={t(TranslationKeys.category)}
               options={foodCategoryOptions}
               selectedValue={foodData.category}
               onValueChange={(value) => updateFoodData("category", value)}
