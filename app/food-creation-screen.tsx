@@ -20,7 +20,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { GlobalColors, Colors } from "@/constants/Colors";
 import { _400Regular, _500Medium, _600SemiBold, _700Bold } from "@/constants/Global";
 import { FoodCategoryEnum } from "@/models/enums/enums";
-import { foodCategoryOptions } from "@/utils/foodCategories";
+import { getFoodCategoryOptions } from "@/utils/foodCategories";
 import CFoodAttributeInput from "@/components/input/CFoodAttributeInput";
 import CDropdown from "@/components/input/CDropdown";
 import CServingSizeInput from "@/components/input/CServingSizeInput";
@@ -427,7 +427,7 @@ export default function FoodCreationScreen() {
             <CDropdown
               icon={<MaterialIcons name="category" />}
               label={t(TranslationKeys.category)}
-              options={foodCategoryOptions}
+              options={getFoodCategoryOptions()}
               selectedValue={foodData.category}
               onValueChange={(value) => updateFoodData("category", value)}
               isRequired={true}
@@ -441,6 +441,7 @@ export default function FoodCreationScreen() {
               onChangeText={(text) => updateFoodData("servingSizeValue", text)}
               onUnitChange={(unit) => updateFoodData("servingSizeUnit", unit)}
               isRequired={true}
+              label={t(TranslationKeys.food_diary_entry_serving_size)}
               error={errors.servingSizeValue}
               style={styles.inputContainer}
             />
@@ -448,11 +449,13 @@ export default function FoodCreationScreen() {
             <CDivider style={styles.divider} />
 
             <View style={styles.optionalFieldsContainer}>
-              <ThemedText style={styles.optionalLabel}>Optional Information</ThemedText>
+              <ThemedText style={styles.optionalLabel}>
+                {t(TranslationKeys.optional_information)}
+              </ThemedText>
 
               <CFoodAttributeInput
                 icon={<Ionicons name="pricetag-outline" />}
-                label="Brand"
+                label={t(TranslationKeys.brand)}
                 value={foodData.brand}
                 onChangeText={(text) => updateFoodData("brand", text)}
                 style={styles.inputContainer}
@@ -460,11 +463,11 @@ export default function FoodCreationScreen() {
 
               <CFoodAttributeInput
                 icon={<MaterialCommunityIcons name="barcode" />}
-                label="Barcode"
+                label={t(TranslationKeys.barcode)}
                 value={foodData.barcode}
                 onChangeText={(text) => updateFoodData("barcode", text)}
                 keyboardType="number-pad"
-                placeholder="Enter 8-14 digit barcode"
+                placeholder={t(TranslationKeys.barcode_placeholder)}
                 error={errors.barcode}
                 style={styles.inputContainer}
               />
@@ -481,7 +484,7 @@ export default function FoodCreationScreen() {
             style={styles.gradientHeader}>
             <FontAwesome5 name="apple-alt" size={18} color={primaryColor} />
             <ThemedText type="subtitle" style={styles.sectionTitle}>
-              Nutritional Information (100g)
+              {t(TranslationKeys.nutritional_information)}
             </ThemedText>
           </LinearGradient>
 
@@ -490,35 +493,37 @@ export default function FoodCreationScreen() {
               <View style={styles.macroColumn}>
                 <CFoodAttributeInput
                   icon={<MaterialCommunityIcons name="fire" />}
-                  label="Calories"
+                  label={t(TranslationKeys.calories)}
                   value={foodData.calories}
                   onChangeText={(text) => updateFoodData("calories", text)}
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="kcal"
                   error={errors.calories}
-                  placeholder="0-900"
+                  placeholder={t(TranslationKeys.calories_placeholder)}
                   style={styles.inputContainer}
                 />
               </View>
             </View>
 
             <View style={styles.macroGroupLabel}>
-              <ThemedText style={styles.macroGroupText}>Macronutrients</ThemedText>
+              <ThemedText style={styles.macroGroupText}>
+                {t(TranslationKeys.macronutrients)}
+              </ThemedText>
             </View>
 
             <View style={styles.macroRow}>
               <View style={styles.macroColumn}>
                 <CFoodAttributeInput
                   icon={<MaterialCommunityIcons name="oil" />}
-                  label="Fats"
+                  label={t(TranslationKeys.fats)}
                   value={foodData.fats}
                   onChangeText={(text) => updateFoodData("fats", text)}
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="g"
                   error={errors.fats}
-                  placeholder="0-100"
+                  placeholder={t(TranslationKeys.fats_placeholder)}
                   style={styles.inputContainer}
                 />
               </View>
@@ -528,14 +533,14 @@ export default function FoodCreationScreen() {
               <View style={styles.macroColumn}>
                 <CFoodAttributeInput
                   icon={<MaterialCommunityIcons name="grain" />}
-                  label="Carbs"
+                  label={t(TranslationKeys.carbs)}
                   value={foodData.carbs}
                   onChangeText={(text) => updateFoodData("carbs", text)}
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="g"
                   error={errors.carbs}
-                  placeholder="0-100"
+                  placeholder={t(TranslationKeys.carbs_placeholder)}
                   style={styles.inputContainer}
                 />
               </View>
@@ -544,27 +549,27 @@ export default function FoodCreationScreen() {
             <View style={styles.subMacroContainer}>
               <CFoodAttributeInput
                 icon={<MaterialCommunityIcons name="cube-outline" />}
-                label="Sugar"
+                label={t(TranslationKeys.sugar)}
                 value={foodData.sugar}
                 onChangeText={(text) => updateFoodData("sugar", text)}
                 keyboardType="numeric"
                 isNumeric={true}
                 unit="g"
                 error={errors.sugar}
-                placeholder="0-100"
+                placeholder={t(TranslationKeys.sugar_placeholder)}
                 style={[styles.inputContainer, styles.subMacroInput]}
               />
 
               <CFoodAttributeInput
                 icon={<MaterialCommunityIcons name="nutrition" />}
-                label="Fiber"
+                label={t(TranslationKeys.fiber)}
                 value={foodData.fiber}
                 onChangeText={(text) => updateFoodData("fiber", text)}
                 keyboardType="numeric"
                 isNumeric={true}
                 unit="g"
                 error={errors.fiber}
-                placeholder="0-50"
+                placeholder={t(TranslationKeys.fiber_placeholder)}
                 style={[styles.inputContainer, styles.subMacroInput]}
               />
             </View>
@@ -573,35 +578,35 @@ export default function FoodCreationScreen() {
               <View style={styles.macroColumn}>
                 <CFoodAttributeInput
                   icon={<MaterialCommunityIcons name="food-steak" />}
-                  label="Protein"
+                  label={t(TranslationKeys.protein)}
                   value={foodData.protein}
                   onChangeText={(text) => updateFoodData("protein", text)}
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="g"
                   error={errors.protein}
-                  placeholder="0-100"
+                  placeholder={t(TranslationKeys.protein_placeholder)}
                   style={styles.inputContainer}
                 />
               </View>
             </View>
 
             <View style={styles.macroGroupLabel}>
-              <ThemedText style={styles.macroGroupText}>Other</ThemedText>
+              <ThemedText style={styles.macroGroupText}>{t(TranslationKeys.other)}</ThemedText>
             </View>
 
             <View style={styles.macroRow}>
               <View style={styles.macroColumn}>
                 <CFoodAttributeInput
                   icon={<MaterialCommunityIcons name="shaker-outline" />}
-                  label="Salt"
+                  label={t(TranslationKeys.salt)}
                   value={foodData.salt}
                   onChangeText={(text) => updateFoodData("salt", text)}
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="g"
                   error={errors.salt}
-                  placeholder="0-100"
+                  placeholder={t(TranslationKeys.salt_placeholder)}
                   style={styles.inputContainer}
                 />
               </View>
@@ -622,7 +627,7 @@ export default function FoodCreationScreen() {
           ]}>
           <MaterialIcons name="save" size={24} color="#fff" />
           <ThemedText style={styles.saveButtonText} type="defaultSemiBold">
-            Save Food
+            {t(TranslationKeys.save_food)}
           </ThemedText>
         </Pressable>
       </ScrollView>
@@ -659,7 +664,7 @@ const styles = StyleSheet.create({
   sectionContainer: {
     marginHorizontal: 16,
     marginTop: 16,
-    marginBottom: 8,
+    marginBottom: -4,
   },
   section: {
     borderRadius: 12,
@@ -688,18 +693,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   inputContainer: {
-    marginBottom: 12,
+    marginBottom: 0,
     borderRadius: 10,
   },
   divider: {
-    marginVertical: 16,
+    marginVertical: 10,
   },
   optionalFieldsContainer: {
     marginTop: 4,
   },
   optionalLabel: {
     fontSize: 14,
-    marginBottom: 12,
+    marginBottom: 4,
     fontFamily: _500Medium,
     textAlign: "center",
   },
@@ -735,7 +740,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: 16,
     marginTop: 16,
-    marginBottom: 24,
+    marginBottom: 12,
     paddingVertical: 14,
     borderRadius: 12,
     shadowColor: "#000",

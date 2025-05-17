@@ -23,11 +23,13 @@ export interface CServingSizeInputProps {
   isRequired?: boolean;
   error?: string;
   style?: StyleProp<ViewStyle>;
+  label?: string;
 }
 
 const CServingSizeInput: React.FC<CServingSizeInputProps> = ({
   value,
   unit,
+  label = "Serving Size",
   onChangeText,
   onUnitChange,
   placeholder = "100",
@@ -72,7 +74,7 @@ const CServingSizeInput: React.FC<CServingSizeInputProps> = ({
       <View style={styles.labelRow}>
         <MaterialCommunityIcons name="food-variant" size={20} color={iconColor} />
         <ThemedText style={[styles.label /*{ color: textColor }*/]}>
-          Serving Size
+          {label}
           {isRequired && <Text style={[styles.required, { color: errorColor }]}>*</Text>}
         </ThemedText>
       </View>

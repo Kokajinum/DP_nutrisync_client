@@ -174,5 +174,23 @@
     "save_error_message": "Při ukládání potraviny došlo k problému. Zkuste to prosím znovu.",
     "validation_error": "Chyba validace",
     "validation_error_message": "Před uložením opravte chyby.",
-    "ok": "OK"
+    "ok": "OK",
+
+    "fruit": "Ovoce",
+    "vegetables": "Zelenina",
+    "meat": "Maso",
+    "fish_and_seafood": "Ryby a mořské plody",
+    "dairy": "Mléčné výrobky",
+    "eggs": "Vejce",
+    "bread_and_bakery": "Pečivo",
+    "cereals_and_grains": "Obiloviny a zrna",
+    "legumes": "Luštěniny",
+    "nuts_and_seeds": "Ořechy a semena",
+    "fats_and_oils": "Tuky a oleje",
+    "sweets": "Sladkosti",
+    "snacks": "Svačiny",
+    "beverages": "Nápoje",
+    "alcohol": "Alkohol",
+    "condiments": "Koření a dochucovadla",
+    "prepared_meals": "Hotová jídla"
 }

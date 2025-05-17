@@ -174,5 +174,24 @@
     "save_error_message": "There was a problem saving your food. Please try again.",
     "validation_error": "Validation Error",
     "validation_error_message": "Please correct the errors before saving.",
-    "ok": "OK"
+    "ok": "OK",
+
+    "fruit": "Fruit",
+    "vegetables": "Vegetables",
+    "meat": "Meat",
+    "fish_and_seafood": "Fish & Seafood",
+    "dairy": "Dairy",
+    "eggs": "Eggs",
+    "bread_and_bakery": "Bread & Bakery",
+    "cereals_and_grains": "Cereals & Grains",
+    "legumes": "Legumes",
+    "nuts_and_seeds": "Nuts & Seeds",
+    "fats_and_oils": "Fats & Oils",
+    "sweets": "Sweets",
+    "snacks": "Snacks",
+    "beverages": "Beverages",
+    "alcohol": "Alcohol",
+    "condiments": "Condiments",
+    "prepared_meals": "Prepared Meals",
+    "other": "Other"
 }

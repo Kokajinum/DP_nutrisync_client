@@ -1,22 +1,28 @@
 import { FoodCategoryEnum } from "@/models/enums/enums";
+import { useTranslation } from "react-i18next";
+import { TranslationKeys } from "@/translations/translations";
 
-export const foodCategoryOptions = [
-  { label: "Fruit", value: FoodCategoryEnum.FRUIT },
-  { label: "Vegetables", value: FoodCategoryEnum.VEGETABLES },
-  { label: "Meat", value: FoodCategoryEnum.MEAT },
-  { label: "Fish & Seafood", value: FoodCategoryEnum.FISH_AND_SEAFOOD },
-  { label: "Dairy", value: FoodCategoryEnum.DAIRY },
-  { label: "Eggs", value: FoodCategoryEnum.EGGS },
-  { label: "Bread & Bakery", value: FoodCategoryEnum.BREAD_AND_BAKERY },
-  { label: "Cereals & Grains", value: FoodCategoryEnum.CEREALS_AND_GRAINS },
-  { label: "Legumes", value: FoodCategoryEnum.LEGUMES },
-  { label: "Nuts & Seeds", value: FoodCategoryEnum.NUTS_AND_SEEDS },
-  { label: "Fats & Oils", value: FoodCategoryEnum.FATS_AND_OILS },
-  { label: "Sweets", value: FoodCategoryEnum.SWEETS },
-  { label: "Snacks", value: FoodCategoryEnum.SNACKS },
-  { label: "Beverages", value: FoodCategoryEnum.BEVERAGES },
-  { label: "Alcohol", value: FoodCategoryEnum.ALCOHOL },
-  { label: "Condiments", value: FoodCategoryEnum.CONDIMENTS },
-  { label: "Prepared Meals", value: FoodCategoryEnum.PREPARED_MEALS },
-  { label: "Other", value: FoodCategoryEnum.OTHER },
-];
+export const getFoodCategoryOptions = () => {
+  const { t } = useTranslation();
+
+  return [
+    { label: t(TranslationKeys.fruit), value: FoodCategoryEnum.FRUIT },
+    { label: t(TranslationKeys.vegetables), value: FoodCategoryEnum.VEGETABLES },
+    { label: t(TranslationKeys.meat), value: FoodCategoryEnum.MEAT },
+    { label: t(TranslationKeys.fish_and_seafood), value: FoodCategoryEnum.FISH_AND_SEAFOOD },
+    { label: t(TranslationKeys.dairy), value: FoodCategoryEnum.DAIRY },
+    { label: t(TranslationKeys.eggs), value: FoodCategoryEnum.EGGS },
+    { label: t(TranslationKeys.bread_and_bakery), value: FoodCategoryEnum.BREAD_AND_BAKERY },
+    { label: t(TranslationKeys.cereals_and_grains), value: FoodCategoryEnum.CEREALS_AND_GRAINS },
+    { label: t(TranslationKeys.legumes), value: FoodCategoryEnum.LEGUMES },
+    { label: t(TranslationKeys.nuts_and_seeds), value: FoodCategoryEnum.NUTS_AND_SEEDS },
+    { label: t(TranslationKeys.fats_and_oils), value: FoodCategoryEnum.FATS_AND_OILS },
+    { label: t(TranslationKeys.sweets), value: FoodCategoryEnum.SWEETS },
+    { label: t(TranslationKeys.snacks), value: FoodCategoryEnum.SNACKS },
+    { label: t(TranslationKeys.beverages), value: FoodCategoryEnum.BEVERAGES },
+    { label: t(TranslationKeys.alcohol), value: FoodCategoryEnum.ALCOHOL },
+    { label: t(TranslationKeys.condiments), value: FoodCategoryEnum.CONDIMENTS },
+    { label: t(TranslationKeys.prepared_meals), value: FoodCategoryEnum.PREPARED_MEALS },
+    { label: t(TranslationKeys.other), value: FoodCategoryEnum.OTHER },
+  ];
+};
