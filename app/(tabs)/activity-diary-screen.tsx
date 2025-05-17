@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Pressable } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
@@ -16,24 +16,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import CActivitySessionCard, { ActivitySession } from "@/components/cards/CActivitySessionCard";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from "@/context/AuthProvider";
-
-// Dummy data for demonstration
-const dummyGymSessions: ActivitySession[] = [
-  {
-    id: "1",
-    startTime: "2025-05-17T14:30:00",
-    caloriesBurned: 320,
-    exerciseCount: 5,
-    notes: "Trénink zaměřený na horní část těla",
-  },
-  {
-    id: "2",
-    startTime: "2025-05-16T16:00:00",
-    caloriesBurned: 450,
-    exerciseCount: 7,
-    notes: "Kardio a nohy",
-  },
-];
+import { useActivityDiaryStore } from "@/stores/activityDiaryStore";
 
 export default function ActivityDiaryScreen() {
   const { getFormattedDate, selectedDate } = useDateStore();
@@ -49,45 +32,56 @@ export default function ActivityDiaryScreen() {
   const surfaceColor = useThemeColor({}, "surface");
   const borderColor = useThemeColor({}, "outline");
 
-  // Filter sessions by selected date (in a real app, this would come from API/database)
-  const [sessions, setSessions] = useState<ActivitySession[]>(
-    dummyGymSessions.filter(
-      (session) =>
-        new Date(session.startTime).toDateString() === new Date(selectedDate).toDateString()
-    )
-  );
+  // Activity diary store
+  const {
+    sessions: diaryEntries,
+    loading,
+    getSessionsByDate,
+    getTotalCaloriesBurnedForDate,
+    transformToActivitySession,
+    startNewSession,
+  } = useActivityDiaryStore();
+
+  // Transform ActivityDiary entries to ActivitySession format for UI
+  const sessions: ActivitySession[] = diaryEntries.map(transformToActivitySession);
+
+  // Fetch sessions when selected date changes
+  useEffect(() => {
+    if (user?.id) {
+      getSessionsByDate(user.id, new Date(selectedDate));
+    }
+  }, [user?.id, selectedDate, getSessionsByDate]);
 
   // Calculate total calories burned
-  const totalCaloriesBurned = sessions.reduce(
-    (total, session) => total + session.caloriesBurned,
-    0
-  );
+  const totalCaloriesBurned = getTotalCaloriesBurnedForDate(new Date(selectedDate));
 
-  // Calorie goal (in a real app, this would come from user profile)
-  const calorieGoal = 600;
+  // Calorie goal from user profile or default
+  const calorieGoal = userProfile?.calorie_goal_value || 600;
   const calorieProgress = Math.min(totalCaloriesBurned / calorieGoal, 1);
 
   // Handle adding a new session
-  const handleAddSession = () => {
-    // In a real app, this would navigate to a form to create a new session
-    console.log("Add new session");
+  const handleAddSession = async () => {
+    if (!user?.id) {
+      console.warn("User not logged in");
+      return;
+    }
 
-    // For demonstration, add a dummy session
-    const newSession: ActivitySession = {
-      id: `${Date.now()}`,
-      startTime: new Date().toISOString(),
-      caloriesBurned: 150,
-      exerciseCount: 3,
-      notes: "Nový trénink",
-    };
-
-    setSessions([...sessions, newSession]);
+    const success = await startNewSession(user.id);
+    if (success) {
+      // Navigate to the session detail screen with the active session
+      router.push({
+        pathname: "/gym-session-detail-screen",
+      });
+    }
   };
 
   // Handle session press
   const handleSessionPress = (session: ActivitySession) => {
-    // In a real app, this would navigate to the session detail screen
-    console.log("Session pressed:", session.id);
+    // Navigate to the session detail screen
+    router.push({
+      pathname: "/gym-session-detail-screen",
+      params: { id: session.id },
+    });
   };
 
   return (
@@ -114,6 +108,8 @@ export default function ActivityDiaryScreen() {
         )}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
+        refreshing={loading}
+        onRefresh={() => user?.id && getSessionsByDate(user.id, new Date(selectedDate))}
         ListHeaderComponent={
           <View>
             {/* Calorie Summary Card */}

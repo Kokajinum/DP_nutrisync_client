@@ -97,6 +97,12 @@ export default function RootLayout() {
                   <Stack.Screen
                     name="food-creation-screen"
                     options={{ headerShown: true }}></Stack.Screen>
+                  <Stack.Screen
+                    name="gym-session-detail-screen"
+                    options={{ headerShown: true }}></Stack.Screen>
+                  <Stack.Screen
+                    name="exercise-selection-screen"
+                    options={{ headerShown: true }}></Stack.Screen>
                 </Stack>
                 <ThemedStatusBar />
               </I18nextProvider>
