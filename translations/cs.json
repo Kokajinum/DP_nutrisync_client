@@ -1,4 +1,13 @@
 {
+    "activity_diary_header": "Deník aktivit",
+    "activity_diary_sessions": "Tréninky",
+    "activity_diary_no_sessions": "Žádné tréninky pro",
+    "activity_diary_add_session": "Přidat nový trénink",
+    "activity_diary_calories_burned": "Spálené kalorie",
+    "activity_diary_exercise_count": "Počet cviků",
+    "activity_diary_start_time": "Začátek",
+    "activity_diary_notes": "Poznámky",
+    
     "welcome": "Vítejte v aplikaci NutriSync",
     "app_name": "NutriSynq",
     "personal_guide": "Váš osobní průvodce zdravým životním stylem.",

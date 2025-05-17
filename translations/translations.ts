@@ -1,4 +1,14 @@
 export enum TranslationKeys {
+  // Activity diary
+  activity_diary_header = "activity_diary_header",
+  activity_diary_sessions = "activity_diary_sessions",
+  activity_diary_no_sessions = "activity_diary_no_sessions",
+  activity_diary_add_session = "activity_diary_add_session",
+  activity_diary_calories_burned = "activity_diary_calories_burned",
+  activity_diary_exercise_count = "activity_diary_exercise_count",
+  activity_diary_start_time = "activity_diary_start_time",
+  activity_diary_notes = "activity_diary_notes",
+
   welcome = "welcome",
   app_name = "app_name",
   personal_guide = "personal_guide",

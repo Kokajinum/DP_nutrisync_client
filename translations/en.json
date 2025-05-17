@@ -1,4 +1,13 @@
 {
+    "activity_diary_header": "Activity Diary",
+    "activity_diary_sessions": "Gym Sessions",
+    "activity_diary_no_sessions": "No gym sessions for",
+    "activity_diary_add_session": "Add New Session",
+    "activity_diary_calories_burned": "Calories Burned",
+    "activity_diary_exercise_count": "Exercise Count",
+    "activity_diary_start_time": "Start Time",
+    "activity_diary_notes": "Notes",
+    
     "welcome": "Welcome to NutriSync",
     "app_name": "NutriSync",
     "personal_guide": "Your personal guide to a healthy lifestyle.",
