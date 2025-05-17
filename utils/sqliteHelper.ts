@@ -1,6 +1,7 @@
 import * as SQLite from "expo-sqlite";
 import { ensureError } from "./methods";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import { seedExerciseData } from "./exerciseData";
 
 type ColumnDefinition =
   | "TEXT"
@@ -102,6 +103,11 @@ export async function initDb() {
   await db.createTableIfNotExists(dailyDiarySchema);
   await db.createTableIfNotExists(diaryFoodEntrySchema);
   await db.createTableIfNotExists(offlineQueueSchema);
+  await db.createTableIfNotExists(exercisesSchema);
+  await db.createTableIfNotExists(exerciseLocalizationsSchema);
+
+  // Seed exercise data after tables are created
+  await seedExerciseData();
 }
 
 export const userProfilesSchema: TableSchema = {
@@ -215,9 +221,37 @@ export const offlineQueueSchema: TableSchema = {
   },
 };
 
-/**
- * Normalizuje hodnoty objektu pro SQLite:
- */
+//#region exercises data
+export const exercisesSchema: TableSchema = {
+  name: "exercises",
+  columns: {
+    id: "TEXT PRIMARY KEY",
+    name: "TEXT NOT NULL",
+    slug: "TEXT NOT NULL",
+    modality: "TEXT NOT NULL",
+    tracking_mode: "TEXT NOT NULL",
+    met: "REAL NOT NULL",
+    kcal_per_kg_rep: "REAL",
+    equipment: "TEXT",
+    description: "TEXT",
+    created_at: "TEXT",
+    updated_at: "TEXT",
+  },
+};
+
+export const exerciseLocalizationsSchema: TableSchema = {
+  name: "exercise_localizations",
+  columns: {
+    id: "TEXT PRIMARY KEY",
+    exercise_id: "TEXT NOT NULL",
+    locale: "TEXT NOT NULL",
+    name: "TEXT NOT NULL",
+    description: "TEXT",
+  },
+};
+
+//#endregion
+
 export function normalizeForSqlite<T extends Record<string, any>>(obj: T): Record<string, any> {
   const result: Record<string, any> = {};
 
