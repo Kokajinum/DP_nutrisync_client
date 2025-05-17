@@ -105,6 +105,8 @@ export async function initDb() {
   await db.createTableIfNotExists(offlineQueueSchema);
   await db.createTableIfNotExists(exercisesSchema);
   await db.createTableIfNotExists(exerciseLocalizationsSchema);
+  await db.createTableIfNotExists(activityDiarySchema);
+  await db.createTableIfNotExists(activityDiaryEntrySchema);
 
   // Seed exercise data after tables are created
   await seedExerciseData();
@@ -247,6 +249,37 @@ export const exerciseLocalizationsSchema: TableSchema = {
     locale: "TEXT NOT NULL",
     name: "TEXT NOT NULL",
     description: "TEXT",
+  },
+};
+
+//#endregion
+
+//#region Activity diary data
+
+export const activityDiarySchema: TableSchema = {
+  name: "activity_diary",
+  columns: {
+    id: "TEXT PRIMARY KEY",
+    user_id: "TEXT NOT NULL",
+    start_at: "TEXT NOT NULL",
+    end_at: "TEXT",
+    bodyweight_kg: "REAL",
+    notes: "TEXT",
+    created_at: "TEXT",
+    updated_at: "TEXT",
+  },
+};
+
+export const activityDiaryEntrySchema: TableSchema = {
+  name: "activity_diary_entry",
+  columns: {
+    id: "TEXT PRIMARY KEY",
+    diary_id: "TEXT NOT NULL",
+    exercise_id: "TEXT NOT NULL",
+    sets_json: "TEXT NOT NULL",
+    est_kcal: "REAL",
+    notes: "TEXT",
+    created_at: "TEXT",
   },
 };
 
