@@ -9,6 +9,7 @@ import {
   ExerciseSet,
   CreateActivityDiaryDto,
   ActivityDiaryEntryDto,
+  ActivityDiaryResponseDto,
 } from "../models/interfaces/ActivityDiary";
 import { format, isEqual, parseISO, startOfDay } from "date-fns";
 import { ActivitySession } from "../components/cards/CActivitySessionCard";
@@ -28,7 +29,7 @@ interface ActivityDiaryState {
   addSet: (entryId: string, set: ExerciseSet) => Promise<void>;
   updateSet: (entryId: string, index: number, updatedSet: ExerciseSet) => Promise<void>;
   removeSet: (entryId: string, index: number) => Promise<void>;
-  completeSession: () => Promise<boolean>;
+  completeSession: () => Promise<string | false>;
   getSessionById: (id: string) => Promise<ActivityDiary | null>;
   loadActiveSession: (userId: string) => Promise<void>;
 
@@ -293,46 +294,29 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
     const { activeSession } = get();
     if (!activeSession) return false;
 
-    // Check network connectivity
-    const netInfo = await NetInfo.fetch();
-    if (!netInfo.isConnected) {
-      console.error("Cannot complete session: No internet connection");
-      return false;
-    }
-
     try {
       const endTime = new Date().toISOString();
+      const sessionId = activeSession.id;
 
       // Update in SQLite
       await db.runAsync(`UPDATE activity_diary SET end_at = ?, updated_at = ? WHERE id = ?`, [
         endTime,
         new Date().toISOString(),
-        activeSession.id,
+        sessionId,
       ]);
 
-      // Prepare DTO for backend
-      const createDto: CreateActivityDiaryDto = {
-        id: activeSession.id,
-        start_at: activeSession.start_at,
+      // Update the session in the store
+      const completedSession = {
+        ...activeSession,
         end_at: endTime,
-        notes: activeSession.notes,
-        bodyweight_kg: activeSession.bodyweight_kg,
-        entries:
-          activeSession.entries?.map((entry) => ({
-            id: entry.id,
-            exercise_id: entry.exercise_id,
-            sets_json: JSON.parse(entry.sets_json || "[]"),
-            est_kcal: entry.est_kcal,
-            notes: entry.notes,
-          })) || [],
+        updated_at: new Date().toISOString(),
       };
 
-      // Here we would send data to the backend
-      // This will be implemented in a future task
-      console.log("Session completed, ready to send to backend:", createDto);
-
+      // Clear the active session
       set({ activeSession: null });
-      return true;
+
+      // Return the session ID so it can be used for syncing
+      return sessionId;
     } catch (error) {
       console.error("Failed to complete session:", error);
       return false;

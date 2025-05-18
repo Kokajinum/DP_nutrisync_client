@@ -10,6 +10,7 @@ import {
   Dimensions,
   Pressable,
 } from "react-native";
+import { ActivityDiarySyncHandler } from "@/components/ActivityDiarySyncHandler";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
@@ -42,6 +43,7 @@ const GymSessionDetailScreen = () => {
   const [session, setSession] = useState(activeSession);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(true);
+  const [completedSessionId, setCompletedSessionId] = useState<string | null>(null);
   const carouselRef = useRef(null);
   const { width: screenWidth } = Dimensions.get("window");
 
@@ -97,7 +99,12 @@ const GymSessionDetailScreen = () => {
   };
 
   const handleCompleteSession = async () => {
-    if (await completeSession()) {
+    const result = await completeSession();
+    if (result) {
+      // If result is a string, it's the session ID
+      if (typeof result === "string") {
+        setCompletedSessionId(result);
+      }
       router.back();
     }
   };
@@ -151,6 +158,9 @@ const GymSessionDetailScreen = () => {
 
   return (
     <ThemedView style={styles.container}>
+      {/* ActivityDiarySyncHandler - invisible component that handles syncing */}
+      <ActivityDiarySyncHandler onSessionId={completedSessionId} />
+
       {/* Header */}
       <ThemedStackScreen
         options={{

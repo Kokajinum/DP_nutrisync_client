@@ -17,6 +17,8 @@ import CActivitySessionCard, { ActivitySession } from "@/components/cards/CActiv
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from "@/context/AuthProvider";
 import { useActivityDiaryStore } from "@/stores/activityDiaryStore";
+import { useActivityDiaryByDate } from "@/hooks/useActivityDiaryRepository";
+import { format } from "date-fns";
 
 export default function ActivityDiaryScreen() {
   const { getFormattedDate, selectedDate } = useDateStore();
@@ -43,6 +45,11 @@ export default function ActivityDiaryScreen() {
     loadActiveSession,
   } = useActivityDiaryStore();
 
+  // Use the hook to fetch activity diary data from the server
+  const { data: remoteActivityDiary, isLoading: isRemoteLoading } = useActivityDiaryByDate(
+    new Date(selectedDate)
+  );
+
   // Transform ActivityDiary entries to ActivitySession format for UI
   const sessions: ActivitySession[] = diaryEntries.map(transformToActivitySession);
 
@@ -54,6 +61,28 @@ export default function ActivityDiaryScreen() {
       loadActiveSession(user.id);
     }
   }, [user?.id, selectedDate, getSessionsByDate, loadActiveSession]);
+
+  // If there are no local sessions and we have remote data, transform and use it
+  useEffect(() => {
+    if (sessions.length === 0 && remoteActivityDiary && !loading) {
+      console.log("No local sessions found, using remote data:", remoteActivityDiary);
+
+      // Create a session from the remote data
+      const remoteSession: ActivitySession = {
+        id: remoteActivityDiary.id,
+        startTime: remoteActivityDiary.start_at,
+        caloriesBurned:
+          remoteActivityDiary.entries?.reduce((total, entry) => total + (entry.est_kcal || 0), 0) ||
+          0,
+        exerciseCount: remoteActivityDiary.entries?.length || 0,
+        notes: remoteActivityDiary.notes || "",
+      };
+
+      // We don't modify the store directly, but we can add the remote session to our UI
+      // This is a temporary solution until we implement proper syncing
+      sessions.push(remoteSession);
+    }
+  }, [sessions.length, remoteActivityDiary, loading]);
 
   // Calculate total calories burned
   const totalCaloriesBurned = getTotalCaloriesBurnedForDate(new Date(selectedDate));
@@ -97,10 +126,10 @@ export default function ActivityDiaryScreen() {
       />
 
       <CDatePicker
-        dateFormat="full"
-        showDayName={false}
-        compact={true}
-        arrowSize={20}
+        dateFormat="long"
+        // showDayName={false}
+        // compact={true}
+        // arrowSize={20}
         style={styles.datePicker}
       />
 

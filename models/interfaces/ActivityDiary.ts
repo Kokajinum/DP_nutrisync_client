@@ -67,3 +67,20 @@ export interface ActivityDiaryEntryResponseDto {
   notes: string;
   created_at: string;
 }
+
+// Repository interface for activity diary
+export interface ActivityDiaryRepository {
+  /**
+   * Save activity diary to the server
+   * @param diary The activity diary to save
+   * @returns The saved activity diary or null if failed
+   */
+  saveActivityDiary(diary: CreateActivityDiaryDto): Promise<ActivityDiaryResponseDto | null>;
+
+  /**
+   * Get activity diary by date
+   * @param date The date in ISO format (YYYY-MM-DD)
+   * @returns The activity diary or null if not found
+   */
+  getActivityDiaryByDate(date: string): Promise<ActivityDiaryResponseDto | null>;
+}

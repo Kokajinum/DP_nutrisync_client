@@ -11,12 +11,17 @@ import { DailyDiaryRepository } from "../models/interfaces/DailyDiaryRepository"
 import { LocalDailyDiaryRepository } from "../utils/repositories/local/LocalDailyDiaryRepository";
 import { RemoteDailyDiaryRepository } from "../utils/repositories/remote/RemoteDailyDiaryRepository";
 import { CompositeDailyDiaryRepository } from "../utils/repositories/CompositeDailyDiaryRepository";
+import { ActivityDiaryRepository } from "../models/interfaces/ActivityDiary";
+import { LocalActivityDiaryRepository } from "../utils/repositories/local/LocalActivityDiaryRepository";
+import { RemoteActivityDiaryRepository } from "../utils/repositories/remote/RemoteActivityDiaryRepository";
+import { CompositeActivityDiaryRepository } from "../utils/repositories/CompositeActivityDiaryRepository";
 import { useAuth } from "./AuthProvider";
 
 interface RepositoriesContextType {
   profileRepository: ProfileRepository;
   foodRepository: FoodRepository;
   dailyDiaryRepository: DailyDiaryRepository;
+  activityDiaryRepository: ActivityDiaryRepository;
   // other repositories
 }
 
@@ -58,10 +63,19 @@ export const RepositoriesProvider: React.FC<{ children: React.ReactNode }> = ({ 
       remoteDailyDiaryRepository
     );
 
+    // Create activity diary repositories
+    const localActivityDiaryRepository = new LocalActivityDiaryRepository();
+    const remoteActivityDiaryRepository = new RemoteActivityDiaryRepository(restManager);
+    const activityDiaryRepository = new CompositeActivityDiaryRepository(
+      localActivityDiaryRepository,
+      remoteActivityDiaryRepository
+    );
+
     return {
       profileRepository,
       foodRepository,
       dailyDiaryRepository,
+      activityDiaryRepository,
       // other repositories
     };
   }, [restManager]);
@@ -93,4 +107,12 @@ export const useDailyDiaryRepository = () => {
     throw new Error("useDailyDiaryRepository must be used within a RepositoriesProvider");
   }
   return context.dailyDiaryRepository;
+};
+
+export const useActivityDiaryRepository = () => {
+  const context = useContext(RepositoriesContext);
+  if (!context) {
+    throw new Error("useActivityDiaryRepository must be used within a RepositoriesProvider");
+  }
+  return context.activityDiaryRepository;
 };

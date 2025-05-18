@@ -4,6 +4,10 @@ import { DailyDiaryResponseDto } from "@/models/interfaces/DailyDiaryResponseDto
 import { FoodDiaryEntryResponseDto } from "@/models/interfaces/FoodDiaryEntryResponseDto";
 import { CreateFoodDiaryEntryDto } from "@/models/interfaces/CreateFoodDiaryEntryDto";
 import { SearchOptions, SearchResult } from "@/models/interfaces/FoodDataRepository";
+import {
+  ActivityDiaryResponseDto,
+  CreateActivityDiaryDto,
+} from "@/models/interfaces/ActivityDiary";
 import RestManager from "./restManager";
 import { ensureError } from "../methods";
 
@@ -276,6 +280,44 @@ export const deleteFoodDiaryEntry = async (
     const error: Error = ensureError(exception);
     console.error("Error deleting food diary entry:", error.message);
     return false;
+  }
+};
+
+//#endregion
+
+//#region Activity Diary
+
+// Activity Diary API functions
+export const saveActivityDiary = async (
+  restManager: RestManager,
+  diary: CreateActivityDiaryDto
+): Promise<ActivityDiaryResponseDto | null> => {
+  try {
+    const response = await restManager.post<ActivityDiaryResponseDto>(
+      "/diary/activity",
+      diary as any
+    );
+    return response.data;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error saving activity diary:", error.message);
+    return null;
+  }
+};
+
+export const getActivityDiaryByDate = async (
+  restManager: RestManager,
+  date: string
+): Promise<ActivityDiaryResponseDto | null> => {
+  try {
+    const response = await restManager.get<ActivityDiaryResponseDto>(
+      `/diary/activity/date?date=${date}`
+    );
+    return response.data;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error fetching activity diary by date:", error.message);
+    return null;
   }
 };
 
