@@ -212,6 +212,7 @@
     "validation_error": "Chyba validace",
     "validation_error_message": "Před uložením opravte chyby.",
     "ok": "OK",
+    "internet_required": "Pro provedení této akce je potřeba připojení k internetu.",
 
     "fruit": "Ovoce",
     "vegetables": "Zelenina",

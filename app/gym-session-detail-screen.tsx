@@ -10,6 +10,8 @@ import {
   Dimensions,
   Pressable,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { ActivityDiarySyncHandler } from "@/components/ActivityDiarySyncHandler";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -27,6 +29,7 @@ import CNumberInput from "../components/input/CNumberInput";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { TranslationKeys } from "@/translations/translations";
 import { t } from "i18next";
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 
 const GymSessionDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -40,6 +43,7 @@ const GymSessionDetailScreen = () => {
     updateSet,
     completeSession,
     loadActiveSession,
+    removeLastSet,
   } = useActivityDiaryStore();
   const [session, setSession] = useState(activeSession);
   const [notes, setNotes] = useState("");
@@ -114,33 +118,47 @@ const GymSessionDetailScreen = () => {
   };
 
   const handleCompleteSession = async () => {
-    // Show confirmation dialog
-    Alert.alert(
-      t(TranslationKeys.gym_session_detail_complete_title),
-      t(TranslationKeys.gym_session_detail_complete_message),
-      [
-        {
-          text: t(TranslationKeys.cancel),
-          style: "cancel",
-        },
-        {
-          text: t(TranslationKeys.gym_session_detail_complete),
-          onPress: async () => {
-            const result = await completeSession();
-            if (result) {
-              // If result is a string, it's the session ID
-              if (typeof result === "string") {
-                setCompletedSessionId(result);
-                setIsCompleted(true);
-                setIsSynced(true);
-              }
-              // Don't navigate back, let user see the completed state
-              // router.back();
-            }
+    const { isConnected } = useNetInfo();
+    if (isConnected) {
+      // Show confirmation dialog
+      Alert.alert(
+        t(TranslationKeys.gym_session_detail_complete_title),
+        t(TranslationKeys.gym_session_detail_complete_message),
+        [
+          {
+            text: t(TranslationKeys.cancel),
+            style: "cancel",
           },
-        },
-      ]
-    );
+          {
+            text: t(TranslationKeys.gym_session_detail_complete),
+            onPress: async () => {
+              const result = await completeSession();
+              if (result) {
+                // If result is a string, it's the session ID
+                if (typeof result === "string") {
+                  setCompletedSessionId(result);
+                  setIsCompleted(true);
+                  setIsSynced(true);
+                }
+                // Don't navigate back, let user see the completed state
+                // router.back();
+              }
+            },
+          },
+        ]
+      );
+    } else {
+      Alert.alert(
+        t(TranslationKeys.gym_session_detail_complete_title),
+        t(TranslationKeys.internet_required),
+        [
+          {
+            text: t(TranslationKeys.cancel),
+            style: "cancel",
+          },
+        ]
+      );
+    }
   };
 
   const handleNotesChange = (text: string) => {
@@ -161,6 +179,10 @@ const GymSessionDetailScreen = () => {
     };
 
     addSet(entryId, newSet);
+  };
+
+  const handleRemoveLastSet = (entryId: string) => {
+    removeLastSet(entryId);
   };
 
   const formatTime = (timeString?: string) => {
@@ -215,103 +237,108 @@ const GymSessionDetailScreen = () => {
         }}
       />
 
-      <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 80 }}>
-        {/* Session Times */}
-        <View style={styles.timesContainer}>
-          <View style={styles.timeBlock}>
-            <ThemedText style={styles.timeLabel}>
-              {t(TranslationKeys.gym_session_detail_start_time)}
-            </ThemedText>
-            <ThemedText style={styles.timeValue}>{formatTime(session.start_at)}</ThemedText>
-          </View>
-          {session.end_at && (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardAvoidingContainer}>
+        <ScrollView style={styles.content} contentContainerStyle={styles.scrollViewContent}>
+          {/* Session Times */}
+          <View style={styles.timesContainer}>
             <View style={styles.timeBlock}>
               <ThemedText style={styles.timeLabel}>
-                {t(TranslationKeys.gym_session_detail_end_time)}
+                {t(TranslationKeys.gym_session_detail_start_time)}
               </ThemedText>
-              <ThemedText style={styles.timeValue}>{formatTime(session.end_at)}</ThemedText>
+              <ThemedText style={styles.timeValue}>{formatTime(session.start_at)}</ThemedText>
             </View>
-          )}
-        </View>
-
-        <CDivider />
-
-        {/* Notes */}
-        <View style={styles.notesContainer}>
-          <ThemedText style={styles.sectionTitle}>
-            {t(TranslationKeys.gym_session_detail_notes)}
-          </ThemedText>
-          <TextInput
-            style={[styles.notesInput, { color: textColor, borderColor: borderColor }]}
-            value={notes}
-            onChangeText={handleNotesChange}
-            placeholder={t(TranslationKeys.gym_session_detail_notes_placeholder)}
-            placeholderTextColor={textColor + "80"}
-            multiline
-          />
-        </View>
-
-        {/* Exercises Section */}
-        <View style={[styles.exercisesCard, { backgroundColor: cardColor, borderRadius: 12 }]}>
-          <View style={styles.exercisesHeader}>
-            <ThemedText style={styles.exercisesTitle}>
-              {t(TranslationKeys.gym_session_detail_exercises)} • {session.entries?.length || 0}
-            </ThemedText>
-            <TouchableOpacity onPress={handleAddExercise} style={styles.addExerciseButton}>
-              <Ionicons name="add" size={24} color={primaryColor} />
-            </TouchableOpacity>
+            {session.end_at && (
+              <View style={styles.timeBlock}>
+                <ThemedText style={styles.timeLabel}>
+                  {t(TranslationKeys.gym_session_detail_end_time)}
+                </ThemedText>
+                <ThemedText style={styles.timeValue}>{formatTime(session.end_at)}</ThemedText>
+              </View>
+            )}
           </View>
-        </View>
 
-        {/* Exercise Carousel */}
-        {session.entries && session.entries.length > 0 ? (
-          <View style={styles.carouselContainer}>
-            <Carousel
-              ref={carouselRef}
-              loop={false}
-              width={screenWidth}
-              height={420}
-              data={session.entries}
-              scrollAnimationDuration={500}
-              renderItem={({ item }) => (
-                <ExerciseCard
-                  entry={item}
-                  onAddSet={() => handleAddSet(item.id)}
-                  cardColor={cardColor}
-                  textColor={textColor}
-                  borderColor={borderColor}
-                  primaryColor={primaryColor}
-                />
-              )}
+          <CDivider />
+
+          {/* Notes */}
+          <View style={styles.notesContainer}>
+            <ThemedText style={styles.sectionTitle}>
+              {t(TranslationKeys.gym_session_detail_notes)}
+            </ThemedText>
+            <TextInput
+              style={[styles.notesInput, { color: textColor, borderColor: borderColor }]}
+              value={notes}
+              onChangeText={handleNotesChange}
+              placeholder={t(TranslationKeys.gym_session_detail_notes_placeholder)}
+              placeholderTextColor={textColor + "80"}
+              multiline
             />
           </View>
-        ) : (
-          <ThemedView style={styles.noExercisesContainer}>
-            <ThemedText style={styles.noExercisesText}>
-              {t(TranslationKeys.gym_session_detail_no_exercises)}
-            </ThemedText>
-          </ThemedView>
-        )}
-      </ScrollView>
 
-      {/* Complete Workout Button */}
-      {!isCompleted && (
-        <View style={[styles.completeWorkoutButtonContainer, { backgroundColor }]}>
-          <CButton
-            title={t(TranslationKeys.gym_session_detail_complete)}
-            onPress={handleCompleteSession}
-            style={styles.completeWorkoutButton}
-            icon={
-              <Ionicons
-                name="checkmark-circle-outline"
-                size={20}
-                color="white"
-                style={{ marginRight: 8 }}
+          {/* Exercises Section */}
+          <View style={[styles.exercisesCard, { backgroundColor: cardColor, borderRadius: 12 }]}>
+            <View style={styles.exercisesHeader}>
+              <ThemedText style={styles.exercisesTitle}>
+                {t(TranslationKeys.gym_session_detail_exercises)} • {session.entries?.length || 0}
+              </ThemedText>
+              <TouchableOpacity onPress={handleAddExercise} style={styles.addExerciseButton}>
+                <Ionicons name="add" size={24} color={primaryColor} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Exercise Carousel */}
+          {session.entries && session.entries.length > 0 ? (
+            <View style={styles.carouselContainer}>
+              <Carousel
+                ref={carouselRef}
+                loop={false}
+                width={screenWidth}
+                height={420}
+                data={session.entries}
+                scrollAnimationDuration={500}
+                renderItem={({ item }) => (
+                  <ExerciseCard
+                    entry={item}
+                    onAddSet={() => handleAddSet(item.id)}
+                    onRemoveLastSet={() => handleRemoveLastSet(item.id)}
+                    cardColor={cardColor}
+                    textColor={textColor}
+                    borderColor={borderColor}
+                    primaryColor={primaryColor}
+                  />
+                )}
               />
-            }
-          />
-        </View>
-      )}
+            </View>
+          ) : (
+            <ThemedView style={styles.noExercisesContainer}>
+              <ThemedText style={styles.noExercisesText}>
+                {t(TranslationKeys.gym_session_detail_no_exercises)}
+              </ThemedText>
+            </ThemedView>
+          )}
+        </ScrollView>
+
+        {/* Complete Workout Button */}
+        {!isCompleted && (
+          <View style={[styles.completeWorkoutButtonContainer, { backgroundColor }]}>
+            <CButton
+              title={t(TranslationKeys.gym_session_detail_complete)}
+              onPress={handleCompleteSession}
+              style={styles.completeWorkoutButton}
+              icon={
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={20}
+                  color="white"
+                  style={{ marginRight: 8 }}
+                />
+              }
+            />
+          </View>
+        )}
+      </KeyboardAvoidingView>
     </ThemedView>
   );
 };
@@ -319,6 +346,7 @@ const GymSessionDetailScreen = () => {
 interface ExerciseCardProps {
   entry: ActivityDiaryEntry;
   onAddSet: () => void;
+  onRemoveLastSet: () => void;
   cardColor: string;
   textColor: string;
   borderColor: string;
@@ -329,6 +357,7 @@ interface ExerciseCardProps {
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
   entry,
   onAddSet,
+  onRemoveLastSet,
   cardColor,
   textColor,
   borderColor,
@@ -357,9 +386,14 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     <View style={[styles.exerciseCard, { backgroundColor: cardColor, borderColor: borderColor }]}>
       <View style={styles.exerciseNameRow}>
         <ThemedText style={styles.exerciseName}>{entry.exercise_name}</ThemedText>
-        <TouchableOpacity onPress={onAddSet}>
-          <Ionicons name="add" size={24} color={primaryColor} />
-        </TouchableOpacity>
+        <View style={styles.setButtonsContainer}>
+          <TouchableOpacity onPress={onRemoveLastSet} style={styles.setButton}>
+            <Ionicons name="remove" size={24} color={primaryColor} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onAddSet} style={styles.setButton}>
+            <Ionicons name="add" size={24} color={primaryColor} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView style={styles.setsContainer}>
@@ -405,6 +439,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  keyboardAvoidingContainer: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -431,6 +470,9 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
+  },
+  scrollViewContent: {
+    paddingBottom: 100, // Provide enough space for the button
   },
   timesContainer: {
     flexDirection: "row",
@@ -507,6 +549,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 16,
   },
+  setButtonsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  setButton: {
+    marginLeft: 8,
+  },
   exerciseName: {
     fontSize: 18,
     fontWeight: "bold",
@@ -551,10 +600,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   completeWorkoutButtonContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
     padding: 16,
     borderTopWidth: 1,
     borderTopColor: "rgba(0,0,0,0.1)",

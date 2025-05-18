@@ -217,6 +217,7 @@ export enum TranslationKeys {
   validation_error = "validation_error",
   validation_error_message = "validation_error_message",
   ok = "ok",
+  internet_required = "internet_required",
 
   fruit = "fruit",
   vegetables = "vegetables",

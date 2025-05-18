@@ -71,6 +71,7 @@ export default function ActivityDiaryScreen() {
       const remoteSession: ActivitySession = {
         id: remoteActivityDiary.id,
         startTime: remoteActivityDiary.start_at,
+        endTime: remoteActivityDiary.end_at,
         caloriesBurned:
           remoteActivityDiary.entries?.reduce((total, entry) => total + (entry.est_kcal || 0), 0) ||
           0,
@@ -209,7 +210,7 @@ export default function ActivityDiaryScreen() {
               </Pressable>
             </View>
 
-            {sessions.length === 0 && (
+            {sessions.length === 0 && !remoteActivityDiary && (
               <ThemedText style={styles.emptyText}>
                 {t(TranslationKeys.activity_diary_no_sessions)} {getFormattedDate("medium")}
               </ThemedText>

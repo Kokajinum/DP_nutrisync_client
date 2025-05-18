@@ -23,14 +23,14 @@ export const ActivityDiarySyncHandler: React.FC<{
     if (!session) return null;
 
     return {
-      id: session.id,
+      //id: session.id,
       start_at: session.start_at,
       end_at: session.end_at || new Date().toISOString(),
       notes: session.notes,
       bodyweight_kg: session.bodyweight_kg,
       entries:
         session.entries?.map((entry) => ({
-          id: entry.id,
+          //id: entry.id,
           exercise_id: entry.exercise_id,
           sets_json: JSON.parse(entry.sets_json || "[]"),
           est_kcal: entry.est_kcal,

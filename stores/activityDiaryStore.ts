@@ -29,6 +29,7 @@ interface ActivityDiaryState {
   addSet: (entryId: string, set: ExerciseSet) => Promise<void>;
   updateSet: (entryId: string, index: number, updatedSet: ExerciseSet) => Promise<void>;
   removeSet: (entryId: string, index: number) => Promise<void>;
+  removeLastSet: (entryId: string) => Promise<void>;
   completeSession: () => Promise<string | false>;
   getSessionById: (id: string) => Promise<ActivityDiary | null>;
   loadActiveSession: (userId: string) => Promise<void>;
@@ -302,6 +303,56 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
       });
     } catch (error) {
       console.error("Failed to remove set:", error);
+    }
+  },
+
+  removeLastSet: async (entryId: string) => {
+    const { activeSession } = get();
+    if (!activeSession || !activeSession.entries) return;
+
+    try {
+      const updatedEntries = activeSession.entries.map((entry) => {
+        if (entry.id === entryId) {
+          const currentSets: ExerciseSet[] = JSON.parse(entry.sets_json || "[]");
+
+          // Only proceed if there are sets to remove
+          if (currentSets.length === 0) return entry;
+
+          // Remove the last set
+          const updatedSets = currentSets.slice(0, -1);
+
+          // Calculate estimated calories
+          const estKcal = updatedSets.reduce((total, currentSet) => {
+            return total + currentSet.reps * currentSet.weight_kg * 0.1; // Simple formula
+          }, 0);
+
+          return {
+            ...entry,
+            sets_json: JSON.stringify(updatedSets),
+            est_kcal: estKcal,
+          };
+        }
+        return entry;
+      });
+
+      // Find the updated entry to save to SQLite
+      const updatedEntry = updatedEntries.find((e) => e.id === entryId);
+      if (updatedEntry) {
+        await db.runAsync(
+          `UPDATE activity_diary_entry SET sets_json = ?, est_kcal = ? WHERE id = ?`,
+          [updatedEntry.sets_json, updatedEntry.est_kcal, updatedEntry.id]
+        );
+      }
+
+      set({
+        activeSession: {
+          ...activeSession,
+          entries: updatedEntries,
+          updated_at: new Date().toISOString(),
+        },
+      });
+    } catch (error) {
+      console.error("Failed to remove last set:", error);
     }
   },
 

@@ -212,6 +212,7 @@
     "validation_error": "Validation Error",
     "validation_error_message": "Please correct the errors before saving.",
     "ok": "OK",
+    "internet_required": "An internet connection is required to perform this action.",
 
     "fruit": "Fruit",
     "vegetables": "Vegetables",
