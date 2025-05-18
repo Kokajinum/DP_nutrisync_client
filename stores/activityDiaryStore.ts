@@ -47,9 +47,24 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
   startNewSession: async (userId: string) => {
     // Check if there's already an active session
     const { activeSession } = get();
+
     if (activeSession) {
-      console.warn("There is already an active session. Complete it before starting a new one.");
-      return false;
+      // Check if the active session is from the current day
+      const today = startOfDay(new Date());
+      const sessionDate = startOfDay(new Date(activeSession.start_at));
+
+      // Only block new session creation if the active session is from today
+      if (isEqual(today, sessionDate)) {
+        console.warn(
+          "There is already an active session for today. Complete it before starting a new one."
+        );
+        return false;
+      }
+
+      // If the active session is from a previous day, we'll allow creating a new one
+      console.log(
+        "Found an uncompleted session from a previous day. Allowing new session creation."
+      );
     }
 
     // Create a new session
@@ -374,6 +389,16 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
         return;
       }
 
+      // Check if the session is from a previous day
+      const today = startOfDay(new Date());
+      const sessionDate = startOfDay(new Date(session.start_at));
+
+      if (!isEqual(today, sessionDate)) {
+        console.log(
+          `Loading active session from ${format(sessionDate, "yyyy-MM-dd")}. This won't prevent creating a new session today.`
+        );
+      }
+
       // Get entries for this session
       const entries = await db.getAllAsync<ActivityDiaryEntry>(
         `SELECT * FROM activity_diary_entry WHERE diary_id = ?`,
@@ -482,6 +507,7 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
     return {
       id: diary.id,
       startTime: diary.start_at,
+      endTime: diary.end_at, // Added for tracking completion status
       caloriesBurned,
       exerciseCount,
       notes: diary.notes,

@@ -10,9 +10,13 @@
     "activity_diary_select_exercise": "Select Exercise",
     "activity_diary_search_exercises": "Search exercises...",
     "activity_diary_no_exercises_found": "No exercises found",
+    "activity_diary_in_progress": "In Progress",
+    "activity_diary_completed": "Completed",
     
     "gym_session_detail_header": "Gym Session",
     "gym_session_detail_complete": "Complete",
+    "gym_session_detail_complete_title": "Complete Workout",
+    "gym_session_detail_complete_message": "Are you sure you want to finish this workout and sync it to the server? This action cannot be undone.",
     "gym_session_detail_start_time": "Start",
     "gym_session_detail_end_time": "End",
     "gym_session_detail_notes": "Notes",

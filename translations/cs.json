@@ -10,9 +10,13 @@
     "activity_diary_select_exercise": "Vybrat cvik",
     "activity_diary_search_exercises": "Hledat cviky...",
     "activity_diary_no_exercises_found": "Žádné cviky nenalezeny",
+    "activity_diary_in_progress": "Probíhá",
+    "activity_diary_completed": "Dokončeno",
     
     "gym_session_detail_header": "Trénink",
     "gym_session_detail_complete": "Dokončit",
+    "gym_session_detail_complete_title": "Dokončit trénink",
+    "gym_session_detail_complete_message": "Opravdu chcete dokončit tento trénink a synchronizovat ho na server? Tuto akci nelze vrátit zpět.",
     "gym_session_detail_start_time": "Začátek",
     "gym_session_detail_end_time": "Konec",
     "gym_session_detail_notes": "Poznámky",

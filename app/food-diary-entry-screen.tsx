@@ -340,34 +340,6 @@ export default function FoodDiaryEntryScreen() {
             onPress={() => router.push("/food-creation-screen")}
             style={styles.createButton}
           />
-
-          {/* Test button for food details */}
-          <CButton
-            title="Test Food Details"
-            onPress={() => {
-              console.log("Test button pressed");
-              // Create a dummy food item
-              const testFood: FoodData = {
-                id: "test-food",
-                name: "Test Food",
-                category: "test",
-                brand: "Test Brand",
-                barcode: "123456789",
-                calories: "100",
-                protein: "10",
-                carbs: "10",
-                fats: "5",
-                sugar: "2",
-                fiber: "1",
-                salt: "0.1",
-                servingSizeValue: "100",
-                servingSizeUnit: "g",
-              };
-
-              navigateToFoodDetails(testFood);
-            }}
-            style={[styles.createButton, { marginTop: 8, backgroundColor: "red" }]}
-          />
         </View>
       </View>
     </ThemedView>

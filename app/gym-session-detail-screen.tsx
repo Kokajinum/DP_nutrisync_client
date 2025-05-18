@@ -9,6 +9,7 @@ import {
   ScrollView,
   Dimensions,
   Pressable,
+  Alert,
 } from "react-native";
 import { ActivityDiarySyncHandler } from "@/components/ActivityDiarySyncHandler";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -44,6 +45,8 @@ const GymSessionDetailScreen = () => {
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(true);
   const [completedSessionId, setCompletedSessionId] = useState<string | null>(null);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [isSynced, setIsSynced] = useState(false);
   const carouselRef = useRef(null);
   const { width: screenWidth } = Dimensions.get("window");
 
@@ -64,12 +67,20 @@ const GymSessionDetailScreen = () => {
           if (loadedSession) {
             setSession(loadedSession);
             setNotes(loadedSession.notes || "");
+            // Check if session is already completed
+            if (loadedSession.end_at) {
+              setIsCompleted(true);
+            }
           }
         }
         // If no ID but we have an active session in the store, use that
         else if (activeSession) {
           setSession(activeSession);
           setNotes(activeSession.notes || "");
+          // Check if session is already completed
+          if (activeSession.end_at) {
+            setIsCompleted(true);
+          }
         }
         // If no active session in the store, try to load it from the database
         else if (user?.id) {
@@ -82,6 +93,10 @@ const GymSessionDetailScreen = () => {
           if (updatedActiveSession) {
             setSession(updatedActiveSession);
             setNotes(updatedActiveSession.notes || "");
+            // Check if session is already completed
+            if (updatedActiveSession.end_at) {
+              setIsCompleted(true);
+            }
           }
         }
       } catch (error) {
@@ -99,14 +114,33 @@ const GymSessionDetailScreen = () => {
   };
 
   const handleCompleteSession = async () => {
-    const result = await completeSession();
-    if (result) {
-      // If result is a string, it's the session ID
-      if (typeof result === "string") {
-        setCompletedSessionId(result);
-      }
-      router.back();
-    }
+    // Show confirmation dialog
+    Alert.alert(
+      t(TranslationKeys.gym_session_detail_complete_title),
+      t(TranslationKeys.gym_session_detail_complete_message),
+      [
+        {
+          text: t(TranslationKeys.cancel),
+          style: "cancel",
+        },
+        {
+          text: t(TranslationKeys.gym_session_detail_complete),
+          onPress: async () => {
+            const result = await completeSession();
+            if (result) {
+              // If result is a string, it's the session ID
+              if (typeof result === "string") {
+                setCompletedSessionId(result);
+                setIsCompleted(true);
+                setIsSynced(true);
+              }
+              // Don't navigate back, let user see the completed state
+              // router.back();
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleNotesChange = (text: string) => {
@@ -172,17 +206,16 @@ const GymSessionDetailScreen = () => {
               <MaterialIcons name="arrow-back" size={24} color={iconColor} />
             </Pressable>
           ),
-          headerRight: () => (
-            <Pressable
-              onPress={handleCompleteSession}
-              style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.7 : 1 }]}>
-              <Ionicons name="checkmark-circle-outline" size={28} color={primaryColor} />
-            </Pressable>
-          ),
+          headerRight: () =>
+            isCompleted ? (
+              <View style={styles.headerButton}>
+                <Ionicons name="checkmark-circle" size={28} color="#4CAF50" />
+              </View>
+            ) : null,
         }}
       />
 
-      <ScrollView style={styles.content}>
+      <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 80 }}>
         {/* Session Times */}
         <View style={styles.timesContainer}>
           <View style={styles.timeBlock}>
@@ -260,6 +293,25 @@ const GymSessionDetailScreen = () => {
           </ThemedView>
         )}
       </ScrollView>
+
+      {/* Complete Workout Button */}
+      {!isCompleted && (
+        <View style={[styles.completeWorkoutButtonContainer, { backgroundColor }]}>
+          <CButton
+            title={t(TranslationKeys.gym_session_detail_complete)}
+            onPress={handleCompleteSession}
+            style={styles.completeWorkoutButton}
+            icon={
+              <Ionicons
+                name="checkmark-circle-outline"
+                size={20}
+                color="white"
+                style={{ marginRight: 8 }}
+              />
+            }
+          />
+        </View>
+      )}
     </ThemedView>
   );
 };
@@ -303,7 +355,12 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
 
   return (
     <View style={[styles.exerciseCard, { backgroundColor: cardColor, borderColor: borderColor }]}>
-      <ThemedText style={styles.exerciseName}>{entry.exercise_name}</ThemedText>
+      <View style={styles.exerciseNameRow}>
+        <ThemedText style={styles.exerciseName}>{entry.exercise_name}</ThemedText>
+        <TouchableOpacity onPress={onAddSet}>
+          <Ionicons name="add" size={24} color={primaryColor} />
+        </TouchableOpacity>
+      </View>
 
       <ScrollView style={styles.setsContainer}>
         {/* Header Row */}
@@ -340,14 +397,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
           </View>
         ))}
       </ScrollView>
-
-      <TouchableOpacity
-        style={[styles.addSetButton, { borderColor: primaryColor }]}
-        onPress={onAddSet}>
-        <ThemedText style={[styles.addSetText, { color: primaryColor }]}>
-          {t(TranslationKeys.gym_session_detail_add_set)}
-        </ThemedText>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -416,7 +465,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
   },
   exercisesCard: {
-    marginVertical: 16,
+    marginVertical: 0,
   },
   exercisesHeader: {
     flexDirection: "row",
@@ -452,10 +501,15 @@ const styles = StyleSheet.create({
     width: "90%",
     alignSelf: "center",
   },
+  exerciseNameRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
   exerciseName: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 16,
   },
   setsContainer: {
     flex: 1,
@@ -495,6 +549,23 @@ const styles = StyleSheet.create({
   headerButton: {
     padding: 8,
     marginHorizontal: 8,
+  },
+  completeWorkoutButtonContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0,0,0,0.1)",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  completeWorkoutButton: {
+    borderRadius: 8,
   },
 });
 

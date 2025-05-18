@@ -11,10 +11,14 @@ export enum TranslationKeys {
   activity_diary_select_exercise = "activity_diary_select_exercise",
   activity_diary_search_exercises = "activity_diary_search_exercises",
   activity_diary_no_exercises_found = "activity_diary_no_exercises_found",
+  activity_diary_in_progress = "activity_diary_in_progress",
+  activity_diary_completed = "activity_diary_completed",
 
   // Gym session detail
   gym_session_detail_header = "gym_session_detail_header",
   gym_session_detail_complete = "gym_session_detail_complete",
+  gym_session_detail_complete_title = "gym_session_detail_complete_title",
+  gym_session_detail_complete_message = "gym_session_detail_complete_message",
   gym_session_detail_start_time = "gym_session_detail_start_time",
   gym_session_detail_end_time = "gym_session_detail_end_time",
   gym_session_detail_notes = "gym_session_detail_notes",

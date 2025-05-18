@@ -16,6 +16,7 @@ const formatTime = (isoString: string | undefined) => {
 export interface ActivitySession {
   id: string;
   startTime: string;
+  endTime?: string; // Added for tracking completion status
   caloriesBurned: number;
   exerciseCount: number;
   notes?: string;
@@ -34,6 +35,7 @@ const CActivitySessionCard: React.FC<CActivitySessionCardProps> = ({
 }) => {
   // Theme colors
   const primaryColor = useThemeColor({}, "primary");
+  const tertiaryColor = useThemeColor({}, "tertiary");
   const surfaceColor = useThemeColor({}, "surface");
   const { t } = useTranslation();
 
@@ -67,7 +69,22 @@ const CActivitySessionCard: React.FC<CActivitySessionCardProps> = ({
             </ThemedText>
           </View>
         </View>
-        <ThemedText style={styles.sessionTime}>{formatTime(session.startTime)}</ThemedText>
+        <View style={styles.statusContainer}>
+          {!session.endTime ? (
+            <View style={[styles.statusBadge, { backgroundColor: `${primaryColor}20` }]}>
+              <ThemedText style={[styles.statusText, { color: primaryColor }]}>
+                {t(TranslationKeys.activity_diary_in_progress)}
+              </ThemedText>
+            </View>
+          ) : (
+            <View style={[styles.statusBadge, { backgroundColor: `${tertiaryColor}20` }]}>
+              <ThemedText style={[styles.statusText, { color: tertiaryColor }]}>
+                {t(TranslationKeys.activity_diary_completed)}
+              </ThemedText>
+            </View>
+          )}
+          <ThemedText style={styles.sessionTime}>{formatTime(session.startTime)}</ThemedText>
+        </View>
       </View>
 
       <View style={styles.sessionDetails}>
@@ -130,6 +147,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
+  },
+  statusContainer: {
+    flexDirection: "column",
+    alignItems: "flex-end",
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    marginBottom: 4,
+  },
+  statusText: {
+    fontSize: 10,
+    fontWeight: "bold",
   },
   iconContainer: {
     width: 28,
