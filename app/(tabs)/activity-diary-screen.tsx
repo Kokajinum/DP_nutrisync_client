@@ -45,7 +45,8 @@ export default function ActivityDiaryScreen() {
     loadActiveSession,
   } = useActivityDiaryStore();
 
-  // Use the hook to fetch activity diary data from the server
+  // Use the hook to fetch activity diary data
+  // This will first check local SQLite storage, and only if not found, will fetch from the server
   const { data: remoteActivityDiary, isLoading: isRemoteLoading } = useActivityDiaryByDate(
     new Date(selectedDate)
   );
@@ -80,7 +81,6 @@ export default function ActivityDiaryScreen() {
       };
 
       // We don't modify the store directly, but we can add the remote session to our UI
-      // This is a temporary solution until we implement proper syncing
       sessions.push(remoteSession);
     }
   }, [sessions.length, remoteActivityDiary, loading]);

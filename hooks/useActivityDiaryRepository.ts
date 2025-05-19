@@ -8,6 +8,7 @@ import { format } from "date-fns";
 
 /**
  * Hook for fetching an activity diary by date
+ * This will first check local SQLite storage, and only if not found, will fetch from the server
  * @param date The date as a Date object
  * @returns Query result containing the activity diary data
  */
