@@ -1,27 +1,49 @@
-import { Text, ScrollView, Alert, StyleSheet, View, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import { Text, Alert, StyleSheet, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useRestManager } from "@/context/RestManagerProvider";
-import { fetchUserProfile } from "@/utils/api/apiClient";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useOnboardingStore } from "@/stores/onboardingStore";
 import { useDateStore } from "@/stores/dateStore";
 import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { ThemedScrollView } from "@/components/ThemedScrollView";
 import { useTranslation } from "react-i18next";
 import { TranslationKeys } from "@/translations/translations";
+import { useDashboard } from "@/hooks/useDashboard";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+// Import dashboard components
+import DashboardStatsSection from "@/components/dashboard/DashboardStatsSection";
+import DashboardRecentEntriesSection from "@/components/dashboard/DashboardRecentEntriesSection";
+import CAiRecommendationCard from "@/components/cards/CAiRecommendationCard";
+import CUserProfileCard from "@/components/cards/CUserProfileCard";
+import { ThemedStatusBar } from "@/components/ThemedStatusBar";
+import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 
 const HomeScreen = () => {
   const { user } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
   const { setStep } = useOnboardingStore();
-  const { getDayName, getMonthName, getFormattedDate, goToNextDay, goToPreviousDay, resetToToday } =
-    useDateStore();
+  const primaryColor = useThemeColor({}, "primary");
+  const [refreshing, setRefreshing] = useState(false);
 
   // Fetch user profile data using the hook
-  const { data: profileData, isLoading, error } = useUserProfile(user?.id);
+  const {
+    data: profileData,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useUserProfile(user?.id);
+
+  // Fetch dashboard data using the hook
+  const {
+    data: dashboardData,
+    isLoading: dashboardLoading,
+    error: dashboardError,
+    refetch,
+  } = useDashboard();
 
   const createRedirectDialog = () =>
     Alert.alert(t(TranslationKeys.account_setup), t(TranslationKeys.profile_incomplete), [
@@ -37,100 +59,188 @@ const HomeScreen = () => {
 
   useEffect(() => {
     // Check if profile data exists and if onboarding is completed
-    if (!isLoading && (profileData == null || !profileData.onboarding_completed)) {
+    if (!profileLoading && (profileData == null || !profileData.onboarding_completed)) {
       createRedirectDialog();
     }
-  }, [profileData, isLoading]);
+  }, [profileData, profileLoading]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
+
+  // Handle navigation to AI recommendations screen
+  const handleAiRecommendationPress = (recommendationId: string) => {
+    router.push("/(tabs)/profile-screen");
+  };
+
+  // Handle navigation to food diary entry screen
+  const handleFoodEntryPress = (entryId: string) => {
+    //router.push(`/food-details-screen?id=${entryId}`);
+  };
+
+  // Handle navigation to activity diary entry screen
+  const handleActivityEntryPress = (entryId: string) => {
+    //router.push(`/gym-session-detail-screen?id=${entryId}`);
+  };
+
+  // Handle navigation to food diary screen
+  const handleViewAllFoodPress = () => {
+    router.push("/(tabs)/food-diary-screen");
+  };
+
+  // Handle navigation to activity diary screen
+  const handleViewAllActivityPress = () => {
+    router.push("/(tabs)/activity-diary-screen");
+  };
+
+  // Check if there are any unviewed AI recommendations
+  const hasUnviewedRecommendations = dashboardData?.ai_recommendations.some((rec) => !rec.viewed);
 
   // Render loading state
-  if (isLoading) {
+  if (profileLoading || dashboardLoading) {
     return (
-      <ScrollView style={styles.container}>
-        <Text>{t(TranslationKeys.loading)}</Text>
-      </ScrollView>
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={primaryColor} />
+        <ThemedText style={styles.loadingText}>{t(TranslationKeys.loading)}</ThemedText>
+      </ThemedView>
     );
   }
 
   // Render error state
-  if (error) {
+  if (profileError || dashboardError) {
     return (
-      <ScrollView style={styles.container}>
-        <Text>{t(TranslationKeys.error)}</Text>
-      </ScrollView>
+      <ThemedScrollView style={styles.container} refreshing={refreshing} onRefresh={onRefresh}>
+        <View style={styles.errorContainer}>
+          <MaterialCommunityIcons name="alert-circle-outline" size={48} color="red" />
+          <ThemedText style={styles.errorText}>{t(TranslationKeys.error)}</ThemedText>
+          <TouchableOpacity style={styles.retryButton} onPress={onRefresh}>
+            <ThemedText style={styles.retryButtonText}>
+              {t(TranslationKeys.home_screen_retry)}
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+      </ThemedScrollView>
     );
   }
 
-  // Get date information from the date store
-
   return (
-    <ScrollView style={styles.container}>
-      {profileData ? (
-        <View style={styles.profileSection}>
-          <ThemedText type="title">
-            {t(TranslationKeys.welcome)}, {profileData.first_name} {profileData.last_name}
-          </ThemedText>
-          {/* Additional profile information can be added here */}
+    <ThemedScrollView style={styles.container} refreshing={refreshing} onRefresh={onRefresh}>
+      <ThemedStatusBar></ThemedStatusBar>
+      <ThemedStackScreen
+        options={{ title: t(TranslationKeys.home_screen_title) }}></ThemedStackScreen>
+      {/* User Profile Card */}
+      {profileData && (
+        <View style={styles.profileCardContainer}>
+          <CUserProfileCard userProfile={profileData} />
+          {/* <TouchableOpacity
+            style={styles.profileEditButton}
+            onPress={() => router.push("/(tabs)/profile-screen")}>
+            <ThemedText style={styles.profileEditButtonText}>Edit Profile</ThemedText>
+          </TouchableOpacity> */}
         </View>
-      ) : (
-        <Text>{t(TranslationKeys.no_profile_data)}</Text>
       )}
 
-      <View style={styles.dateSection}>
-        <ThemedText type="subtitle">Today's Summary</ThemedText>
+      {/* AI Recommendations Notification */}
+      {hasUnviewedRecommendations &&
+        dashboardData &&
+        dashboardData.ai_recommendations &&
+        dashboardData.ai_recommendations.length > 0 && (
+          <CAiRecommendationCard
+            recommendation={
+              dashboardData.ai_recommendations.find((rec) => !rec.viewed) ||
+              dashboardData.ai_recommendations[0]
+            }
+            onPress={() => handleAiRecommendationPress(dashboardData.ai_recommendations[0].id)}
+          />
+        )}
 
-        <View style={styles.dateInfo}>
-          <ThemedText type="defaultSemiBold">{getDayName()}</ThemedText>
-          <ThemedText>{getFormattedDate("long")}</ThemedText>
-        </View>
+      {/* Recent Entries Section */}
+      {dashboardData && (
+        <DashboardRecentEntriesSection
+          recentFoodEntries={dashboardData.recent_food_entries}
+          recentActivityEntries={dashboardData.recent_activity_entries.map((entry) => ({
+            ...entry,
+            activity_name: "Exercise Session", // This would come from the backend in a real scenario
+            activity_type: "Workout",
+            duration_minutes: 45, // Example value
+            calories_burned: 300, // Example value
+          }))}
+          onFoodEntryPress={(entry) => handleFoodEntryPress(entry.id)}
+          onActivityEntryPress={(entry) => handleActivityEntryPress(entry.id)}
+          onViewAllFoodPress={handleViewAllFoodPress}
+          onViewAllActivityPress={handleViewAllActivityPress}
+        />
+      )}
 
-        <View style={styles.dateNavigation}>
-          <TouchableOpacity style={styles.dateButton} onPress={goToPreviousDay}>
-            <ThemedText>Previous Day</ThemedText>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.dateButton} onPress={resetToToday}>
-            <ThemedText>Today</ThemedText>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.dateButton} onPress={goToNextDay}>
-            <ThemedText>Next Day</ThemedText>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+      {/* Statistics Section */}
+      {dashboardData && (
+        <DashboardStatsSection
+          weightHistory7Days={dashboardData.weight_history_7days}
+          weightHistory30Days={dashboardData.weight_history_30days}
+          stepsHistory7Days={dashboardData.steps_history_7days}
+          stepsHistory30Days={dashboardData.steps_history_30days}
+        />
+      )}
+    </ThemedScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-  },
-  profileSection: {
-    marginVertical: 20,
-  },
-  dateSection: {
-    marginVertical: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    backgroundColor: "#fdfcf5",
-  },
-  dateInfo: {
-    marginVertical: 8,
-    alignItems: "center",
-  },
-  dateNavigation: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 12,
-  },
-  dateButton: {
-    padding: 8,
-    borderRadius: 4,
-    backgroundColor: "#e0e0e0",
-    alignItems: "center",
     flex: 1,
-    marginHorizontal: 4,
+  },
+  profileCardContainer: {
+    marginHorizontal: 16,
+    marginVertical: 8,
+    position: "relative",
+  },
+  profileEditButton: {
+    position: "absolute",
+    right: 16,
+    bottom: 16,
+    backgroundColor: "#0a7ea4",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+  },
+  profileEditButtonText: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    marginTop: 50,
+  },
+  errorText: {
+    marginTop: 16,
+    fontSize: 16,
+    textAlign: "center",
+  },
+  retryButton: {
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#0a7ea4",
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
 

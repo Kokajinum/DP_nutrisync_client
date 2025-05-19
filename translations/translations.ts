@@ -1,4 +1,45 @@
 export enum TranslationKeys {
+  // Home screen
+  home_screen_title = "home_screen_title",
+  home_screen_retry = "home_screen_retry",
+  home_screen_edit_profile = "home_screen_edit_profile",
+
+  // Dashboard components
+  dashboard_recent_food = "dashboard_recent_food",
+  dashboard_recent_activity = "dashboard_recent_activity",
+  dashboard_view_all = "dashboard_view_all",
+  dashboard_no_recent_food = "dashboard_no_recent_food",
+  dashboard_no_recent_activity = "dashboard_no_recent_activity",
+  dashboard_statistics = "dashboard_statistics",
+  dashboard_days_7 = "dashboard_days_7",
+  dashboard_days_30 = "dashboard_days_30",
+  dashboard_weight_history = "dashboard_weight_history",
+  dashboard_steps_history = "dashboard_steps_history",
+  dashboard_last_days = "dashboard_last_days",
+
+  // User profile card
+  profile_loading = "profile_loading",
+  profile_not_available = "profile_not_available",
+  profile_weight = "profile_weight",
+  profile_height = "profile_height",
+  profile_bmi = "profile_bmi",
+  profile_age = "profile_age",
+  profile_years = "profile_years",
+  profile_user = "profile_user",
+
+  // BMI categories
+  bmi_underweight = "bmi_underweight",
+  bmi_normal = "bmi_normal",
+  bmi_overweight = "bmi_overweight",
+  bmi_obese = "bmi_obese",
+
+  // AI Recommendation card
+  ai_recommendation_title = "ai_recommendation_title",
+  ai_recommendation_new = "ai_recommendation_new",
+  ai_recommendation_unknown_date = "ai_recommendation_unknown_date",
+  ai_recommendation_no_available = "ai_recommendation_no_available",
+  ai_recommendation_tap_to_view = "ai_recommendation_tap_to_view",
+
   // Activity diary
   activity_diary_header = "activity_diary_header",
   activity_diary_sessions = "activity_diary_sessions",

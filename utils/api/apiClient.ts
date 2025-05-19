@@ -8,6 +8,7 @@ import {
   ActivityDiaryResponseDto,
   CreateActivityDiaryDto,
 } from "@/models/interfaces/ActivityDiary";
+import { DashboardResponseDto } from "@/models/interfaces/DashboardResponseDto";
 import RestManager from "./restManager";
 import { ensureError } from "../methods";
 
@@ -36,6 +37,23 @@ export const updateUserProfile = async (
   } catch (exception) {
     const error: Error = ensureError(exception);
     console.error(error.message);
+    return null;
+  }
+};
+
+//#endregion
+
+//#region Dashboard
+
+export const fetchDashboardData = async (
+  restManager: RestManager
+): Promise<DashboardResponseDto | null> => {
+  try {
+    const response = await restManager.get<DashboardResponseDto>("/dashboard");
+    return response.data;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error fetching dashboard data:", error.message);
     return null;
   }
 };
