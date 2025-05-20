@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { CartesianChart, Line } from "victory-native";
+import { CartesianChart, Bar } from "victory-native";
 import { format } from "date-fns";
 import { StepMeasurementResponseDto } from "@/models/interfaces/DashboardResponseDto";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -41,8 +41,17 @@ const StepsHistoryChart: React.FC<StepsHistoryChartProps> = ({ data, title }) =>
     <View style={styles.container}>
       <ThemedText type="subtitle">{title}</ThemedText>
       <View style={styles.chartContainer}>
-        <CartesianChart data={sortedChartData} xKey="x" yKeys={["steps"]}>
-          {({ points }) => <Line points={points.steps} color={primaryColor} strokeWidth={2} />}
+        <CartesianChart
+          data={sortedChartData}
+          xKey="x"
+          yKeys={["steps"]}
+          axisOptions={{
+            tickCount: Math.min(5, sortedChartData.length),
+          }}
+          padding={{ left: 40, bottom: 30, right: 20, top: 20 }}>
+          {({ points, chartBounds }) => (
+            <Bar points={points.steps} color={primaryColor} chartBounds={chartBounds} />
+          )}
         </CartesianChart>
       </View>
     </View>

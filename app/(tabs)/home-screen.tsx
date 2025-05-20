@@ -70,9 +70,9 @@ const HomeScreen = () => {
     setRefreshing(false);
   }, [refetch]);
 
-  // Handle navigation to AI recommendations screen
+  // Handle navigation to AI recommendations detail screen
   const handleAiRecommendationPress = (recommendationId: string) => {
-    router.push("/(tabs)/profile-screen");
+    router.push(`/ai-recommendation-detail-screen?id=${recommendationId}`);
   };
 
   // Handle navigation to food diary entry screen

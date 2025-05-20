@@ -47,7 +47,14 @@ const WeightHistoryChart: React.FC<WeightHistoryChartProps> = ({ data, title }) 
     <View style={styles.container}>
       <ThemedText type="subtitle">{title}</ThemedText>
       <View style={styles.chartContainer}>
-        <CartesianChart data={sortedChartData} xKey="x" yKeys={["weight"]}>
+        <CartesianChart
+          data={sortedChartData}
+          xKey="x"
+          yKeys={["weight"]}
+          axisOptions={{
+            tickCount: Math.min(5, sortedChartData.length),
+          }}
+          padding={{ left: 40, bottom: 30, right: 20, top: 20 }}>
           {({ points }) => <Line points={points.weight} color={primaryColor} strokeWidth={2} />}
         </CartesianChart>
       </View>
