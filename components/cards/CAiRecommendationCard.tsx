@@ -32,6 +32,20 @@ const CAiRecommendationCard: React.FC<CAiRecommendationCardProps> = ({
   // Get a preview of the recommendation text
   const getPreviewText = (text: string, maxLength = 100) => {
     if (!text) return t(TranslationKeys.ai_recommendation_no_available);
+
+    try {
+      // Try to parse the response as JSON
+      const parsedResponse = JSON.parse(text);
+      if (parsedResponse.summary) {
+        const summary = parsedResponse.summary;
+        if (summary.length <= maxLength) return summary;
+        return summary.substring(0, maxLength) + "...";
+      }
+    } catch (error) {
+      // If parsing fails, use the original text (for backward compatibility)
+    }
+
+    // Fallback to original text
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";
   };

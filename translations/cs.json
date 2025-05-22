@@ -34,6 +34,9 @@
     "ai_recommendation_unknown_date": "Neznámé datum",
     "ai_recommendation_no_available": "Žádné doporučení není k dispozici",
     "ai_recommendation_tap_to_view": "Klepnutím zobrazíte celé doporučení",
+    "ai_recommendation_positives": "Pozitiva",
+    "ai_recommendation_improvements": "Doporučení ke zlepšení",
+    "ai_recommendation_motivation": "Motivace",
     
     "activity_diary_header": "Deník aktivit",
     "activity_diary_sessions": "Tréninky",

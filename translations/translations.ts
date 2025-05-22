@@ -39,6 +39,9 @@ export enum TranslationKeys {
   ai_recommendation_unknown_date = "ai_recommendation_unknown_date",
   ai_recommendation_no_available = "ai_recommendation_no_available",
   ai_recommendation_tap_to_view = "ai_recommendation_tap_to_view",
+  ai_recommendation_positives = "ai_recommendation_positives",
+  ai_recommendation_improvements = "ai_recommendation_improvements",
+  ai_recommendation_motivation = "ai_recommendation_motivation",
 
   // Activity diary
   activity_diary_header = "activity_diary_header",

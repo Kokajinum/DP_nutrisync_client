@@ -127,7 +127,66 @@ const AiRecommendationDetailScreen = () => {
         </View>
 
         <View style={styles.contentContainer}>
-          <ThemedText style={styles.content}>{recommendation.response}</ThemedText>
+          {(() => {
+            try {
+              // Try to parse the response as JSON
+              const parsedResponse = JSON.parse(recommendation.response);
+
+              return (
+                <>
+                  {/* Summary section */}
+                  {parsedResponse.summary && (
+                    <View style={styles.section}>
+                      <ThemedText style={styles.content}>{parsedResponse.summary}</ThemedText>
+                    </View>
+                  )}
+
+                  {/* Positives section */}
+                  {parsedResponse.positives && parsedResponse.positives.length > 0 && (
+                    <View style={styles.section}>
+                      <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+                        {t(TranslationKeys.ai_recommendation_positives)}:
+                      </ThemedText>
+                      {parsedResponse.positives.map((positive: string, index: number) => (
+                        <View key={index} style={styles.bulletPoint}>
+                          <ThemedText style={styles.bulletIcon}>•</ThemedText>
+                          <ThemedText style={styles.bulletText}>{positive}</ThemedText>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+
+                  {/* Improvements section */}
+                  {parsedResponse.improvements && parsedResponse.improvements.length > 0 && (
+                    <View style={styles.section}>
+                      <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+                        {t(TranslationKeys.ai_recommendation_improvements)}:
+                      </ThemedText>
+                      {parsedResponse.improvements.map((improvement: string, index: number) => (
+                        <View key={index} style={styles.bulletPoint}>
+                          <ThemedText style={styles.bulletIcon}>•</ThemedText>
+                          <ThemedText style={styles.bulletText}>{improvement}</ThemedText>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+
+                  {/* Motivation section */}
+                  {parsedResponse.motivation && (
+                    <View style={styles.section}>
+                      <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+                        {t(TranslationKeys.ai_recommendation_motivation)}:
+                      </ThemedText>
+                      <ThemedText style={styles.content}>{parsedResponse.motivation}</ThemedText>
+                    </View>
+                  )}
+                </>
+              );
+            } catch (error) {
+              // If parsing fails, display the response as plain text (for backward compatibility)
+              return <ThemedText style={styles.content}>{recommendation.response}</ThemedText>;
+            }
+          })()}
         </View>
       </ThemedView>
     </ScrollView>
@@ -182,6 +241,28 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   content: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  section: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    marginBottom: 8,
+  },
+  bulletPoint: {
+    flexDirection: "row",
+    marginBottom: 8,
+    paddingRight: 8,
+  },
+  bulletIcon: {
+    fontSize: 16,
+    marginRight: 8,
+    lineHeight: 24,
+  },
+  bulletText: {
+    flex: 1,
     fontSize: 16,
     lineHeight: 24,
   },
