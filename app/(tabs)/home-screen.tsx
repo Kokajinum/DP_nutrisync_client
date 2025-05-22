@@ -21,13 +21,21 @@ import CAiRecommendationCard from "@/components/cards/CAiRecommendationCard";
 import CUserProfileCard from "@/components/cards/CUserProfileCard";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
+import { Bar, CartesianChart, useChartPressState } from "victory-native";
+import { Circle, LinearGradient, useFont, vec } from "@shopify/react-native-skia";
+
+import { SharedValue } from "react-native-reanimated";
+import StepsHistoryChart from "@/components/charts/StepsHistoryChart";
 
 const HomeScreen = () => {
   const { user } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
   const { setStep } = useOnboardingStore();
+
   const primaryColor = useThemeColor({}, "primary");
+  const backgroundColor = useThemeColor({}, "surfaceContainerLow");
+
   const [refreshing, setRefreshing] = useState(false);
 
   // Fetch user profile data using the hook
@@ -242,6 +250,21 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
+  stepsStatContainer: {
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    elevation: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+  },
 });
 
 export default HomeScreen;
+
+const ToolTip = ({ x, y }: { x: SharedValue<number>; y: SharedValue<number> }) => {
+  return <Circle cx={x} cy={y} r={8} color="black"></Circle>;
+};

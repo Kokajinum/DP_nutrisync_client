@@ -90,12 +90,12 @@ const WelcomeScreen = () => {
             icon={<MaterialIcons name="login" />}
             style={styles.button}
           />
-          <CButton
+          {/* <CButton
             title="Continue Without Account"
             onPress={handleContinueWithoutAccount}
             icon={<MaterialIcons name="rocket-launch"></MaterialIcons>}
             style={styles.button}
-          />
+          /> */}
         </View>
       </LinearGradient>
     </ThemedView>

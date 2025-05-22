@@ -13,7 +13,7 @@
     "dashboard_days_30": "30 Days",
     "dashboard_weight_history": "Weight History",
     "dashboard_steps_history": "Steps History",
-    "dashboard_last_days": "Last {days} Days",
+    "dashboard_last_days": "Last {{days}} Days",
     
     "profile_loading": "Loading profile...",
     "profile_not_available": "Profile not available",

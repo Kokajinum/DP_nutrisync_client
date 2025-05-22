@@ -13,7 +13,7 @@
     "dashboard_days_30": "30 dní",
     "dashboard_weight_history": "Historie váhy",
     "dashboard_steps_history": "Historie kroků",
-    "dashboard_last_days": "Posledních {days} dní",
+    "dashboard_last_days": "Posledních {{days}} dní",
     
     "profile_loading": "Načítání profilu...",
     "profile_not_available": "Profil není k dispozici",

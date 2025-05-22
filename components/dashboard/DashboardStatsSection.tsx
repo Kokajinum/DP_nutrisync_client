@@ -28,7 +28,7 @@ const DashboardStatsSection: React.FC<DashboardStatsSectionProps> = ({
   stepsHistory7Days,
   stepsHistory30Days,
 }) => {
-  const [timeRange, setTimeRange] = useState<TimeRange>("7d");
+  const [timeRange, setTimeRange] = useState<TimeRange>("30d");
   const backgroundColor = useThemeColor({}, "surfaceContainerLow");
 
   const { t } = useTranslation();
@@ -43,7 +43,7 @@ const DashboardStatsSection: React.FC<DashboardStatsSectionProps> = ({
   const stepsData = timeRange === "7d" ? stepsHistory7Days : stepsHistory30Days;
 
   return (
-    <ThemedView style={styles.container} lightColor={backgroundColor} darkColor={backgroundColor}>
+    <ThemedView style={[styles.container, { backgroundColor: backgroundColor }]}>
       <View style={styles.header}>
         <ThemedText type="title">{t(TranslationKeys.dashboard_statistics)}</ThemedText>
         <View style={styles.timeRangeSelector}>
@@ -56,14 +56,15 @@ const DashboardStatsSection: React.FC<DashboardStatsSectionProps> = ({
       </View>
 
       <View style={styles.chartsContainer}>
-        <WeightHistoryChart
-          data={weightData}
-          title={`${t(TranslationKeys.dashboard_weight_history)} (${timeRange === "7d" ? "Last 7 Days" : "Last 30 Days"})`}
-        />
-
         <StepsHistoryChart
           data={stepsData}
-          title={`${t(TranslationKeys.dashboard_steps_history)} (${timeRange === "7d" ? "Last 7 Days" : "Last 30 Days"})`}
+          timeRange={timeRange}
+          title={`${t(TranslationKeys.dashboard_steps_history)} (${timeRange === "7d" ? t(TranslationKeys.dashboard_last_days, { days: 7 }) : t(TranslationKeys.dashboard_last_days, { days: 30 })})`}
+        />
+
+        <WeightHistoryChart
+          data={weightData}
+          title={`${t(TranslationKeys.dashboard_weight_history)} (${timeRange === "7d" ? t(TranslationKeys.dashboard_last_days, { days: 7 }) : t(TranslationKeys.dashboard_last_days, { days: 30 })})`}
         />
       </View>
     </ThemedView>
