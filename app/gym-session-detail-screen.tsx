@@ -221,13 +221,6 @@ const GymSessionDetailScreen = () => {
       <ThemedStackScreen
         options={{
           title: t(TranslationKeys.gym_session_detail_header),
-          headerLeft: () => (
-            <Pressable
-              onPress={handleBackPress}
-              style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.7 : 1 }]}>
-              <MaterialIcons name="arrow-back" size={24} color={iconColor} />
-            </Pressable>
-          ),
           headerRight: () =>
             isCompleted ? (
               <View style={styles.headerButton}>

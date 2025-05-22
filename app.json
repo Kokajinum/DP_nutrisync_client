@@ -3,15 +3,25 @@
     "name": "DP_nutrisync_client",
     "slug": "DP_nutrisync_client",
     "version": "1.0.0",
-    "scheme": ["dp-nutrisync-client"],
+    "scheme": [
+      "dp-nutrisync-client"
+    ],
     "newArchEnabled": true,
+    "notification": {
+      "icon": "./assets/icons/adaptive-icon.png",
+      "color": "#ffffff",
+      "androidMode": "default",
+      "androidCollapsedTitle": "NutriSync",
+      "iosDisplayInForeground": true
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "monochromeImage": "./assets/icons/adaptive-icon.png"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.syncsoft.nutrisync"
+      "package": "com.syncsoft.nutrisync",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -44,6 +54,14 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "icon": "./assets/icons/adaptive-icon.png"
+    "icon": "./assets/icons/adaptive-icon.png",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "62eda9ea-be8d-4c07-bb64-a75a17cf0671"
+      }
+    }
   }
 }

@@ -102,13 +102,6 @@ export default function FoodDetailsScreen() {
       <ThemedStackScreen
         options={{
           title: t(TranslationKeys.food_diary_entry_header),
-          headerLeft: () => (
-            <Pressable
-              onPress={() => router.back()}
-              style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.7 : 1 }]}>
-              <MaterialIcons name="arrow-back" size={24} color={iconColor} />
-            </Pressable>
-          ),
         }}
       />
 

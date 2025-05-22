@@ -303,6 +303,31 @@ export const deleteFoodDiaryEntry = async (
 
 //#endregion
 
+//#region Notifications
+
+// Push token registration
+export const registerPushToken = async (
+  restManager: RestManager,
+  pushToken: string,
+  deviceId: string,
+  deviceName: string
+): Promise<boolean> => {
+  try {
+    await restManager.post("/notifications/register-token", {
+      push_token: pushToken,
+      device_id: deviceId,
+      device_name: deviceName,
+    });
+    return true;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error registering push token:", error.message);
+    return false;
+  }
+};
+
+//#endregion
+
 //#region Activity Diary
 
 // Activity Diary API functions

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import OfflineProcessorRegistration from "@/components/OfflineProcessorRegistration";
 import * as SplashScreen from "expo-splash-screen";
+import { NotificationsProvider } from "@/context/NotificationsProvider";
 import {
   useFonts,
   Quicksand_300Light,
@@ -78,34 +79,36 @@ export default function RootLayout() {
         <RestManagerProvider>
           <RepositoriesProvider>
             <ThemeProvider>
-              <I18nextProvider i18n={i18n}>
-                <OfflineProcessorRegistration />
-                <Stack>
-                  <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
-                  <Stack.Screen
-                    name="WelcomeScreen"
-                    options={{ headerShown: false }}></Stack.Screen>
-                  <Stack.Screen
-                    name="RegisterScreen"
-                    options={
-                      {
-                        //headerStyle: { backgroundColor: "transparent" },
-                        //headerTransparent: true,
-                      }
-                    }></Stack.Screen>
-                  <Stack.Screen name="LoginScreen"></Stack.Screen>
-                  <Stack.Screen
-                    name="food-creation-screen"
-                    options={{ headerShown: true }}></Stack.Screen>
-                  <Stack.Screen
-                    name="gym-session-detail-screen"
-                    options={{ headerShown: true }}></Stack.Screen>
-                  <Stack.Screen
-                    name="exercise-selection-screen"
-                    options={{ headerShown: true }}></Stack.Screen>
-                </Stack>
-                <ThemedStatusBar />
-              </I18nextProvider>
+              <NotificationsProvider>
+                <I18nextProvider i18n={i18n}>
+                  <OfflineProcessorRegistration />
+                  <Stack>
+                    <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
+                    <Stack.Screen
+                      name="WelcomeScreen"
+                      options={{ headerShown: false }}></Stack.Screen>
+                    <Stack.Screen
+                      name="RegisterScreen"
+                      options={
+                        {
+                          //headerStyle: { backgroundColor: "transparent" },
+                          //headerTransparent: true,
+                        }
+                      }></Stack.Screen>
+                    <Stack.Screen name="LoginScreen"></Stack.Screen>
+                    <Stack.Screen
+                      name="food-creation-screen"
+                      options={{ headerShown: true }}></Stack.Screen>
+                    <Stack.Screen
+                      name="gym-session-detail-screen"
+                      options={{ headerShown: true }}></Stack.Screen>
+                    <Stack.Screen
+                      name="exercise-selection-screen"
+                      options={{ headerShown: true }}></Stack.Screen>
+                  </Stack>
+                  <ThemedStatusBar />
+                </I18nextProvider>
+              </NotificationsProvider>
             </ThemeProvider>
           </RepositoriesProvider>
         </RestManagerProvider>

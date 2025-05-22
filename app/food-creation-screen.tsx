@@ -119,13 +119,24 @@ export default function FoodCreationScreen() {
           return t(TranslationKeys.validation_max_value, { max: MAX_SERVING_SIZE });
         return null;
 
+      case "servingSizeUnit":
+        if (!trimmedValue) return t(TranslationKeys.validation_required);
+        if (trimmedValue !== "g" && trimmedValue !== "ml")
+          return t(TranslationKeys.validation_invalid_weight);
+        return null;
+
+      case "brand":
+        if (!trimmedValue) return t(TranslationKeys.validation_required);
+        return null;
+
       case "barcode":
-        if (!trimmedValue) return null; // Optional field
+        // Barcode is optional according to DTO
+        if (!trimmedValue) return null;
         if (!BARCODE_REGEX.test(trimmedValue)) return t(TranslationKeys.validation_invalid_barcode);
         return null;
 
       case "calories":
-        if (!trimmedValue) return null; // Optional field
+        if (!trimmedValue) return t(TranslationKeys.validation_required);
         const calories = Number(trimmedValue);
         if (isNaN(calories)) return t(TranslationKeys.validation_valid_number);
         if (calories < 0) return t(TranslationKeys.validation_non_negative);
@@ -134,7 +145,7 @@ export default function FoodCreationScreen() {
         return null;
 
       case "fats":
-        if (!trimmedValue) return null; // Optional field
+        if (!trimmedValue) return t(TranslationKeys.validation_required);
         const fatValue = Number(trimmedValue);
         if (isNaN(fatValue)) return t(TranslationKeys.validation_valid_number);
         if (fatValue < 0) return t(TranslationKeys.validation_non_negative);
@@ -142,7 +153,7 @@ export default function FoodCreationScreen() {
         return null;
 
       case "carbs":
-        if (!trimmedValue) return null; // Optional field
+        if (!trimmedValue) return t(TranslationKeys.validation_required);
         const carbsValue = Number(trimmedValue);
         if (isNaN(carbsValue)) return t(TranslationKeys.validation_valid_number);
         if (carbsValue < 0) return t(TranslationKeys.validation_non_negative);
@@ -151,7 +162,7 @@ export default function FoodCreationScreen() {
         return null;
 
       case "protein":
-        if (!trimmedValue) return null; // Optional field
+        if (!trimmedValue) return t(TranslationKeys.validation_required);
         const proteinValue = Number(trimmedValue);
         if (isNaN(proteinValue)) return t(TranslationKeys.validation_valid_number);
         if (proteinValue < 0) return t(TranslationKeys.validation_non_negative);
@@ -160,7 +171,7 @@ export default function FoodCreationScreen() {
         return null;
 
       case "sugar":
-        if (!trimmedValue) return null; // Optional field
+        if (!trimmedValue) return t(TranslationKeys.validation_required);
         const sugarValue = Number(trimmedValue);
         if (isNaN(sugarValue)) return t(TranslationKeys.validation_valid_number);
         if (sugarValue < 0) return t(TranslationKeys.validation_non_negative);
@@ -169,7 +180,7 @@ export default function FoodCreationScreen() {
         return null;
 
       case "fiber":
-        if (!trimmedValue) return null; // Optional field
+        if (!trimmedValue) return t(TranslationKeys.validation_required);
         const fiberValue = Number(trimmedValue);
         if (isNaN(fiberValue)) return t(TranslationKeys.validation_valid_number);
         if (fiberValue < 0) return t(TranslationKeys.validation_non_negative);
@@ -178,7 +189,7 @@ export default function FoodCreationScreen() {
         return null;
 
       case "salt":
-        if (!trimmedValue) return null; // Optional field
+        if (!trimmedValue) return t(TranslationKeys.validation_required);
         const saltValue = Number(trimmedValue);
         if (isNaN(saltValue)) return t(TranslationKeys.validation_valid_number);
         if (saltValue < 0) return t(TranslationKeys.validation_non_negative);
@@ -380,20 +391,6 @@ export default function FoodCreationScreen() {
       <ThemedStackScreen
         options={{
           title: t(TranslationKeys.food_creation_header),
-          headerLeft: () => (
-            <Pressable
-              onPress={() => router.push("/(tabs)/food-diary-screen")}
-              style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.7 : 1 }]}>
-              <MaterialIcons name="arrow-back" size={24} color={iconColor} />
-            </Pressable>
-          ),
-          // headerRight: () => (
-          //   <Pressable
-          //     onPress={handleSaveFood}
-          //     style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.7 : 1 }]}>
-          //     <MaterialIcons name="check" size={28} color={GlobalColors.checkGreen} />
-          //   </Pressable>
-          // ),
         }}
       />
 
@@ -448,18 +445,20 @@ export default function FoodCreationScreen() {
 
             <CDivider style={styles.divider} />
 
+            <CFoodAttributeInput
+              icon={<Ionicons name="pricetag-outline" />}
+              label={t(TranslationKeys.brand)}
+              value={foodData.brand}
+              onChangeText={(text) => updateFoodData("brand", text)}
+              isRequired={true}
+              error={errors.brand}
+              style={styles.inputContainer}
+            />
+
             <View style={styles.optionalFieldsContainer}>
               <ThemedText style={styles.optionalLabel}>
                 {t(TranslationKeys.optional_information)}
               </ThemedText>
-
-              <CFoodAttributeInput
-                icon={<Ionicons name="pricetag-outline" />}
-                label={t(TranslationKeys.brand)}
-                value={foodData.brand}
-                onChangeText={(text) => updateFoodData("brand", text)}
-                style={styles.inputContainer}
-              />
 
               <CFoodAttributeInput
                 icon={<MaterialCommunityIcons name="barcode" />}
@@ -499,6 +498,7 @@ export default function FoodCreationScreen() {
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="kcal"
+                  isRequired={true}
                   error={errors.calories}
                   placeholder={t(TranslationKeys.calories_placeholder)}
                   style={styles.inputContainer}
@@ -522,6 +522,7 @@ export default function FoodCreationScreen() {
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="g"
+                  isRequired={true}
                   error={errors.fats}
                   placeholder={t(TranslationKeys.fats_placeholder)}
                   style={styles.inputContainer}
@@ -539,6 +540,7 @@ export default function FoodCreationScreen() {
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="g"
+                  isRequired={true}
                   error={errors.carbs}
                   placeholder={t(TranslationKeys.carbs_placeholder)}
                   style={styles.inputContainer}
@@ -555,6 +557,7 @@ export default function FoodCreationScreen() {
                 keyboardType="numeric"
                 isNumeric={true}
                 unit="g"
+                isRequired={true}
                 error={errors.sugar}
                 placeholder={t(TranslationKeys.sugar_placeholder)}
                 style={[styles.inputContainer, styles.subMacroInput]}
@@ -568,6 +571,7 @@ export default function FoodCreationScreen() {
                 keyboardType="numeric"
                 isNumeric={true}
                 unit="g"
+                isRequired={true}
                 error={errors.fiber}
                 placeholder={t(TranslationKeys.fiber_placeholder)}
                 style={[styles.inputContainer, styles.subMacroInput]}
@@ -584,6 +588,7 @@ export default function FoodCreationScreen() {
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="g"
+                  isRequired={true}
                   error={errors.protein}
                   placeholder={t(TranslationKeys.protein_placeholder)}
                   style={styles.inputContainer}
@@ -605,6 +610,7 @@ export default function FoodCreationScreen() {
                   keyboardType="numeric"
                   isNumeric={true}
                   unit="g"
+                  isRequired={true}
                   error={errors.salt}
                   placeholder={t(TranslationKeys.salt_placeholder)}
                   style={styles.inputContainer}
