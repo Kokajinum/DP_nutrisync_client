@@ -13,8 +13,6 @@ import { TranslationKeys } from "@/translations/translations";
 import { useDashboard } from "@/hooks/useDashboard";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
-// Import dashboard components
 import DashboardStatsSection from "@/components/dashboard/DashboardStatsSection";
 import DashboardRecentEntriesSection from "@/components/dashboard/DashboardRecentEntriesSection";
 import CAiRecommendationCard from "@/components/cards/CAiRecommendationCard";
@@ -23,9 +21,10 @@ import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { Bar, CartesianChart, useChartPressState } from "victory-native";
 import { Circle, LinearGradient, useFont, vec } from "@shopify/react-native-skia";
-
 import { SharedValue } from "react-native-reanimated";
 import StepsHistoryChart from "@/components/charts/StepsHistoryChart";
+import { useStepsMeasurement } from "@/hooks/useStepsMeasurement";
+import CurrentStepsDisplay from "@/components/dashboard/CurrentStepsDisplay";
 
 const HomeScreen = () => {
   const { user } = useAuth();
@@ -64,6 +63,9 @@ const HomeScreen = () => {
         },
       },
     ]);
+
+  // Use the steps measurement hook
+  const { steps, loading: stepsLoading, error: stepsError } = useStepsMeasurement();
 
   useEffect(() => {
     // Check if profile data exists and if onboarding is completed
@@ -163,6 +165,9 @@ const HomeScreen = () => {
             onPress={() => handleAiRecommendationPress(dashboardData.ai_recommendations[0].id)}
           />
         )}
+
+      {/* Current Steps Display */}
+      <CurrentStepsDisplay steps={steps} loading={stepsLoading} error={stepsError} />
 
       {/* Recent Entries Section */}
       {dashboardData && (

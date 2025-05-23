@@ -9,6 +9,10 @@ import {
   CreateActivityDiaryDto,
 } from "@/models/interfaces/ActivityDiary";
 import { DashboardResponseDto } from "@/models/interfaces/DashboardResponseDto";
+import {
+  CreateStepMeasurementDto,
+  StepMeasurementResponseDto,
+} from "@/models/interfaces/CreateStepMeasurementDto";
 import RestManager from "./restManager";
 import { ensureError } from "../methods";
 
@@ -323,6 +327,25 @@ export const registerPushToken = async (
     const error: Error = ensureError(exception);
     console.error("Error registering push token:", error.message);
     return false;
+  }
+};
+
+//#endregion
+
+//#region Steps
+
+// Step measurement API functions
+export const saveStepMeasurement = async (
+  restManager: RestManager,
+  stepData: CreateStepMeasurementDto
+): Promise<StepMeasurementResponseDto | null> => {
+  try {
+    const response = await restManager.post<StepMeasurementResponseDto>("/steps", stepData as any);
+    return response.data;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error("Error saving step measurement:", error.message);
+    return null;
   }
 };
 

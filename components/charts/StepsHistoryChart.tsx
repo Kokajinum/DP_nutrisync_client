@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { CartesianChart, Bar, useChartPressState } from "victory-native";
 import { format, isValid } from "date-fns";
 import { StepMeasurementResponseDto } from "@/models/interfaces/DashboardResponseDto";
@@ -15,6 +15,7 @@ import {
   Quicksand_600SemiBold,
   Quicksand_700Bold,
 } from "@expo-google-fonts/quicksand";
+import { ThemedView } from "../ThemedView";
 
 interface StepsHistoryChartProps {
   data: StepMeasurementResponseDto[];

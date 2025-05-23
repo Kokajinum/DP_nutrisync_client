@@ -21,7 +21,10 @@
       },
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.syncsoft.nutrisync",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.health.READ_STEPS"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -43,7 +46,18 @@
           }
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-health-connect",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "minSdkVersion": 26
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
