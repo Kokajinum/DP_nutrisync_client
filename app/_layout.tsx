@@ -12,7 +12,7 @@ import {
   Quicksand_600SemiBold,
   Quicksand_700Bold,
 } from "@expo-google-fonts/quicksand";
-import { AuthProvider, useAuth } from "@/context/AuthProvider";
+import { AuthProvider } from "@/context/AuthProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/translations/i18n";
@@ -85,17 +85,10 @@ export default function RootLayout() {
                   <Stack>
                     <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
                     <Stack.Screen
-                      name="WelcomeScreen"
+                      name="welcome-screen"
                       options={{ headerShown: false }}></Stack.Screen>
-                    <Stack.Screen
-                      name="RegisterScreen"
-                      options={
-                        {
-                          //headerStyle: { backgroundColor: "transparent" },
-                          //headerTransparent: true,
-                        }
-                      }></Stack.Screen>
-                    <Stack.Screen name="LoginScreen"></Stack.Screen>
+                    <Stack.Screen name="register-screen"></Stack.Screen>
+                    <Stack.Screen name="login-screen"></Stack.Screen>
                     <Stack.Screen
                       name="food-creation-screen"
                       options={{ headerShown: true }}></Stack.Screen>

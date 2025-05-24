@@ -1,6 +1,6 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import React from "react";
-import { router, Stack } from "expo-router";
+import { router } from "expo-router";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import CButton from "@/components/button/CButton";
 import { ThemedText } from "@/components/ThemedText";
@@ -19,10 +19,6 @@ import { useOnboardingStore } from "@/stores/onboardingStore";
 const index = () => {
   const { t } = useTranslation();
   const { setStep } = useOnboardingStore();
-
-  const colorScheme = useColorScheme();
-  const onBackground = useThemeColor({}, "onBackground");
-  const background = useThemeColor({}, "background");
 
   const handleSubmit = () => {
     setStep(1);
@@ -74,8 +70,6 @@ const index = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    //justifyContent: "center",
-    //alignItems: "center",
   },
   content: {},
   buttonContainer: {

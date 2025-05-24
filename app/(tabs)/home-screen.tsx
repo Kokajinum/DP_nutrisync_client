@@ -1,10 +1,9 @@
-import { Text, Alert, StyleSheet, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Alert, StyleSheet, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { useRouter } from "expo-router";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useOnboardingStore } from "@/stores/onboardingStore";
-import { useDateStore } from "@/stores/dateStore";
 import { useNotifications } from "@/hooks/useNotifications";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -20,10 +19,8 @@ import CAiRecommendationCard from "@/components/cards/CAiRecommendationCard";
 import CUserProfileCard from "@/components/cards/CUserProfileCard";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
-import { Bar, CartesianChart, useChartPressState } from "victory-native";
-import { Circle, LinearGradient, useFont, vec } from "@shopify/react-native-skia";
+import { Circle } from "@shopify/react-native-skia";
 import { SharedValue } from "react-native-reanimated";
-import StepsHistoryChart from "@/components/charts/StepsHistoryChart";
 import { useStepsMeasurement } from "@/hooks/useStepsMeasurement";
 import CurrentStepsDisplay from "@/components/dashboard/CurrentStepsDisplay";
 
@@ -156,11 +153,6 @@ const HomeScreen = () => {
       {profileData && (
         <View style={styles.profileCardContainer}>
           <CUserProfileCard userProfile={profileData} />
-          {/* <TouchableOpacity
-            style={styles.profileEditButton}
-            onPress={() => router.push("/(tabs)/profile-screen")}>
-            <ThemedText style={styles.profileEditButtonText}>Edit Profile</ThemedText>
-          </TouchableOpacity> */}
         </View>
       )}
 

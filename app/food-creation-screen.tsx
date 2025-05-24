@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  ScrollView,
-  View,
-  StyleSheet,
-  Pressable,
-  Alert,
-  Animated,
-  ActivityIndicator,
-} from "react-native";
+import { ScrollView, View, StyleSheet, Pressable, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialIcons, MaterialCommunityIcons, Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,7 +9,6 @@ import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { GlobalColors, Colors } from "@/constants/Colors";
 import { _400Regular, _500Medium, _600SemiBold, _700Bold } from "@/constants/Global";
 import { FoodCategoryEnum } from "@/models/enums/enums";
 import { getFoodCategoryOptions } from "@/utils/foodCategories";
@@ -53,8 +44,6 @@ export default function FoodCreationScreen() {
   const surfaceColor = useThemeColor({}, "surface");
   const surfaceContainerHighest = useThemeColor({}, "surfaceContainerHighest");
   const borderColor = useThemeColor({}, "outline");
-  //const sectionTitleColor = useThemeColor({}, "primary");
-  const iconColor = useThemeColor({}, "onBackground");
 
   interface FoodFormData {
     name: string;

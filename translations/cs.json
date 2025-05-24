@@ -46,6 +46,7 @@
     "profile_save_success": "Profil byl úspěšně aktualizován",
     "profile_save_error": "Nepodařilo se aktualizovat profil",
     "profile_internet_required": "Pro aktualizaci profilu je vyžadováno připojení k internetu",
+    "logout": "Odhlásit se",
     
     "settings_title": "Nastavení",
     "settings_system": "Systémová nastavení",
@@ -108,8 +109,8 @@
     "gym_session_detail_set": "Série",
     
     "success": "úspěch",
-    "welcome": "Vítejte v aplikaci NutriSync",
-    "app_name": "NutriSynq",
+    "welcome": "Vítejte v aplikaci",
+    "app_name": "NutriSync",
     "personal_guide": "Váš osobní průvodce zdravým životním stylem.",
     "track_calories": "Sledujte příjem kalorií",
     "sync_activity": "Synchronizujte data o aktivitě",

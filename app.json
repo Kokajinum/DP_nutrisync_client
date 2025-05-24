@@ -2,7 +2,7 @@
   "expo": {
     "name": "DP_nutrisync_client",
     "slug": "DP_nutrisync_client",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "scheme": [
       "dp-nutrisync-client"
     ],

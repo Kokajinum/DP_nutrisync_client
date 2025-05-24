@@ -8,10 +8,8 @@ import { STORAGE_KEY_HAS_LAUNCHED, _500Medium, _600SemiBold } from "@/constants/
 import { setStorageItem } from "@/utils/storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Translation, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { TranslationKeys } from "@/translations/translations";
 
 const FeatureItem = ({ text }: { text: string }) => (
@@ -29,12 +27,12 @@ const WelcomeScreen = () => {
 
   const handleLoginPress = async () => {
     await setStorageItem(STORAGE_KEY_HAS_LAUNCHED, "true");
-    router.push("/LoginScreen");
+    router.push("/login-screen");
   };
 
   const handleSignUpPress = async () => {
     await setStorageItem(STORAGE_KEY_HAS_LAUNCHED, "true");
-    router.push("/RegisterScreen");
+    router.push("/register-screen");
   };
 
   const handleContinueWithoutAccount = () => {
@@ -47,8 +45,6 @@ const WelcomeScreen = () => {
         colors={[backgroundGradientStart, backgroundGradientEnd]}
         locations={[0, 0.47]}
         style={styles.gradient}>
-        {/* <StatusBar backgroundColor={backgroundGradientStart}></StatusBar> */}
-
         <ScrollView>
           <View style={styles.header}>
             <ThemedText type="title" style={styles.welcomeText}>
@@ -65,37 +61,29 @@ const WelcomeScreen = () => {
             />
           </View>
 
-          <ThemedText style={styles.subtitle}>
-            Your personal guide to a healthy lifestyle is here.
-          </ThemedText>
+          <ThemedText style={styles.subtitle}>{t(TranslationKeys.personal_guide)}</ThemedText>
 
           <View style={styles.features}>
-            <FeatureItem text="Track calorie intake" />
-            <FeatureItem text="Sync activity data" />
-            <FeatureItem text="Create mindful eating habit" />
-            <FeatureItem text="discover personalized recommendations for your ideal diet" />
+            <FeatureItem text={t(TranslationKeys.track_calories)} />
+            <FeatureItem text={t(TranslationKeys.sync_activity)} />
+            <FeatureItem text={t(TranslationKeys.mindful_eating)} />
+            <FeatureItem text={t(TranslationKeys.personalized_recommendations)} />
           </View>
         </ScrollView>
 
         <View style={styles.buttons}>
           <CButton
-            title="Sign Up"
+            title={t(TranslationKeys.sign_up)}
             onPress={handleSignUpPress}
             icon={<MaterialIcons name="person-add" />}
             style={styles.button}
           />
           <CButton
-            title="Log In"
+            title={t(TranslationKeys.log_in)}
             onPress={handleLoginPress}
             icon={<MaterialIcons name="login" />}
             style={styles.button}
           />
-          {/* <CButton
-            title="Continue Without Account"
-            onPress={handleContinueWithoutAccount}
-            icon={<MaterialIcons name="rocket-launch"></MaterialIcons>}
-            style={styles.button}
-          /> */}
         </View>
       </LinearGradient>
     </ThemedView>

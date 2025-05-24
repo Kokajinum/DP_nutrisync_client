@@ -1,21 +1,15 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  Text,
   View,
-  TextInput,
-  Button,
   Alert,
   ActivityIndicator,
   Pressable,
-  SafeAreaView,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
   ScrollView,
 } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthProvider";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
@@ -26,13 +20,6 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import CTextInput from "@/components/input/CTextInput";
 import { MaterialIcons } from "@expo/vector-icons";
 import CButton from "@/components/button/CButton";
-import CCheckBox from "@/components/checkbox/CCheckBox";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { UserProfileData } from "@/models/interfaces/UserProfileData";
-import { useQueryClient } from "@tanstack/react-query";
-import { ensureError } from "@/utils/methods";
-import { useRestManager } from "@/context/RestManagerProvider";
-import TestButton from "@/components/button/TestButton";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { globalStyles } from "@/utils/global-styles";
 
@@ -41,20 +28,13 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isEmailErrorVisible, setIsEmailErrorVisible] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
-  const { signIn, loading, error, session } = useAuth();
+  const { signIn, loading } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  const restManager = useRestManager();
 
   //colors
   const linkColor = useThemeColor({}, "primary");
   const onBackground = useThemeColor({}, "onBackground");
-  const background = useThemeColor({}, "background");
-  const colorScheme = useColorScheme();
-
-  const [text, onChangeText] = React.useState("Useless Text");
 
   const handleSignIn = async () => {
     try {
@@ -68,7 +48,7 @@ const LoginScreen = () => {
       if (!success && !loading) {
         Alert.alert(t(TranslationKeys.login_failed), t(TranslationKeys.incorrect_email_password), [
           { text: t(TranslationKeys.try_again), style: "cancel" },
-          { text: t(TranslationKeys.sign_up), onPress: () => router.replace("/RegisterScreen") },
+          { text: t(TranslationKeys.sign_up), onPress: () => router.replace("/register-screen") },
         ]);
       } else if (success) {
         router.replace("/(tabs)/home-screen");
@@ -85,8 +65,6 @@ const LoginScreen = () => {
           title: t(TranslationKeys.log_in),
         }}></ThemedStackScreen>
       <ThemedStatusBar></ThemedStatusBar>
-      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        </TouchableWithoutFeedback> */}
 
       <ThemedView style={[styles.container, globalStyles.globalMainContent]}>
         <ScrollView>
@@ -126,14 +104,6 @@ const LoginScreen = () => {
             Enter your password
           </ThemedText>
 
-          <Pressable
-            style={[styles.forgotPasswordContainer]}
-            onPress={() => router.push("/PasswordRecoveryScreen")}>
-            <ThemedText style={[styles.forgotPassword, { color: linkColor }]}>
-              {t(TranslationKeys.forgot_password)}
-            </ThemedText>
-          </Pressable>
-
           {loading && <ActivityIndicator style={styles.loading} />}
         </ScrollView>
         <View style={styles.buttons}>
@@ -148,7 +118,7 @@ const LoginScreen = () => {
           {/* don't have an account link */}
           <Pressable
             style={styles.loginLinkContainer}
-            onPress={() => router.replace("/RegisterScreen")}>
+            onPress={() => router.replace("/register-screen")}>
             <ThemedText style={[styles.loginLink, { color: linkColor }]}>
               {t(TranslationKeys.dont_have_account)}
             </ThemedText>
@@ -168,8 +138,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    //alignItems: "center",
-    //justifyContent: "center",
   },
   title: {
     fontSize: 24,

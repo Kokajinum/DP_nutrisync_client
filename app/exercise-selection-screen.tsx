@@ -9,7 +9,7 @@ import {
   Pressable,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -18,7 +18,6 @@ import { TranslationKeys } from "@/translations/translations";
 import { db } from "@/utils/sqliteHelper";
 import { useActivityDiaryStore } from "@/stores/activityDiaryStore";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
-import { GlobalColors } from "@/constants/Colors";
 
 interface Exercise {
   id: string;
@@ -38,7 +37,6 @@ const ExerciseSelectionScreen = () => {
   const [loading, setLoading] = useState(true);
 
   // Theme colors
-  const backgroundColor = useThemeColor({}, "background");
   const textColor = useThemeColor({}, "onSurface");
   const cardColor = useThemeColor({}, "surface");
   const primaryColor = useThemeColor({}, "primary");
@@ -131,24 +129,8 @@ const ExerciseSelectionScreen = () => {
               <Ionicons name="arrow-back" size={24} color={textColor} />
             </Pressable>
           ),
-          // headerRight: () => (
-          //   <Pressable
-          //     onPress={handleSaveFood}
-          //     style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.7 : 1 }]}>
-          //     <MaterialIcons name="check" size={28} color={GlobalColors.checkGreen} />
-          //   </Pressable>
-          // ),
         }}
       />
-      {/* <View style={[styles.header, { borderBottomColor: borderColor }]}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color={textColor} />
-        </TouchableOpacity>
-        <ThemedText style={styles.headerTitle}>
-          {t(TranslationKeys.activity_diary_select_exercise)}
-        </ThemedText>
-        <View style={styles.backButton} />
-      </View> */}
 
       {/* Search Bar */}
       <View style={[styles.searchContainer, { borderColor }]}>

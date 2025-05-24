@@ -1,17 +1,15 @@
 import CButton from "@/components/button/CButton";
-import CCheckBox from "@/components/checkbox/CCheckBox";
 import CTextInput from "@/components/input/CTextInput";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/context/AuthProvider";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { TranslationKeys } from "@/translations/translations";
 import { globalStyles } from "@/utils/global-styles";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, StyleSheet, View, Pressable, KeyboardAvoidingView } from "react-native";
@@ -23,7 +21,6 @@ const RegistrationScreen = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [isEmailErrorVisible, setIsEmailErrorVisible] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const { signUp, loading, error } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
@@ -31,17 +28,15 @@ const RegistrationScreen = () => {
   //colors
   const linkColor = useThemeColor({}, "primary");
   const onBackground = useThemeColor({}, "onBackground");
-  const background = useThemeColor({}, "background");
-  const colorScheme = useColorScheme();
 
   const handleSignUp = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please enter email and password.");
+      Alert.alert(t(TranslationKeys.error), t(TranslationKeys.enter_email_password));
       return;
     }
 
     if (password !== passwordConfirmation) {
-      Alert.alert("Error", "Passwords do not match.");
+      Alert.alert(t(TranslationKeys.error), t(TranslationKeys.passwords_do_not_match));
       return;
     }
 
@@ -49,8 +44,8 @@ const RegistrationScreen = () => {
 
     if (!success && !loading) {
       Alert.alert(t(TranslationKeys.registration_failed), t(TranslationKeys.try_again_later), [
-        { text: "Try Again", style: "cancel" },
-        { text: "Sign In", onPress: () => router.replace("/LoginScreen") },
+        { text: t(TranslationKeys.try_again), style: "cancel" },
+        { text: t(TranslationKeys.log_in), onPress: () => router.replace("/login-screen") },
       ]);
     } else if (success) {
       router.replace("/onboarding");
@@ -82,7 +77,7 @@ const RegistrationScreen = () => {
           containerStyle={styles.inputContainer}
         />
         <ThemedText style={[styles.helperText, { display: isEmailErrorVisible ? "flex" : "none" }]}>
-          Enter your email/Invalid email address
+          {t(TranslationKeys.validation_invalid_email)}
         </ThemedText>
 
         {/* Password Input */}
@@ -102,7 +97,7 @@ const RegistrationScreen = () => {
           containerStyle={styles.inputContainer}
         />
         <ThemedText style={[styles.helperText, { display: "none" }]}>
-          Enter your password
+          {t(TranslationKeys.enter_password)}
         </ThemedText>
 
         {/* Confirm Password Input */}
@@ -122,54 +117,22 @@ const RegistrationScreen = () => {
           containerStyle={styles.inputContainer}
         />
         <ThemedText style={[styles.helperText, { display: "none" }]}>
-          Confirm your password
+          {t(TranslationKeys.password_confirm)}
         </ThemedText>
-
-        {/* Remember Me and Forgot Password */}
-        {/* <ThemedView style={styles.rememberForgotContainer}>
-        <CCheckBox
-          label={t(TranslationKeys.remember)}
-          boxColor="#333"
-          checkColor="#fff"
-          defaultChecked={rememberMe}
-          onChange={setRememberMe}
-        />
-        <Pressable onPress={() => router.push("/PasswordRecoveryScreen")}>
-          <ThemedText style={[styles.forgotPassword, { color: linkColor }]}>
-            {t(TranslationKeys.forgot_password)}
-          </ThemedText>
-        </Pressable>
-      </ThemedView> */}
-
-        <Pressable
-          style={[styles.forgotPasswordContainer]}
-          onPress={() => router.push("/PasswordRecoveryScreen")}>
-          <ThemedText style={[styles.forgotPassword, { color: linkColor }]}>
-            {t(TranslationKeys.forgot_password)}
-          </ThemedText>
-        </Pressable>
 
         <View style={styles.buttons}>
           {/* Sign Up Button */}
           <CButton
             style={styles.signUpButton}
-            title={loading ? "Loading..." : t(TranslationKeys.sign_up)}
+            title={loading ? t(TranslationKeys.loading) : t(TranslationKeys.sign_up)}
             onPress={handleSignUp}
             icon={<MaterialIcons name="email" size={24} />}
-          />
-
-          {/* Continue Without Account Button */}
-          <CButton
-            style={styles.continueButton}
-            title={t(TranslationKeys.continue_without_account)}
-            onPress={handleContinueWithoutAccount}
-            icon={<MaterialIcons name="rocket-launch" size={24} />}
           />
 
           {/* Already have an account link */}
           <Pressable
             style={styles.loginLinkContainer}
-            onPress={() => router.replace("/LoginScreen")}>
+            onPress={() => router.replace("/login-screen")}>
             <ThemedText style={[styles.loginLink, { color: linkColor }]}>
               {t(TranslationKeys.already_have_account)}
             </ThemedText>

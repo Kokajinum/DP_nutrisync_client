@@ -2,6 +2,8 @@ import { supabase } from "@/utils/supabase";
 import { Session } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
+import { useRouter } from "expo-router";
+import { clearUserData } from "@/utils/userDataCleaner";
 
 export interface AuthContextType {
   session: Session | null;
@@ -21,6 +23,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const router = useRouter();
   const [session, setSession] = useState<any | null>(null);
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -153,9 +156,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
+      // Clear user data first
+      await clearUserData();
+
+      // Then sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) {
         setError(error.message);
+      } else {
+        // Explicitly redirect to login screen after successful logout
+        router.replace("/login-screen");
       }
     } catch (e: any) {
       setError(e.message);

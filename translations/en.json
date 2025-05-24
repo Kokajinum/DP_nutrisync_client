@@ -46,6 +46,7 @@
     "profile_save_success": "Profile updated successfully",
     "profile_save_error": "Failed to update profile",
     "profile_internet_required": "Internet connection required to update profile",
+    "logout": "Log Out",
     
     "settings_title": "Settings",
     "settings_system": "System Settings",
@@ -105,7 +106,7 @@
     "gym_session_detail_set": "Set",
     
     "success": "success",
-    "welcome": "Welcome to NutriSync",
+    "welcome": "Welcome to",
     "app_name": "NutriSync",
     "personal_guide": "Your personal guide to a healthy lifestyle.",
     "track_calories": "Track calorie intake",

@@ -2,13 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
   ScrollView,
   Dimensions,
-  Pressable,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -23,13 +21,12 @@ import CDivider from "../components/CDivider";
 import { useThemeColor } from "../hooks/useThemeColor";
 import { ThemedText } from "../components/ThemedText";
 import { ThemedView } from "../components/ThemedView";
-import CCard from "../components/cards/CCard";
 import CButton from "../components/button/CButton";
 import CNumberInput from "../components/input/CNumberInput";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { TranslationKeys } from "@/translations/translations";
 import { t } from "i18next";
-import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const GymSessionDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -40,7 +37,6 @@ const GymSessionDetailScreen = () => {
     activeSession,
     updateSessionNotes,
     addSet,
-    updateSet,
     completeSession,
     loadActiveSession,
     removeLastSet,
@@ -58,9 +54,7 @@ const GymSessionDetailScreen = () => {
   const textColor = useThemeColor({}, "onSurface");
   const cardColor = useThemeColor({}, "surface");
   const primaryColor = useThemeColor({}, "primary");
-  const secondaryColor = useThemeColor({}, "secondary");
   const borderColor = useThemeColor({}, "outline");
-  const iconColor = useThemeColor({}, "onBackground");
 
   useEffect(() => {
     const loadSession = async () => {
@@ -140,8 +134,6 @@ const GymSessionDetailScreen = () => {
                   setIsCompleted(true);
                   setIsSynced(true);
                 }
-                // Don't navigate back, let user see the completed state
-                // router.back();
               }
             },
           },
@@ -167,12 +159,10 @@ const GymSessionDetailScreen = () => {
   };
 
   const handleAddExercise = () => {
-    // Navigate to exercise selection screen
     router.push("/exercise-selection-screen");
   };
 
   const handleAddSet = (entryId: string) => {
-    // Create a new empty set
     const newSet: ExerciseSet = {
       reps: 0,
       weight_kg: 0,
@@ -465,7 +455,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   scrollViewContent: {
-    paddingBottom: 100, // Provide enough space for the button
+    paddingBottom: 100,
   },
   timesContainer: {
     flexDirection: "row",

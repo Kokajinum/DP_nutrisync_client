@@ -53,6 +53,7 @@ export enum TranslationKeys {
   profile_save_success = "profile_save_success",
   profile_save_error = "profile_save_error",
   profile_internet_required = "profile_internet_required",
+  logout = "logout",
 
   settings_title = "settings_title",
   settings_system = "settings_system",

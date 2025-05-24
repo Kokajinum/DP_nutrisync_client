@@ -1,38 +1,20 @@
-import {
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  Switch,
-  TextInput,
-  View,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, Alert, TextInput, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTranslation } from "react-i18next";
 import { changeLanguage } from "@/translations/i18n";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { getLocales } from "expo-localization";
-import { STORAGE_KEY_LANGUAGE, STORAGE_KEY_LANGUAGE_EXPLICITLY_SELECTED } from "@/constants/Global";
+import { STORAGE_KEY_LANGUAGE_EXPLICITLY_SELECTED } from "@/constants/Global";
 import { getStorageItem } from "@/utils/storage";
 import { useTheme } from "@/context/ThemeProvider";
 import { useUserProfile, useUpdateUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from "@/context/AuthProvider";
+import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedScrollView } from "@/components/ThemedScrollView";
-import CDivider from "@/components/CDivider";
 import CButton from "@/components/button/CButton";
-import CDropdown from "@/components/input/CDropdown";
-import CNumberInput from "@/components/input/CNumberInput";
-import CTextInput from "@/components/input/CTextInput";
 import { UpdateUserProfileDto } from "@/models/interfaces/UpdateUserProfileDto";
-import {
-  ActivityLevelEnum,
-  ExperienceLevelEnum,
-  GenderEnum,
-  GoalEnum,
-  HeightUnitEnum,
-  WeightUnitEnum,
-} from "@/models/enums/enums";
+import { ActivityLevelEnum, GoalEnum, HeightUnitEnum, WeightUnitEnum } from "@/models/enums/enums";
 import NetInfo from "@react-native-community/netinfo";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
@@ -123,22 +105,16 @@ export default function ProfileScreen() {
   };
   const { t, i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { data: profile, isLoading } = useUserProfile(user?.id || "");
   const updateUserProfile = useUpdateUserProfile();
-  const backgroundColor = useThemeColor({}, "background");
-  const textColor = useThemeColor({}, "onSurface");
-  const primaryColor = useThemeColor({}, "primary");
   const secondaryColor = useThemeColor({}, "secondary");
   const cardColor = useThemeColor({}, "surfaceContainer");
   const inputBorderColor = useThemeColor({}, "outline");
   const onBackgroundColor = useThemeColor({}, "onBackground");
-  const surfaceContainerHighColor = useThemeColor({}, "surfaceContainerHigh");
   const onPrimaryColor = useThemeColor({}, "onPrimary");
   const primaryContainerColor = useThemeColor({}, "primaryContainer");
   const onPrimaryContainerColor = useThemeColor({}, "onPrimaryContainer");
-  const surfaceVariantColor = useThemeColor({}, "surfaceVariant");
-  const onSurfaceVariantColor = useThemeColor({}, "onSurfaceVariant");
 
   // Form state
   const [formData, setFormData] = useState<UpdateUserProfileDto>({});
@@ -691,6 +667,15 @@ export default function ProfileScreen() {
             </ThemedText>
           </TouchableOpacity>
         </View>
+
+        {/* Logout Button */}
+        <ThemedText style={styles.subsectionTitle}>{t("logout")}</ThemedText>
+        <CButton
+          title={t("logout")}
+          onPress={() => signOut()}
+          icon={<MaterialIcons name="logout" size={24} color={onPrimaryColor} />}
+          style={{ marginTop: 8, backgroundColor: secondaryColor }}
+        />
       </View>
 
       {/* Save Button */}

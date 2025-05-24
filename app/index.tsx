@@ -1,10 +1,9 @@
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { STORAGE_KEY_HAS_LAUNCHED, _500Medium, _600SemiBold } from "@/constants/Global";
 import { getStorageItem } from "@/utils/storage";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
-import { delay } from "@/utils/methods";
 
 const IndexPage = () => {
   const { session, loading } = useAuth();
@@ -15,25 +14,23 @@ const IndexPage = () => {
       try {
         const hasLaunchedBefore = await getStorageItem(STORAGE_KEY_HAS_LAUNCHED);
 
-        //await delay(10000);
-
         if (!loading) {
           if (session) {
             router.replace("/home-screen");
           } else if (hasLaunchedBefore) {
-            router.replace("/LoginScreen");
+            router.replace("/login-screen");
           } else {
-            router.replace("/WelcomeScreen");
+            router.replace("/welcome-screen");
           }
         }
       } catch (e) {
         console.error("Error in checkFirstLaunchAndAuth:", e);
-        router.replace("/LoginScreen");
+        router.replace("/login-screen");
       }
     };
 
     checkFirstLaunchAndAuth();
-  }, [loading]);
+  }, [loading, session]);
 
   if (loading) {
     return (

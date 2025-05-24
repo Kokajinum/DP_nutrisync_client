@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, FlatList, Pressable } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
@@ -18,7 +18,6 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from "@/context/AuthProvider";
 import { useActivityDiaryStore } from "@/stores/activityDiaryStore";
 import { useActivityDiaryByDate } from "@/hooks/useActivityDiaryRepository";
-import { format } from "date-fns";
 
 export default function ActivityDiaryScreen() {
   const { getFormattedDate, selectedDate } = useDateStore();
@@ -29,8 +28,6 @@ export default function ActivityDiaryScreen() {
 
   // Theme colors
   const primaryColor = useThemeColor({}, "primary");
-  const secondaryColor = useThemeColor({}, "secondary");
-  const tertiaryColor = useThemeColor({}, "tertiary");
   const surfaceColor = useThemeColor({}, "surface");
   const borderColor = useThemeColor({}, "outline");
 
@@ -180,13 +177,6 @@ export default function ActivityDiaryScreen() {
 
                 <View style={styles.calorieDetailsContainer}>
                   <View style={styles.calorieDetailRow}>
-                    {/* <View style={styles.calorieDetailItem}>
-                      <ThemedText style={styles.calorieDetailLabel}>
-                        {t(TranslationKeys.food_diary_goal)}
-                      </ThemedText>
-                      <ThemedText style={styles.calorieDetailValue}>{calorieGoal}</ThemedText>
-                    </View> */}
-
                     <View style={styles.calorieDetailItem}>
                       <ThemedText style={styles.calorieDetailLabel}>
                         {t(TranslationKeys.activity_diary_calories_burned)}
@@ -241,7 +231,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 16,
-    paddingBottom: 80, // Extra padding for the button
+    paddingBottom: 80,
   },
   summaryCard: {
     borderRadius: 16,

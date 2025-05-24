@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, FlatList, Pressable, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { TranslationKeys } from "@/translations/translations";
 import { ThemedView } from "@/components/ThemedView";
@@ -15,7 +14,6 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { useFoodRepository } from "@/hooks/useFoodRepository";
 import { FoodData } from "@/models/interfaces/FoodData";
 import { MealTypeEnum } from "@/models/enums/enums";
-import { useDateStore } from "@/stores/dateStore";
 import CFoodSearchResultCard from "@/components/cards/CFoodSearchResultCard";
 
 // Helper function to determine meal type based on current time
@@ -70,9 +68,6 @@ export default function FoodDiaryEntryScreen() {
   const { t } = useTranslation();
   const { searchFoods, getAllLocalFoods } = useFoodRepository();
 
-  const iconColor = useThemeColor({}, "onBackground");
-  const surfaceColor = useThemeColor({}, "surface");
-  const borderColor = useThemeColor({}, "outline");
   const primaryColor = useThemeColor({}, "primary");
 
   // State for meal type selection - automatically set based on time of day

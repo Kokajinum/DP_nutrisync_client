@@ -1,17 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  Pressable,
-  Text,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
+import { View, StyleSheet, FlatList, ActivityIndicator, Alert } from "react-native";
 import CDatePicker from "@/components/pickers/CDatePicker";
 import { useDateStore } from "@/stores/dateStore";
 import { useTranslation } from "react-i18next";
@@ -57,8 +49,6 @@ export default function FoodDiaryScreen() {
 
   // Theme colors
   const primaryColor = useThemeColor({}, "primary");
-  const secondaryColor = useThemeColor({}, "secondary");
-  const tertiaryColor = useThemeColor({}, "tertiary");
   const surfaceColor = useThemeColor({}, "surface");
   const borderColor = useThemeColor({}, "outline");
 
@@ -366,7 +356,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 16,
-    paddingBottom: 80, // Extra padding for the button
+    paddingBottom: 80,
   },
   summaryCard: {
     borderRadius: 16,

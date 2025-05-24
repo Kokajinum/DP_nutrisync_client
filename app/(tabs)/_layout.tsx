@@ -1,9 +1,6 @@
-import { Link, Stack, Tabs } from "expo-router";
-
-import { HeaderButton } from "../../components/HeaderButton";
-import { TabBarIcon } from "../../components/TabBarIcon";
+import { Stack, Tabs } from "expo-router";
 import { MaterialIcons, FontAwesome6 } from "@expo/vector-icons";
-import { Alert, Pressable, StyleSheet } from "react-native";
+import { Alert } from "react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { GlobalColors } from "@/constants/Colors";
 
@@ -63,21 +60,6 @@ export default function TabLayout() {
             ),
           }}
         />
-        {/* <Tabs.Screen
-          name="quick-actions"
-          options={{
-            tabBarButton: () => (
-              <Pressable onPress={handleOpenSheet} style={styles.fabButton}>
-                <MaterialIcons name="add-circle" size={50} color="#007AFF" />
-              </Pressable>
-            ),
-          }}
-          listeners={{
-            tabPress: (e) => {
-              e.preventDefault();
-              handleOpenSheet();
-            },
-          }}></Tabs.Screen> */}
 
         <Tabs.Screen
           name="activity-diary-screen"
@@ -98,12 +80,3 @@ export default function TabLayout() {
     </>
   );
 }
-
-// const styles = StyleSheet.create({
-//   fabButton: {
-//     position: "absolute",
-//     top: -20,
-//     alignSelf: "center",
-//     zIndex: 10,
-//   },
-// });

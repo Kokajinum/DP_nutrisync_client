@@ -4,7 +4,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { router, Stack } from "expo-router";
+import { router } from "expo-router";
 import { TranslationKeys } from "@/translations/translations";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
@@ -14,14 +14,13 @@ import CCard from "@/components/cards/CCard";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { globalStyles } from "@/utils/global-styles";
 import CButton from "@/components/button/CButton";
-import { ActivityLevelEnum, ExperienceLevelEnum } from "@/models/enums/enums";
+import { ExperienceLevelEnum } from "@/models/enums/enums";
 import { useOnboardingStore } from "@/stores/onboardingStore";
 
 const OnboardingThird = () => {
   const { t } = useTranslation();
   const { updateData, setStep } = useOnboardingStore();
 
-  const colorScheme = useColorScheme();
   const background = useThemeColor({}, "background");
 
   // Selected experience level (0 = beginner, 1 = experienced)

@@ -26,7 +26,6 @@ const MAX_WEIGHT = 300;
 const OnboardingSecond = () => {
   const { data, updateData, setStep } = useOnboardingStore();
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
   const onBackground = useThemeColor({}, "onBackground");
   const background = useThemeColor({}, "background");
 

@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
 import CDivider from "@/components/CDivider";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { TranslationKeys } from "@/translations/translations";
 import { ThemedView } from "@/components/ThemedView";
@@ -10,7 +9,6 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedStatusBar } from "@/components/ThemedStatusBar";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import CButton from "@/components/button/CButton";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { useCreateFoodDiaryEntry } from "@/hooks/useDailyDiaryRepository";
 import { FoodData } from "@/models/interfaces/FoodData";
 import { MealTypeEnum } from "@/models/enums/enums";
@@ -19,7 +17,6 @@ import * as Progress from "react-native-progress";
 import CNumberInput from "@/components/input/CNumberInput";
 import CServingSizeInput from "@/components/input/CServingSizeInput";
 import { useDateStore } from "@/stores/dateStore";
-import { Pressable } from "react-native";
 
 export default function FoodDetailsScreen() {
   const router = useRouter();
@@ -27,9 +24,6 @@ export default function FoodDetailsScreen() {
   const params = useLocalSearchParams();
   const { selectedDate } = useDateStore();
   const { mutate: createFoodDiaryEntry } = useCreateFoodDiaryEntry();
-
-  const iconColor = useThemeColor({}, "onBackground");
-  const primaryColor = useThemeColor({}, "primary");
 
   // Parse food data from params
   const foodData: FoodData = {
