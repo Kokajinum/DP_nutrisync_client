@@ -36,7 +36,7 @@ export const updateUserProfile = async (
   updatedData: Partial<UserProfileData>
 ): Promise<UserProfileData | null> => {
   try {
-    const response = await restManager.post<UserProfileData>("users/profile", updatedData);
+    const response = await restManager.post<UserProfileData>("users/updateProfile", updatedData);
     return response.data;
   } catch (exception) {
     const error: Error = ensureError(exception);

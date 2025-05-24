@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useOnboardingStore } from "@/stores/onboardingStore";
 import { useDateStore } from "@/stores/dateStore";
+import { useNotifications } from "@/hooks/useNotifications";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedScrollView } from "@/components/ThemedScrollView";
@@ -31,6 +32,7 @@ const HomeScreen = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const { setStep } = useOnboardingStore();
+  const { registerForPushNotifications } = useNotifications();
 
   const primaryColor = useThemeColor({}, "primary");
   const backgroundColor = useThemeColor({}, "surfaceContainerLow");
@@ -77,8 +79,15 @@ const HomeScreen = () => {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await refetch();
+    // Also register for push notifications when refreshing
+    await registerForPushNotifications();
     setRefreshing(false);
-  }, [refetch]);
+  }, [refetch, registerForPushNotifications]);
+
+  // Register for push notifications when the component mounts
+  useEffect(() => {
+    registerForPushNotifications();
+  }, [registerForPushNotifications]);
 
   // Handle navigation to AI recommendations detail screen
   const handleAiRecommendationPress = (recommendationId: string) => {
@@ -112,6 +121,9 @@ const HomeScreen = () => {
   if (profileLoading || dashboardLoading) {
     return (
       <ThemedView style={styles.loadingContainer}>
+        <ThemedStatusBar></ThemedStatusBar>
+        <ThemedStackScreen
+          options={{ title: t(TranslationKeys.home_screen_title) }}></ThemedStackScreen>
         <ActivityIndicator size="large" color={primaryColor} />
         <ThemedText style={styles.loadingText}>{t(TranslationKeys.loading)}</ThemedText>
       </ThemedView>
@@ -172,13 +184,15 @@ const HomeScreen = () => {
       {/* Recent Entries Section */}
       {dashboardData && (
         <DashboardRecentEntriesSection
-          recentFoodEntries={dashboardData.recent_food_entries}
+          recentFoodEntries={[...dashboardData.recent_food_entries].sort(
+            (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          )}
           recentActivityEntries={dashboardData.recent_activity_entries.map((entry) => ({
             ...entry,
-            activity_name: "Exercise Session", // This would come from the backend in a real scenario
+            activity_name: "Exercise Session",
             activity_type: "Workout",
-            duration_minutes: 45, // Example value
-            calories_burned: 300, // Example value
+            duration_minutes: 45,
+            calories_burned: entry.est_kcal,
           }))}
           onFoodEntryPress={(entry) => handleFoodEntryPress(entry.id)}
           onActivityEntryPress={(entry) => handleActivityEntryPress(entry.id)}

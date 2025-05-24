@@ -97,9 +97,11 @@ export default function FoodDiaryScreen() {
   const carbsProgress = Math.min(nutritionSummary.carbs / carbsGoal, 1);
   const fatProgress = Math.min(nutritionSummary.fat / fatGoal, 1);
 
-  // Get entries from diary data
   const entries = useMemo(() => {
-    return dailyDiary?.food_entries || [];
+    const foodEntries = dailyDiary?.food_entries || [];
+    return [...foodEntries].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
   }, [dailyDiary]);
 
   // Handle entry deletion

@@ -144,24 +144,6 @@ export const NotificationsProvider: React.FC<NotificationsProviderProps> = ({ ch
     }
   }, [permissionStatus, expoPushToken]);
 
-  // // Re-register token when it changes
-  // useEffect(() => {
-  //   if (expoPushToken && user) {
-  //     const registerToken = async () => {
-  //       try {
-  //         const deviceId = `${Device.deviceName || "unknown"}-${Device.modelName || "unknown"}`;
-  //         const deviceName = Device.deviceName || "unknown";
-
-  //         await registerPushToken(restManager, expoPushToken, deviceId, deviceName);
-  //       } catch (error) {
-  //         console.error("Error registering push token:", error);
-  //       }
-  //     };
-
-  //     registerToken();
-  //   }
-  // }, [expoPushToken, user, restManager]);
-
   return (
     <NotificationsContext.Provider
       value={{

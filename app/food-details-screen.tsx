@@ -80,7 +80,7 @@ export default function FoodDetailsScreen() {
         food_name: foodData.name,
         brand: foodData.brand || "",
         meal_type: mealType,
-        serving_size: servingSize,
+        serving_size: servingSize * servings,
         serving_unit: servingUnit,
         calories: calculatedValues.calories,
         protein: calculatedValues.protein,

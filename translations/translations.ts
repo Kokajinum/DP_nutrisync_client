@@ -4,6 +4,10 @@ export enum TranslationKeys {
   home_screen_retry = "home_screen_retry",
   home_screen_edit_profile = "home_screen_edit_profile",
 
+  // System language
+  using_system_language = "using_system_language",
+  use_system_language = "use_system_language",
+
   // Dashboard components
   dashboard_recent_food = "dashboard_recent_food",
   dashboard_recent_activity = "dashboard_recent_activity",
@@ -26,6 +30,37 @@ export enum TranslationKeys {
   profile_age = "profile_age",
   profile_years = "profile_years",
   profile_user = "profile_user",
+
+  profile_settings_title = "profile_settings_title",
+  profile_personal_info = "profile_personal_info",
+  profile_first_name = "profile_first_name",
+  profile_last_name = "profile_last_name",
+  profile_gender = "profile_gender",
+  profile_measurements = "profile_measurements",
+  profile_target_weight = "profile_target_weight",
+  profile_fitness_goals = "profile_fitness_goals",
+  profile_activity_level = "profile_activity_level",
+  profile_experience_level = "profile_experience_level",
+  profile_goal = "profile_goal",
+  profile_nutrition_goals = "profile_nutrition_goals",
+  profile_calorie_goal = "profile_calorie_goal",
+  profile_protein_ratio = "profile_protein_ratio",
+  profile_fat_ratio = "profile_fat_ratio",
+  profile_carbs_ratio = "profile_carbs_ratio",
+  profile_notifications = "profile_notifications",
+  profile_enable_notifications = "profile_enable_notifications",
+  profile_save = "profile_save",
+  profile_save_success = "profile_save_success",
+  profile_save_error = "profile_save_error",
+  profile_internet_required = "profile_internet_required",
+
+  settings_title = "settings_title",
+  settings_system = "settings_system",
+  settings_theme = "settings_theme",
+  settings_theme_light = "settings_theme_light",
+  settings_theme_dark = "settings_theme_dark",
+  settings_theme_system = "settings_theme_system",
+  settings_language = "settings_language",
 
   // BMI categories
   bmi_underweight = "bmi_underweight",
@@ -82,6 +117,7 @@ export enum TranslationKeys {
   gym_session_detail_no_exercises = "gym_session_detail_no_exercises",
   gym_session_detail_set = "gym_session_detail_set",
 
+  success = "success",
   welcome = "welcome",
   app_name = "app_name",
   personal_guide = "personal_guide",

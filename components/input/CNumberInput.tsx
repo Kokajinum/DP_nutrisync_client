@@ -55,13 +55,7 @@ const CNumberInput: React.FC<CNumberInputProps> = ({
       return t(TranslationKeys.error_range_more, { value: max });
     }
 
-    // Check if the value follows the step pattern
-    const remainder = (val - min) % step;
-    if (Math.abs(remainder) > 0.0001 && Math.abs(remainder - step) > 0.0001) {
-      // Use a generic error message for step validation
-      return t(TranslationKeys.error_invalid_number);
-    }
-
+    // We're no longer enforcing the step pattern to allow for more flexible decimal input
     return null;
   };
 
@@ -79,6 +73,15 @@ const CNumberInput: React.FC<CNumberInputProps> = ({
     if (error) {
       setError(null);
     }
+
+    // Try to convert to number and update parent if valid
+    const numValue = parseFloat(formattedText);
+    if (!isNaN(numValue)) {
+      // Only update if within min/max range
+      if (numValue >= min && numValue <= max) {
+        onChange(numValue);
+      }
+    }
   };
 
   const handleBlur = () => {
@@ -93,10 +96,9 @@ const CNumberInput: React.FC<CNumberInputProps> = ({
       setInputValue(min.toString());
     }
 
-    // Round to nearest step if needed
-    const stepsFromMin = Math.round((numValue - min) / step);
-    const roundedValue = min + stepsFromMin * step;
-    numValue = parseFloat(roundedValue.toFixed(2)); // Fix floating point precision issues
+    // No longer rounding to nearest step to allow for more flexible decimal input
+    // Just ensure we have at most 2 decimal places for display
+    numValue = parseFloat(numValue.toFixed(2)); // Fix floating point precision issues
 
     // Clamp to min/max
     numValue = Math.max(min, Math.min(max, numValue));

@@ -66,6 +66,8 @@ const CServingSizeInput: React.FC<CServingSizeInputProps> = ({
     // Ensure only one decimal point
     const parts = numericText.split(".");
     const formattedText = parts.length > 2 ? `${parts[0]}.${parts.slice(1).join("")}` : numericText;
+
+    // Call onChangeText with the formatted text
     onChangeText(formattedText);
   };
 

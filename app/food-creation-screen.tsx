@@ -126,7 +126,7 @@ export default function FoodCreationScreen() {
         return null;
 
       case "brand":
-        if (!trimmedValue) return t(TranslationKeys.validation_required);
+        // Brand is optional
         return null;
 
       case "barcode":
@@ -445,20 +445,20 @@ export default function FoodCreationScreen() {
 
             <CDivider style={styles.divider} />
 
-            <CFoodAttributeInput
-              icon={<Ionicons name="pricetag-outline" />}
-              label={t(TranslationKeys.brand)}
-              value={foodData.brand}
-              onChangeText={(text) => updateFoodData("brand", text)}
-              isRequired={true}
-              error={errors.brand}
-              style={styles.inputContainer}
-            />
-
             <View style={styles.optionalFieldsContainer}>
               <ThemedText style={styles.optionalLabel}>
                 {t(TranslationKeys.optional_information)}
               </ThemedText>
+
+              <CFoodAttributeInput
+                icon={<Ionicons name="pricetag-outline" />}
+                label={t(TranslationKeys.brand)}
+                value={foodData.brand}
+                onChangeText={(text) => updateFoodData("brand", text)}
+                isRequired={false}
+                error={errors.brand}
+                style={styles.inputContainer}
+              />
 
               <CFoodAttributeInput
                 icon={<MaterialCommunityIcons name="barcode" />}
@@ -468,7 +468,7 @@ export default function FoodCreationScreen() {
                 keyboardType="number-pad"
                 placeholder={t(TranslationKeys.barcode_placeholder)}
                 error={errors.barcode}
-                style={styles.inputContainer}
+                style={[styles.inputContainer, { marginTop: 8 }]}
               />
             </View>
           </View>
