@@ -114,7 +114,7 @@ const OnboardingThird = () => {
       <CButton
         style={styles.buttonContainer}
         icon={<MaterialIcons name="forward" size={24} />}
-        title="Next step"
+        title={t(TranslationKeys.onboarding_next_button)}
         onPress={handleSubmit}
       />
     </KeyboardAvoidingView>

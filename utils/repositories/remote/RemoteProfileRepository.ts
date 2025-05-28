@@ -1,7 +1,7 @@
 import { UserProfileData } from "../../../models/interfaces/UserProfileData";
 import { UserProfileRepository } from "../../../models/interfaces/UserProfileDataRepository";
 import RestManager from "../../api/restManager";
-import { fetchUserProfile, updateUserProfile } from "../../api/apiClient";
+import { fetchUserProfile, saveUserProfile, updateUserProfile } from "../../api/apiClient";
 
 export class RemoteProfileRepository implements UserProfileRepository {
   private restManager: RestManager;
@@ -32,7 +32,7 @@ export class RemoteProfileRepository implements UserProfileRepository {
    */
   async save(profile: UserProfileData): Promise<UserProfileData | null> {
     try {
-      const data: UserProfileData | null = await updateUserProfile(this.restManager, profile);
+      const data: UserProfileData | null = await saveUserProfile(this.restManager, profile);
       return data;
     } catch (error) {
       console.error("Error saving user profile to remote API:", error);

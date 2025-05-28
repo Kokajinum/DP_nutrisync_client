@@ -279,8 +279,20 @@ const GymSessionDetailScreen = () => {
                 loop={false}
                 width={screenWidth}
                 height={420}
-                data={session.entries}
+                data={[...session.entries].sort((a, b) => {
+                  // Sort by created_at in descending order (newest first)
+                  return (
+                    new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+                  );
+                })}
                 scrollAnimationDuration={500}
+                enabled={true}
+                mode="parallax"
+                modeConfig={{
+                  parallaxScrollingScale: 0.9,
+                  parallaxScrollingOffset: 50,
+                }}
+                defaultIndex={0}
                 renderItem={({ item }) => (
                   <ExerciseCard
                     entry={item}
@@ -305,7 +317,7 @@ const GymSessionDetailScreen = () => {
 
         {/* Complete Workout Button */}
         {!isCompleted && (
-          <View style={[styles.completeWorkoutButtonContainer, { backgroundColor }]}>
+          <View style={styles.completeWorkoutButtonContainer}>
             <CButton
               title={t(TranslationKeys.gym_session_detail_complete)}
               onPress={handleCompleteSession}
@@ -336,7 +348,6 @@ interface ExerciseCardProps {
   primaryColor: string;
 }
 
-// Exercise Card Component for Carousel
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
   entry,
   onAddSet,
@@ -451,11 +462,11 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   content: {
-    flex: 1,
+    //flex: 1,
     padding: 16,
   },
   scrollViewContent: {
-    paddingBottom: 100,
+    paddingBottom: 130,
   },
   timesContainer: {
     flexDirection: "row",
@@ -591,9 +602,17 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    backgroundColor: "white",
+    position: "absolute",
+    bottom: 25,
+    left: 0,
+    right: 0,
+    width: "100%",
+    zIndex: 10,
   },
   completeWorkoutButton: {
     borderRadius: 8,
+    width: "100%",
   },
 });
 

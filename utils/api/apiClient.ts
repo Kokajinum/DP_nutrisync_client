@@ -45,6 +45,20 @@ export const updateUserProfile = async (
   }
 };
 
+export const saveUserProfile = async (
+  restManager: RestManager,
+  updatedData: Partial<UserProfileData>
+): Promise<UserProfileData | null> => {
+  try {
+    const response = await restManager.post<UserProfileData>("users/profile", updatedData);
+    return response.data;
+  } catch (exception) {
+    const error: Error = ensureError(exception);
+    console.error(error.message);
+    return null;
+  }
+};
+
 //#endregion
 
 //#region Dashboard

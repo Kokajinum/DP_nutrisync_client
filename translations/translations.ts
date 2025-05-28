@@ -317,4 +317,20 @@ export enum TranslationKeys {
   alcohol = "alcohol",
   condiments = "condiments",
   prepared_meals = "prepared_meals",
+
+  // Onboarding screen
+  onboarding_fitness_goals_title = "onboarding_fitness_goals_title",
+  onboarding_fitness_goals_content = "onboarding_fitness_goals_content",
+  onboarding_activity_level_title = "onboarding_activity_level_title",
+  onboarding_activity_level_content = "onboarding_activity_level_content",
+  onboarding_training_plan_title = "onboarding_training_plan_title",
+  onboarding_training_plan_content = "onboarding_training_plan_content",
+  onboarding_body_stats_title = "onboarding_body_stats_title",
+  onboarding_body_stats_content = "onboarding_body_stats_content",
+  onboarding_start_button = "onboarding_start_button",
+  onboarding_next_button = "onboarding_next_button",
+  onboarding_section_required = "onboarding_section_required",
+  onboarding_goal_lose_fat = "onboarding_goal_lose_fat",
+  onboarding_goal_maintain_weight = "onboarding_goal_maintain_weight",
+  onboarding_goal_gain_muscle = "onboarding_goal_gain_muscle",
 }

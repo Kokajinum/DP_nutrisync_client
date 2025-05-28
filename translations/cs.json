@@ -62,7 +62,7 @@
     "bmi_overweight": "Nadváha",
     "bmi_obese": "Obezita",
     
-    "ai_recommendation_title": "AI Zdravotní doporučení",
+    "ai_recommendation_title": "AI doporučení",
     "ai_recommendation_new": "NOVÉ",
     "ai_recommendation_unknown_date": "Neznámé datum",
     "ai_recommendation_no_available": "Žádné doporučení není k dispozici",
@@ -288,6 +288,21 @@
     "internet_required": "Pro provedení této akce je potřeba připojení k internetu.",
 
     "fruit": "Ovoce",
+    
+    "onboarding_fitness_goals_title": "Fitness cíle",
+    "onboarding_fitness_goals_content": "Pro přizpůsobení plánu vašim specifickým cílům (zhubnout, nabrat svaly, atd.).",
+    "onboarding_activity_level_title": "Úroveň aktivity",
+    "onboarding_activity_level_content": "Pro posouzení vaší denní úrovně aktivity.",
+    "onboarding_training_plan_title": "Tréninkový plán",
+    "onboarding_training_plan_content": "Pro zjištění frekvence a délky vašich tréninků.",
+    "onboarding_body_stats_title": "Výška, váha, věk",
+    "onboarding_body_stats_content": "Pro pochopení vašich základních údajů jako věk, výška a váha, které jsou klíčové pro naše algoritmy k výpočtu vašich kalorických potřeb a cílů.",
+    "onboarding_start_button": "Začít",
+    "onboarding_next_button": "Další krok",
+    "onboarding_goal_lose_fat": "Zhubnout tuk",
+    "onboarding_goal_maintain_weight": "Udržet hmotnost",
+    "onboarding_goal_gain_muscle": "Nabrat svaly",
+
     "vegetables": "Zelenina",
     "meat": "Maso",
     "fish_and_seafood": "Ryby a mořské plody",

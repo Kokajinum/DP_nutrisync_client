@@ -244,7 +244,7 @@ const OnboardingFirst = () => {
           />
           <CSegmentedButton
             containerStyle={styles.segmentedButtonContainer}
-            segments={["cm", "ft"]}
+            segments={["cm"]}
             currentIndex={heightUnit}
             onChange={setHeightUnit}
           />
@@ -269,7 +269,7 @@ const OnboardingFirst = () => {
           />
           <CSegmentedButton
             containerStyle={styles.segmentedButtonContainer}
-            segments={["kg", "lbs"]}
+            segments={["kg"]}
             currentIndex={weightUnit}
             onChange={setWeightUnit}
           />
@@ -292,7 +292,7 @@ const OnboardingFirst = () => {
           />
           <CSegmentedButton
             containerStyle={styles.segmentedButtonContainer}
-            segments={[t(TranslationKeys.age), t(TranslationKeys.birthday)]}
+            segments={[t(TranslationKeys.age)]}
             currentIndex={ageType}
             onChange={setAgeType}
           />
@@ -324,7 +324,7 @@ const OnboardingFirst = () => {
       <CButton
         style={styles.buttonContainer}
         icon={<MaterialIcons name="forward" size={24} />}
-        title="Next step"
+        title={t(TranslationKeys.onboarding_next_button)}
         onPress={handleSubmit}
       />
     </KeyboardAvoidingView>

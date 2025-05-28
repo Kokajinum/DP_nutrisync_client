@@ -165,7 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setError(error.message);
       } else {
         // Explicitly redirect to login screen after successful logout
-        router.replace("/login-screen");
+        //router.replace("/welcome-screen");
       }
     } catch (e: any) {
       setError(e.message);

@@ -67,11 +67,11 @@ const HomeScreen = () => {
   const { steps, loading: stepsLoading, error: stepsError } = useStepsMeasurement();
 
   useEffect(() => {
-    // Check if profile data exists and if onboarding is completed
-    if (!profileLoading && (profileData == null || !profileData.onboarding_completed)) {
+    // Check if user is logged in and if profile data exists and if onboarding is completed
+    if (user && !profileLoading && (profileData == null || !profileData.onboarding_completed)) {
       createRedirectDialog();
     }
-  }, [profileData, profileLoading]);
+  }, [profileData, profileLoading, user]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

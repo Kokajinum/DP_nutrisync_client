@@ -38,30 +38,30 @@ const index = () => {
           {t(TranslationKeys.onboarding_pre_onboarding_heading)}
         </ThemedText>
         <CAccordion
-          title="Fitness goals"
-          content="To tailor a plan specific to your goals (lose fat, gain muscle, etc.)."
+          title={t(TranslationKeys.onboarding_fitness_goals_title)}
+          content={t(TranslationKeys.onboarding_fitness_goals_content)}
           leftIcon={<MaterialIcons name="outlined-flag" size={24} />}
         />
         <CAccordion
-          title="Activity level"
-          content="To gauge your daily activity level."
+          title={t(TranslationKeys.onboarding_activity_level_title)}
+          content={t(TranslationKeys.onboarding_activity_level_content)}
           leftIcon={<MaterialIcons name="directions-run" size={24} />}
         />
         <CAccordion
-          title="Training plan"
-          content="To know your workout frequency and duration."
+          title={t(TranslationKeys.onboarding_training_plan_title)}
+          content={t(TranslationKeys.onboarding_training_plan_content)}
           leftIcon={<MaterialIcons name="fitness-center" size={24} />}
         />
         <CAccordion
-          title="Height, weight, age"
-          content="To understand your basic stats like age, height, and weight, which are crucial for our algorithms to calculate your calorie needs and goals."
+          title={t(TranslationKeys.onboarding_body_stats_title)}
+          content={t(TranslationKeys.onboarding_body_stats_content)}
           leftIcon={<MaterialIcons name="perm-contact-cal" size={24} />}
         />
       </ScrollView>
       <CButton
         style={styles.buttonContainer}
         icon={<MaterialIcons name="rocket-launch"></MaterialIcons>}
-        title="Start"
+        title={t(TranslationKeys.onboarding_start_button)}
         onPress={handleSubmit}></CButton>
     </ThemedView>
   );

@@ -62,7 +62,7 @@
     "bmi_overweight": "Overweight",
     "bmi_obese": "Obese",
     
-    "ai_recommendation_title": "AI Health Recommendation",
+    "ai_recommendation_title": "AI Recommendation",
     "ai_recommendation_new": "NEW",
     "ai_recommendation_unknown_date": "Unknown date",
     "ai_recommendation_no_available": "No recommendation available",
@@ -285,6 +285,22 @@
     "internet_required": "An internet connection is required to perform this action.",
 
     "fruit": "Fruit",
+    
+    "onboarding_fitness_goals_title": "Fitness goals",
+    "onboarding_fitness_goals_content": "To tailor a plan specific to your goals (lose fat, gain muscle, etc.).",
+    "onboarding_activity_level_title": "Activity level",
+    "onboarding_activity_level_content": "To gauge your daily activity level.",
+    "onboarding_training_plan_title": "Training plan",
+    "onboarding_training_plan_content": "To know your workout frequency and duration.",
+    "onboarding_body_stats_title": "Height, weight, age",
+    "onboarding_body_stats_content": "To understand your basic stats like age, height, and weight, which are crucial for our algorithms to calculate your calorie needs and goals.",
+    "onboarding_start_button": "Start",
+    "onboarding_next_button": "Next step",
+    "onboarding_section_required": "This section is required.",
+    "onboarding_goal_lose_fat": "Lose fat",
+    "onboarding_goal_maintain_weight": "Maintain weight",
+    "onboarding_goal_gain_muscle": "Gain muscle",
+
     "vegetables": "Vegetables",
     "meat": "Meat",
     "fish_and_seafood": "Fish & Seafood",

@@ -114,11 +114,16 @@ const OnboardingSecond = () => {
       goal: goalMap[selectedIndex],
     };
 
-    // Add target weight data if not maintaining weight
+    // Add target weight data
     if (selectedIndex !== 1 && weight) {
+      // If not maintaining weight, use the input values
       updatePayload.target_weight_value = parseFloat(weight);
       updatePayload.target_weight_unit =
         selectedSegmentedIndex === 0 ? WeightUnitEnum.KG : WeightUnitEnum.LBS;
+    } else if (selectedIndex === 1 && data.weight_value && data.weight_unit) {
+      // If maintaining weight, use the current weight values
+      updatePayload.target_weight_value = data.weight_value;
+      updatePayload.target_weight_unit = data.weight_unit;
     }
 
     // Update the store with new data
@@ -163,19 +168,19 @@ const OnboardingSecond = () => {
         <ThemedView style={styles.fitnessGoalsOptionsContainer}>
           <CCheckCard
             icon={<MaterialIcons name="monitor-weight" size={24} />}
-            label="Lose fat"
+            label={t(TranslationKeys.lose_fat)}
             checked={selectedIndex === 0}
             onPress={() => handleSelectedIndexChange(0)}
           />
           <CCheckCard
             icon={<MaterialIcons name="balance" size={24} />}
-            label="Maintain weight"
+            label={t(TranslationKeys.maintain_weight)}
             checked={selectedIndex === 1}
             onPress={() => handleSelectedIndexChange(1)}
           />
           <CCheckCard
             icon={<MaterialCommunityIcons name="weight-lifter" size={24} />}
-            label="Gain muscle"
+            label={t(TranslationKeys.gain_muscle)}
             checked={selectedIndex === 2}
             onPress={() => handleSelectedIndexChange(2)}
           />
@@ -183,7 +188,7 @@ const OnboardingSecond = () => {
 
         {showSelectedIndexError && (
           <ThemedText style={styles.errorText} type="default">
-            {"This section is required."}
+            {t(TranslationKeys.onboarding_section_required)}
           </ThemedText>
         )}
 
@@ -224,7 +229,7 @@ const OnboardingSecond = () => {
       <CButton
         style={styles.buttonContainer}
         icon={<MaterialIcons name="forward" />}
-        title="Next step"
+        title={t(TranslationKeys.onboarding_next_button)}
         onPress={handleSubmit}
       />
     </KeyboardAvoidingView>
