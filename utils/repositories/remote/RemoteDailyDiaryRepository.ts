@@ -33,13 +33,14 @@ export class RemoteDailyDiaryRepository implements DailyDiaryRepository {
 
   /**
    * Save daily diary to the remote API
-   * This is not directly implemented as the backend handles this automatically
    * @param diary The daily diary to save
    * @returns The saved daily diary or null if failed
    */
   async saveDailyDiary(diary: DailyDiaryResponseDto): Promise<DailyDiaryResponseDto | null> {
-    console.warn("saveDailyDiary called on RemoteDailyDiaryRepository - this is not supported");
-    return diary; // Just return the diary as is, since we don't directly save it
+    console.warn(
+      "saveDailyDiary called on RemoteDailyDiaryRepository - this is not supported for now"
+    );
+    return diary;
   }
 
   /**
@@ -68,7 +69,7 @@ export class RemoteDailyDiaryRepository implements DailyDiaryRepository {
     entry: FoodDiaryEntryResponseDto
   ): Promise<FoodDiaryEntryResponseDto | null> {
     console.warn("saveFoodDiaryEntry called on RemoteDailyDiaryRepository - this is not supported");
-    return entry; // Just return the entry as is, since we don't directly save it
+    return entry;
   }
 
   /**

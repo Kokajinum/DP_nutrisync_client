@@ -25,14 +25,11 @@ export class CompositeActivityDiaryRepository implements ActivityDiaryRepository
         throw new Error("No internet connection");
       }
 
-      // Save to server
       const remoteSaved = await this.remoteRepository.saveActivityDiary(diary);
 
       // If saved successfully to remote, also save to local
       if (remoteSaved) {
         try {
-          // We need to cast the response to the expected input type
-          // by creating a compatible object
           const localSaveDto: CreateActivityDiaryDto = {
             id: remoteSaved.id,
             start_at: remoteSaved.start_at,
@@ -53,7 +50,6 @@ export class CompositeActivityDiaryRepository implements ActivityDiaryRepository
           console.log("Activity diary saved to local database after remote save");
         } catch (localError) {
           console.error("Error saving remote activity diary to local database:", localError);
-          // Continue even if local save fails
         }
       }
 
@@ -72,36 +68,28 @@ export class CompositeActivityDiaryRepository implements ActivityDiaryRepository
    */
   async getActivityDiaryByDate(date: string): Promise<ActivityDiaryResponseDto | null> {
     try {
-      // First try to get from local database
       const localData = await this.localRepository.getActivityDiaryByDate(date);
       if (localData) {
         console.log("Found activity diary in local database for date:", date);
         return localData;
       }
 
-      // If not found locally, check internet connectivity
       const netState = await NetInfo.fetch();
       if (!netState.isConnected || netState.isInternetReachable === false) {
         console.log("No internet connection and no local data available for date:", date);
         return null;
       }
 
-      // Get from server
       const remoteData = await this.remoteRepository.getActivityDiaryByDate(date);
 
-      // If data found on server, save to local database for future use
       if (remoteData) {
         try {
-          // Pass the remote data directly to the local repository
-          // The local repository now handles both CreateActivityDiaryDto and ActivityDiaryResponseDto
-          // Use type assertion to tell TypeScript it's okay to pass ActivityDiaryResponseDto
           await this.localRepository.saveActivityDiary(
             remoteData as unknown as CreateActivityDiaryDto
           );
           console.log("Remote activity diary saved to local database for date:", date);
         } catch (localError) {
           console.error("Error saving remote activity diary to local database:", localError);
-          // Continue even if local save fails
         }
       }
 

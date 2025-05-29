@@ -45,7 +45,7 @@ export const NotificationsProvider: React.FC<NotificationsProviderProps> = ({ ch
   const registerForPushNotifications = useCallback(async () => {
     let token;
 
-    // On Android, we need to create a notification channel
+    // Notification channel on Android
     if (Platform.OS === "android") {
       await Notifications.setNotificationChannelAsync("default", {
         name: "default",
@@ -55,13 +55,10 @@ export const NotificationsProvider: React.FC<NotificationsProviderProps> = ({ ch
       });
     }
 
-    // Check if we're running on a physical device
     if (Device.isDevice) {
-      // Check if we already have permission
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
 
-      // If we don't have permission, ask for it
       if (existingStatus !== "granted") {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
@@ -69,7 +66,6 @@ export const NotificationsProvider: React.FC<NotificationsProviderProps> = ({ ch
 
       setPermissionStatus(finalStatus);
 
-      // If we don't have permission, return
       if (finalStatus !== "granted") {
         alert("Nepodařilo se získat oprávnění pro push notifikace!");
         return;
@@ -80,7 +76,7 @@ export const NotificationsProvider: React.FC<NotificationsProviderProps> = ({ ch
       if (!projectId) {
         throw new Error("Project ID not found");
       }
-      // Get the token
+
       try {
         const pushToken = await Notifications.getExpoPushTokenAsync({
           projectId: projectId,
@@ -88,7 +84,6 @@ export const NotificationsProvider: React.FC<NotificationsProviderProps> = ({ ch
         token = pushToken.data;
         setExpoPushToken(token);
 
-        // Register token with server if user is logged in
         if (token && user) {
           try {
             const deviceId = `${Device.deviceName || "unknown"}-${Device.modelName || "unknown"}`;
@@ -114,30 +109,25 @@ export const NotificationsProvider: React.FC<NotificationsProviderProps> = ({ ch
   }, [user, restManager, setExpoPushToken, setPermissionStatus]);
 
   useEffect(() => {
-    // Set up notification listeners
     const notificationListener = Notifications.addNotificationReceivedListener((notification) => {
       console.log("Notification received:", notification);
     });
 
     const responseListener = Notifications.addNotificationResponseReceivedListener((response) => {
       console.log("Notification tapped:", response);
-      // we just need to open the app, which happens automatically
     });
 
-    // Check permission status on mount
     (async () => {
       const { status } = await Notifications.getPermissionsAsync();
       setPermissionStatus(status);
     })();
 
-    // Clean up listeners on unmount
     return () => {
       Notifications.removeNotificationSubscription(notificationListener);
       Notifications.removeNotificationSubscription(responseListener);
     };
   }, []);
 
-  // Register push token when user logs in and permissions are granted
   useEffect(() => {
     if (user && permissionStatus === "granted" && !expoPushToken) {
       registerForPushNotifications();

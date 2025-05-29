@@ -41,18 +41,12 @@ export interface CaloricGoalOptions {
   adjustment?: number;
 }
 
-/**
- * Percentage distribution of macronutrients.
- */
 export interface MacroDistribution {
   proteinPercent: number;
   fatPercent: number;
   carbsPercent: number;
 }
 
-/**
- * Output grams for each macronutrient.
- */
 export interface MacroGrams {
   protein: number;
   fat: number;

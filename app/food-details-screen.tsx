@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import CDivider from "@/components/CDivider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -25,7 +25,6 @@ export default function FoodDetailsScreen() {
   const { selectedDate } = useDateStore();
   const { mutate: createFoodDiaryEntry } = useCreateFoodDiaryEntry();
 
-  // Parse food data from params
   const foodData: FoodData = {
     id: params.id as string,
     name: params.name as string,
@@ -43,17 +42,14 @@ export default function FoodDetailsScreen() {
     servingSizeUnit: (params.servingSizeUnit as "g" | "ml") || "g",
   };
 
-  // Get meal type from params or use default
   const mealType = (params.mealType as MealTypeEnum) || MealTypeEnum.BREAKFAST;
 
-  // State for serving inputs
   const [servings, setServings] = useState<number>(1);
   const [servingSize, setServingSize] = useState<number>(
     parseFloat(foodData.servingSizeValue) || 100
   );
   const [servingUnit, setServingUnit] = useState<"g" | "ml">(foodData.servingSizeUnit || "g");
 
-  // Calculate nutrition values based on servings
   const calculatedValues = useMemo(() => {
     const servingSizeMultiplier =
       servings * (servingSize / (parseFloat(foodData.servingSizeValue) || 100));
@@ -66,7 +62,6 @@ export default function FoodDetailsScreen() {
     };
   }, [foodData, servings, servingSize]);
 
-  // Handle saving food diary entry
   const handleSaveFoodDiaryEntry = async () => {
     try {
       const entry: CreateFoodDiaryEntryDto = {

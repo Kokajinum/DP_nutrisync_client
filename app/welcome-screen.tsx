@@ -35,10 +35,6 @@ const WelcomeScreen = () => {
     router.push("/register-screen");
   };
 
-  const handleContinueWithoutAccount = () => {
-    router.push("/(tabs)");
-  };
-
   return (
     <ThemedView style={styles.container}>
       <LinearGradient
@@ -155,7 +151,7 @@ const styles = StyleSheet.create({
     left: 20,
     fontSize: 24,
     fontWeight: "bold",
-    zIndex: 1, // text bude pod obrázkem, pokud obrázku dáš vyšší zIndex
+    zIndex: 1,
   },
   headerImage: {
     position: "absolute",
@@ -163,7 +159,6 @@ const styles = StyleSheet.create({
     right: 0,
     width: "100%",
     height: "100%",
-    //resizeMode: "contain",
     zIndex: 0,
     elevation: 0,
     opacity: 0.6,

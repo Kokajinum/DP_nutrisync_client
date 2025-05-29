@@ -30,7 +30,7 @@ export default function ProfileScreen() {
    */
   const convertHeight = (value: number, unit: HeightUnitEnum): number => {
     if (unit === HeightUnitEnum.INCH) {
-      return value * 2.54; // Convert inches to cm
+      return value * 2.54;
     }
     return value;
   };
@@ -40,14 +40,11 @@ export default function ProfileScreen() {
    */
   const convertWeight = (value: number, unit: WeightUnitEnum): number => {
     if (unit === WeightUnitEnum.LBS) {
-      return value * 0.453592; // Convert lbs to kg
+      return value * 0.453592;
     }
     return value;
   };
 
-  /**
-   * Determines the appropriate goal state based on current and target weight
-   */
   const determineGoalState = (currentWeight: number, targetWeight: number): GoalEnum => {
     if (Math.abs(currentWeight - targetWeight) < 0.1) {
       return GoalEnum.MAINTAIN_WEIGHT;
@@ -58,11 +55,7 @@ export default function ProfileScreen() {
     }
   };
 
-  /**
-   * Recalculates caloric goal based on user metrics
-   */
   const recalculateCaloricGoal = (data: UpdateUserProfileDto): number => {
-    // Check if we have all required data
     if (
       !data.age ||
       !data.gender ||
@@ -77,7 +70,6 @@ export default function ProfileScreen() {
     const heightInCm = convertHeight(data.height_value, data.height_unit || HeightUnitEnum.CM);
     const weightInKg = convertWeight(data.weight_value, data.weight_unit || WeightUnitEnum.KG);
 
-    // Create user metrics object
     const userMetrics: UserMetrics = {
       age: data.age,
       gender: data.gender,
@@ -116,17 +108,14 @@ export default function ProfileScreen() {
   const primaryContainerColor = useThemeColor({}, "primaryContainer");
   const onPrimaryContainerColor = useThemeColor({}, "onPrimaryContainer");
 
-  // Form state
   const [formData, setFormData] = useState<UpdateUserProfileDto>({});
   const [isFormDirty, setIsFormDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Language settings
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
   const [isSystemLanguage, setIsSystemLanguage] = useState(true);
   const deviceLanguage = getLocales()[0].languageCode || "en";
 
-  // Initialize form data from profile
   useEffect(() => {
     if (profile) {
       const initialFormData = {
@@ -150,12 +139,10 @@ export default function ProfileScreen() {
         notifications_enabled: profile.notifications_enabled,
       };
 
-      // Set the initial form data
       setFormData(initialFormData);
     }
   }, [profile]);
 
-  // Ensure goal state and caloric goal are consistent with current data
   useEffect(() => {
     if (
       formData.weight_value &&

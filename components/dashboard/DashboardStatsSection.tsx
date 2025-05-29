@@ -33,12 +33,10 @@ const DashboardStatsSection: React.FC<DashboardStatsSectionProps> = ({
 
   const { t } = useTranslation();
 
-  // Handle time range change
   const handleTimeRangeChange = (index: number) => {
     setTimeRange(index === 0 ? "7d" : "30d");
   };
 
-  // Get the appropriate data based on the selected time range
   const weightData = timeRange === "7d" ? weightHistory7Days : weightHistory30Days;
   const stepsData = timeRange === "7d" ? stepsHistory7Days : stepsHistory30Days;
 

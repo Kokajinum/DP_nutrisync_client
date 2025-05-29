@@ -20,6 +20,8 @@ export enum TranslationKeys {
   dashboard_weight_history = "dashboard_weight_history",
   dashboard_steps_history = "dashboard_steps_history",
   dashboard_last_days = "dashboard_last_days",
+  dashboard_no_steps = "dashboard_no_steps",
+  dashboard_no_weight = "dashboard_no_weight",
 
   // User profile card
   profile_loading = "profile_loading",
@@ -93,6 +95,7 @@ export enum TranslationKeys {
   activity_diary_no_exercises_found = "activity_diary_no_exercises_found",
   activity_diary_in_progress = "activity_diary_in_progress",
   activity_diary_completed = "activity_diary_completed",
+  activity_diary_search = "activity_diary_search",
 
   // Gym session detail
   gym_session_detail_header = "gym_session_detail_header",
@@ -333,4 +336,6 @@ export enum TranslationKeys {
   onboarding_goal_lose_fat = "onboarding_goal_lose_fat",
   onboarding_goal_maintain_weight = "onboarding_goal_maintain_weight",
   onboarding_goal_gain_muscle = "onboarding_goal_gain_muscle",
+
+  global_search_placeholder = "global_search_placeholder",
 }

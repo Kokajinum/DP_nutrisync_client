@@ -49,7 +49,6 @@ const AiRecommendationDetailScreen = () => {
       }
     }
 
-    // Mark recommendation as viewed
     const markAsViewed = async () => {
       try {
         if (!session?.access_token || !user?.id) {
@@ -63,7 +62,6 @@ const AiRecommendationDetailScreen = () => {
         const response = await restManager.post("/ai-recommendations/viewed", updateDto);
 
         if (response.status === 200) {
-          // Update the cache to mark this recommendation as viewed
           queryClient.setQueryData(["dashboard"], (oldData: any) => {
             if (!oldData) return oldData;
 
@@ -86,12 +84,10 @@ const AiRecommendationDetailScreen = () => {
     markAsViewed();
   }, [id, queryClient, restManager, session, user]);
 
-  // Format date
   const formattedDate = recommendation?.created_at
     ? format(new Date(recommendation.created_at), "dd.MM.yyyy")
     : t(TranslationKeys.ai_recommendation_unknown_date);
 
-  // Render loading state
   if (loading) {
     return (
       <ThemedView style={styles.loadingContainer}>
@@ -101,7 +97,6 @@ const AiRecommendationDetailScreen = () => {
     );
   }
 
-  // Render error state
   if (error || !recommendation) {
     return (
       <ThemedView style={styles.errorContainer}>
@@ -129,7 +124,6 @@ const AiRecommendationDetailScreen = () => {
         <View style={styles.contentContainer}>
           {(() => {
             try {
-              // Try to parse the response as JSON
               const parsedResponse = JSON.parse(recommendation.response);
 
               return (
@@ -183,7 +177,6 @@ const AiRecommendationDetailScreen = () => {
                 </>
               );
             } catch (error) {
-              // If parsing fails, display the response as plain text (for backward compatibility)
               return <ThemedText style={styles.content}>{recommendation.response}</ThemedText>;
             }
           })()}

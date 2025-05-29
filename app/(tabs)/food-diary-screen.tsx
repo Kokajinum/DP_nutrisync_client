@@ -21,7 +21,6 @@ import { MealTypeEnum } from "@/models/enums/enums";
 import { useAuth } from "@/context/AuthProvider";
 import CFoodDiaryEntryCard from "@/components/cards/CFoodDiaryEntryCard";
 
-// Helper function to get meal type icon
 const getMealTypeIcon = (mealType: MealTypeEnum): any => {
   switch (mealType) {
     case MealTypeEnum.BREAKFAST:
@@ -94,7 +93,6 @@ export default function FoodDiaryScreen() {
     );
   }, [dailyDiary]);
 
-  // Handle entry deletion
   const handleDeleteEntry = (id: string) => {
     Alert.alert(
       t(TranslationKeys.food_diary_delete_entry_title),

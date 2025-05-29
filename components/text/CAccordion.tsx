@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactElement } from "react";
-import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
+import { View, Pressable, StyleSheet, Alert } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
@@ -17,7 +17,7 @@ const CAccordion: React.FC<CAccordionProps> = ({ title, content, leftIcon }) => 
 
   let leftIconWithColor: ReactElement | null = leftIcon ?? null;
   try {
-    //trochu nebezpecne, nekontroluje, zda element opravdu obsahuje atribut "color"
+    // Trochu nebezpecne, nekontroluje, zda element opravdu obsahuje atribut "color"
     leftIconWithColor = React.isValidElement(leftIcon)
       ? React.cloneElement(leftIcon as React.ReactElement<any>, {
           color: onBackgroundColor,
@@ -31,7 +31,7 @@ const CAccordion: React.FC<CAccordionProps> = ({ title, content, leftIcon }) => 
 
   const [expanded, setExpanded] = useState(false);
 
-  // Měřená výška obsahu (uložená v React state)
+  // Měřená výška obsahu
   const [measuredHeight, setMeasuredHeight] = useState(0);
 
   // Reanimated sdílené proměnné
@@ -78,7 +78,7 @@ const CAccordion: React.FC<CAccordionProps> = ({ title, content, leftIcon }) => 
         </Animated.View>
       </Pressable>
 
-      {/* text posunutý mimo obrazovku - díky němu si nastavíme reálnou výšku toho textu */}
+      {/* text posunutý mimo obrazovku */}
       <ThemedView style={styles.hiddenMeasuringContainer}>
         <View
           style={styles.contentContainer}

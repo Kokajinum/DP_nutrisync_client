@@ -7,7 +7,6 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
-  Image,
   ImageStyle,
   ActivityIndicator,
 } from "react-native";

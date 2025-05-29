@@ -32,18 +32,15 @@ const HomeScreen = () => {
   const { registerForPushNotifications } = useNotifications();
 
   const primaryColor = useThemeColor({}, "primary");
-  const backgroundColor = useThemeColor({}, "surfaceContainerLow");
 
   const [refreshing, setRefreshing] = useState(false);
 
-  // Fetch user profile data using the hook
   const {
     data: profileData,
     isLoading: profileLoading,
     error: profileError,
   } = useUserProfile(user?.id);
 
-  // Fetch dashboard data using the hook
   const {
     data: dashboardData,
     isLoading: dashboardLoading,
@@ -56,14 +53,12 @@ const HomeScreen = () => {
       {
         text: t(TranslationKeys.understand),
         onPress: () => {
-          // Reset onboarding step and redirect
           setStep(1);
           router.push("/onboarding");
         },
       },
     ]);
 
-  // Use the steps measurement hook
   const { steps, loading: stepsLoading, error: stepsError } = useStepsMeasurement();
 
   useEffect(() => {
@@ -76,7 +71,7 @@ const HomeScreen = () => {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await refetch();
-    // Also register for push notifications when refreshing
+    // Register for push notifications when refreshing
     await registerForPushNotifications();
     setRefreshing(false);
   }, [refetch, registerForPushNotifications]);
@@ -86,27 +81,22 @@ const HomeScreen = () => {
     registerForPushNotifications();
   }, [registerForPushNotifications]);
 
-  // Handle navigation to AI recommendations detail screen
   const handleAiRecommendationPress = (recommendationId: string) => {
     router.push(`/ai-recommendation-detail-screen?id=${recommendationId}`);
   };
 
-  // Handle navigation to food diary entry screen
   const handleFoodEntryPress = (entryId: string) => {
     //router.push(`/food-details-screen?id=${entryId}`);
   };
 
-  // Handle navigation to activity diary entry screen
   const handleActivityEntryPress = (entryId: string) => {
     //router.push(`/gym-session-detail-screen?id=${entryId}`);
   };
 
-  // Handle navigation to food diary screen
   const handleViewAllFoodPress = () => {
     router.push("/(tabs)/food-diary-screen");
   };
 
-  // Handle navigation to activity diary screen
   const handleViewAllActivityPress = () => {
     router.push("/(tabs)/activity-diary-screen");
   };
@@ -114,7 +104,6 @@ const HomeScreen = () => {
   // Check if there are any unviewed AI recommendations
   const hasUnviewedRecommendations = dashboardData?.ai_recommendations.some((rec) => !rec.viewed);
 
-  // Render loading state
   if (profileLoading || dashboardLoading) {
     return (
       <ThemedView style={styles.loadingContainer}>
@@ -127,7 +116,6 @@ const HomeScreen = () => {
     );
   }
 
-  // Render error state
   if (profileError || dashboardError) {
     return (
       <ThemedScrollView style={styles.container} refreshing={refreshing} onRefresh={onRefresh}>

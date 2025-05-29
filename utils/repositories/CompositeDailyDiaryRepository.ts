@@ -17,11 +17,6 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
   /**
    * Get daily diary for a specific date
    * @param date The date in ISO format (YYYY-MM-DD)
-   * @returns The daily diary from local/remote storage or null if not found
-   */
-  /**
-   * Get daily diary for a specific date
-   * @param date The date in ISO format (YYYY-MM-DD)
    * @param userProfile Optional user profile data to use for default values
    * @returns The daily diary from local/remote storage or null if not found
    */
@@ -36,18 +31,14 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
         const remoteDiary = await this.remoteRepository.getDailyDiary(date);
 
         if (remoteDiary) {
-          // Update local and return remote data
           await this.localRepository.saveDailyDiary(remoteDiary);
           return remoteDiary;
         }
       }
 
-      // Get local data
       const localDiary = await this.localRepository.getDailyDiary(date);
 
-      // Selected local diary is not existing yet and we are offline
       if (!localDiary) {
-        // Implement point 2.2 - create a new diary entry when offline
         const newDiary: DailyDiaryResponseDto = {
           id: uuid.v4().toString(),
           user_id: userProfile?.user_id || "",
@@ -69,10 +60,8 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
           food_entries: [],
         };
 
-        // Save to local database
         await this.localRepository.saveDailyDiary(newDiary);
 
-        // Add to offline queue for later synchronization
         await OfflineManager.queueAction(CREATE_DAILY_DIARY, { date });
 
         return newDiary;
@@ -85,30 +74,6 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
     }
   }
 
-  //   /**
-  //    * Fetch remote diary data and update local storage
-  //    * @param date The date in ISO format (YYYY-MM-DD)
-  //    */
-  //   private async fetchRemoteDiaryAndUpdateLocal(date: string): Promise<void> {
-  //     try {
-  //       const netState = await NetInfo.fetch();
-
-  //       // Only proceed if online
-  //       if (netState.isConnected && netState.isInternetReachable !== false) {
-  //         const remoteDiary = await this.remoteRepository.getDailyDiary(date);
-  //         if (remoteDiary) {
-  //           // Save remote data locally
-  //           await this.localRepository.saveDailyDiary(remoteDiary);
-
-  //           // Here we could emit an event to notify that data has been updated
-  //           console.log("Remote diary fetched and local storage updated for date:", date);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching remote diary in background:", error);
-  //     }
-  //   }
-
   /**
    * Save daily diary
    * Saves to both local and remote repositories if possible
@@ -117,10 +82,8 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
    */
   async saveDailyDiary(diary: DailyDiaryResponseDto): Promise<DailyDiaryResponseDto | null> {
     try {
-      // Save locally first
       await this.localRepository.saveDailyDiary(diary);
 
-      // Try to save remotely if online
       const netState = await NetInfo.fetch();
       if (netState.isConnected && netState.isInternetReachable !== false) {
         await this.remoteRepository.saveDailyDiary(diary);
@@ -143,27 +106,21 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
     entry: CreateFoodDiaryEntryDto
   ): Promise<FoodDiaryEntryResponseDto | null> {
     try {
-      // Check if online
       const netState = await NetInfo.fetch();
       const isOnline = netState.isConnected && netState.isInternetReachable !== false;
 
       if (isOnline) {
-        // ONLINE SCENARIO
-        // Create entry via remote API
         const createdEntry = await this.remoteRepository.createFoodDiaryEntry(entry);
 
         if (createdEntry) {
-          // Save to local database
           if (this.localRepository.saveFoodDiaryEntry) {
             await this.localRepository.saveFoodDiaryEntry(createdEntry);
           }
 
-          // Get the date from entry or use current date
           const date = entry.entry_date
             ? entry.entry_date.split("T")[0]
             : new Date().toISOString().split("T")[0];
 
-          // Fetch updated daily diary to refresh local storage
           const updatedDiary = await this.remoteRepository.getDailyDiary(date);
           if (updatedDiary) {
             await this.localRepository.saveDailyDiary(updatedDiary);
@@ -172,25 +129,20 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
 
         return createdEntry;
       } else {
-        // OFFLINE SCENARIO
-        // Generate temporary ID for the entry
         const tempId = uuid.v4().toString();
 
-        // Get the date from entry or use current date
         const date = entry.entry_date
           ? entry.entry_date.split("T")[0]
           : new Date().toISOString().split("T")[0];
 
-        // Get current daily diary from local storage
         let diary = await this.localRepository.getDailyDiary(date);
 
         if (!diary) {
-          // Create a new diary if it doesn't exist
           diary = {
             id: uuid.v4().toString(),
-            user_id: "", // Will be filled on sync
+            user_id: "",
             day_date: date,
-            calorie_goal: 2000, // Default values
+            calorie_goal: 2000,
             calories_consumed: 0,
             calories_burned: 0,
             protein_goal_g: 150,
@@ -210,10 +162,9 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
           await this.localRepository.saveDailyDiary(diary);
         }
 
-        // Create a temporary response object
         const tempResponse: FoodDiaryEntryResponseDto = {
           id: tempId,
-          user_id: "temp_user_id", // Will be replaced on sync
+          user_id: "temp_user_id",
           day_id: diary.id,
           food_id: entry.food_id,
           food_name: entry.food_name,
@@ -229,12 +180,10 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
           updated_at: new Date().toISOString(),
         };
 
-        // Save to local database
         if (this.localRepository.saveFoodDiaryEntry) {
           await this.localRepository.saveFoodDiaryEntry(tempResponse);
         }
 
-        // Update daily diary with new values
         diary.calories_consumed += entry.calories;
         diary.protein_consumed_g += entry.protein;
         diary.carbs_consumed_g += entry.carbs;
@@ -248,7 +197,6 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
 
         await this.localRepository.saveDailyDiary(diary);
 
-        // Queue for later synchronization
         await OfflineManager.queueAction(CREATE_FOOD_DIARY_ENTRY, entry);
 
         return tempResponse;
@@ -267,18 +215,15 @@ export class CompositeDailyDiaryRepository implements DailyDiaryRepository {
    */
   async deleteFoodDiaryEntry(id: string): Promise<boolean> {
     try {
-      // Check if online
       const netState = await NetInfo.fetch();
       if (!netState.isConnected || netState.isInternetReachable === false) {
         console.error("Cannot delete food diary entry while offline");
         return false;
       }
 
-      // Delete via remote API
       const success = await this.remoteRepository.deleteFoodDiaryEntry(id);
 
       if (success) {
-        // Also delete locally
         await this.localRepository.deleteFoodDiaryEntry(id);
       }
 

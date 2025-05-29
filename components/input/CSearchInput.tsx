@@ -42,21 +42,17 @@ const CSearchInput: React.FC<CSearchInputProps> = ({
   const iconColor = useThemeColor({}, "onBackground");
   const borderColor = useThemeColor({}, "outline");
 
-  // Update local value when prop value changes
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
 
-  // Handle text change with debounce
   const handleChangeText = (text: string) => {
     setLocalValue(text);
 
-    // Clear previous timer
     if (timer) {
       clearTimeout(timer);
     }
 
-    // Set new timer for debounce
     const newTimer = setTimeout(() => {
       onChangeText(text);
     }, debounceTime);
@@ -64,7 +60,6 @@ const CSearchInput: React.FC<CSearchInputProps> = ({
     setTimer(newTimer);
   };
 
-  // Clear timer on unmount
   useEffect(() => {
     return () => {
       if (timer) {
@@ -73,7 +68,6 @@ const CSearchInput: React.FC<CSearchInputProps> = ({
     };
   }, [timer]);
 
-  // Handle clear button press
   const handleClear = () => {
     setLocalValue("");
     onChangeText("");

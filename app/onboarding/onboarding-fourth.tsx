@@ -73,18 +73,17 @@ const OnboardingFourth = () => {
     // Update local store
     updateData({ activity_level: activityLevel, onboarding_completed: true });
 
-    // Create UserMetrics object from collected data
     const userMetrics: UserMetrics = {
-      age: data.age || 30, // Default age if missing
+      age: data.age || 30,
       gender: data.gender || GenderEnum.OTHER,
-      weight: data.weight_value || 70, // Default weight if missing
-      height: data.height_value || 170, // Default height if missing
+      weight: data.weight_value || 70,
+      height: data.height_value || 170,
       activityLevel: activityLevel,
     };
 
-    // Create CaloricGoalOptions based on user's goal
+    // Create CaloricGoalOptions
     const goalOptions: CaloricGoalOptions = {
-      goal: data.goal || GoalEnum.MAINTAIN_WEIGHT, // Default to maintain if missing
+      goal: data.goal || GoalEnum.MAINTAIN_WEIGHT,
       adjustment: 0.2, // Default 20% adjustment
     };
 
@@ -116,7 +115,6 @@ const OnboardingFourth = () => {
       ...data,
       activity_level: activityLevel,
       onboarding_completed: true,
-      //user_id: userId,
       calorie_goal_value: calorieGoal,
       calorie_goal_unit: CalorieUnitEnum.KCAL,
       protein_ratio: proteinRatio,
@@ -127,7 +125,6 @@ const OnboardingFourth = () => {
       fat_goal_g: macroGrams.fat,
     };
 
-    // Use the mutation to update the profile
     saveProfile(profileData, {
       onSuccess: () => {
         router.push("/(tabs)/home-screen");

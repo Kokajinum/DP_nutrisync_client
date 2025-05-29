@@ -2,7 +2,6 @@ import { StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-na
 import React, { useEffect, useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { useTranslation } from "react-i18next";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router } from "expo-router";
 import { TranslationKeys } from "@/translations/translations";
@@ -16,7 +15,7 @@ import CTextInput from "@/components/input/CTextInput";
 import { CSegmentedButton } from "@/components/button/CSegmentedButton";
 import { globalStyles } from "@/utils/global-styles";
 import CButton from "@/components/button/CButton";
-import { useOnboardingStore } from "@/stores/onboardingStore"; // Import Zustand store
+import { useOnboardingStore } from "@/stores/onboardingStore";
 import { GoalEnum, WeightUnitEnum } from "@/models/enums/enums";
 
 //default values in kgs
@@ -32,7 +31,7 @@ const OnboardingSecond = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [showSelectedIndexError, setShowSelectedIndexError] = useState<boolean>(false);
   const [selectedSegmentedIndex, setSelectedSegmentedIndex] = useState(0);
-  const segments = ["Kg", "Lbs"];
+  const segments = ["Kg"];
   const [weight, setWeight] = useState<string>("");
   const [weightError, setWeightError] = useState<string>("");
 
@@ -67,10 +66,10 @@ const OnboardingSecond = () => {
     }
 
     if (data.weight_value !== undefined) {
-      if (selectedIndex === 0 && num > data.weight_value) {
+      if (selectedIndex === 0 && num >= data.weight_value) {
         return t(TranslationKeys.error_range_less, { max: data.weight_value });
       }
-      if (selectedIndex === 2 && num < data.weight_value) {
+      if (selectedIndex === 2 && num <= data.weight_value) {
         return t(TranslationKeys.error_range_more, { min: data.weight_value });
       }
     }
@@ -87,7 +86,6 @@ const OnboardingSecond = () => {
   };
 
   const handleSubmit = (): void => {
-    // Validate goal selection
     if (selectedIndex === null) {
       setShowSelectedIndexError(true);
       return;
@@ -126,12 +124,10 @@ const OnboardingSecond = () => {
       updatePayload.target_weight_unit = data.weight_unit;
     }
 
-    // Update the store with new data
     updateData(updatePayload);
 
     setStep(3);
 
-    // Navigate to the next onboarding step
     router.push("/onboarding/onboarding-third");
   };
 

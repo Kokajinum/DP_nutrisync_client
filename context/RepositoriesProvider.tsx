@@ -15,26 +15,20 @@ import { ActivityDiaryRepository } from "../models/interfaces/ActivityDiary";
 import { LocalActivityDiaryRepository } from "../utils/repositories/local/LocalActivityDiaryRepository";
 import { RemoteActivityDiaryRepository } from "../utils/repositories/remote/RemoteActivityDiaryRepository";
 import { CompositeActivityDiaryRepository } from "../utils/repositories/CompositeActivityDiaryRepository";
-import { useAuth } from "./AuthProvider";
 
 interface RepositoriesContextType {
   profileRepository: ProfileRepository;
   foodRepository: FoodRepository;
   dailyDiaryRepository: DailyDiaryRepository;
   activityDiaryRepository: ActivityDiaryRepository;
-  // other repositories
 }
 
 export const RepositoriesContext = createContext<RepositoriesContextType | undefined>(undefined);
 
-/**
- * Provider component for accessing all repositories
- */
 export const RepositoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const restManager = useRestManager();
 
   const repositories = useMemo(() => {
-    // Create profile *repositories
     const localProfileRepository = new LocalProfileRepository();
     const remoteProfileRepository = new RemoteProfileRepository(restManager);
     const profileRepository = new ProfileRepository(
@@ -46,14 +40,6 @@ export const RepositoriesProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const localFoodRepository = new LocalFoodRepository();
     const remoteFoodRepository = new RemoteFoodRepository(restManager);
     const foodRepository = new CompositeFoodRepository(localFoodRepository, remoteFoodRepository);
-
-    // Create food diary entry repositories
-    // const localFoodDiaryEntryRepository = new LocalFoodDiaryEntryRepository();
-    // const remoteFoodDiaryEntryRepository = new RemoteFoodDiaryEntryRepository(restManager);
-    // const foodDiaryEntryRepository = new CompositeFoodDiaryEntryRepository(
-    //   localFoodDiaryEntryRepository,
-    //   remoteFoodDiaryEntryRepository
-    // );
 
     // Create daily diary repositories
     const localDailyDiaryRepository = new LocalDailyDiaryRepository();
@@ -76,7 +62,6 @@ export const RepositoriesProvider: React.FC<{ children: React.ReactNode }> = ({ 
       foodRepository,
       dailyDiaryRepository,
       activityDiaryRepository,
-      // other repositories
     };
   }, [restManager]);
 

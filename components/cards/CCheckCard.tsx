@@ -1,17 +1,15 @@
 import React, { ReactElement } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
-// Můžeš použít libovolnou knihovnu s ikonami, např. @expo/vector-icons
 import { MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 type CCheckCardProps = {
-  /** Ikona na levé straně, např. <MaterialIcons name="fitness-center" ... /> */
   icon: ReactElement;
-  /** Text zobrazený uprostřed karty */
+
   label: string;
-  /** Určuje, zda je komponenta ve stavu checked */
+
   checked?: boolean;
-  /** Callback po kliknutí na kartu */
+
   onPress?: () => void;
 };
 
@@ -72,7 +70,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     marginVertical: 4,
-    // Nastav si stín nebo border, pokud chceš
   },
   leftSection: {
     flexDirection: "row",
@@ -82,17 +79,10 @@ const styles = StyleSheet.create({
   label: {
     marginLeft: 8,
     fontSize: 16,
-    //color: "#333",
   },
   checkIcon: {
     marginLeft: 8,
   },
-  // defaultContainer: {
-  //   backgroundColor: "#f0f0f0",
-  // },
-  // checkedContainer: {
-  //   backgroundColor: "#4caf50",
-  // },
   pressed: {
     opacity: 0.8,
   },

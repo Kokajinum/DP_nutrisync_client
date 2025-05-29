@@ -45,7 +45,6 @@ export class LocalFoodRepository implements FoodRepository {
         queryParams.push(`%${query}%`);
       }
 
-      // Get total count for pagination
       const countResult = await db.getFirstAsync<{ count: number }>(
         `SELECT COUNT(*) as count FROM foods ${whereClause}`,
         queryParams
@@ -53,7 +52,6 @@ export class LocalFoodRepository implements FoodRepository {
 
       const totalCount = countResult?.count || 0;
 
-      // Get paginated results
       const items = await db.getAllAsync<FoodData>(
         `SELECT * FROM foods ${whereClause} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
         [...queryParams, limit, offset]
@@ -103,12 +101,10 @@ export class LocalFoodRepository implements FoodRepository {
    */
   async save(food: FoodData): Promise<FoodData | null> {
     try {
-      // Ensure we have an ID
       if (!food.id) {
         throw new Error("Cannot save food without an ID");
       }
 
-      // Set timestamps
       const now = new Date().toISOString();
       const created_at = food.created_at || now;
       const updated_at = now;
@@ -135,21 +131,18 @@ export class LocalFoodRepository implements FoodRepository {
    */
   async update(id: string, patch: Partial<FoodData>): Promise<void> {
     try {
-      // First get the existing food
       const existingFood = await this.get(id);
       if (!existingFood) {
         throw new Error(`Food with ID ${id} not found`);
       }
 
-      // Merge the existing food with the patch
       const updatedFood: FoodData = {
         ...existingFood,
         ...patch,
         id, // Ensure ID remains the same
-        updated_at: new Date().toISOString(), // Update the timestamp
+        updated_at: new Date().toISOString(),
       };
 
-      // Save the updated food
       await this.save(updatedFood);
     } catch (error) {
       console.error("Error updating food in local database:", error);

@@ -77,7 +77,6 @@ export default function ActivityDiaryScreen() {
         notes: remoteActivityDiary.notes || "",
       };
 
-      // We don't modify the store directly, but we can add the remote session to our UI
       sessions.push(remoteSession);
     }
   }, [sessions.length, remoteActivityDiary, loading]);
@@ -89,7 +88,6 @@ export default function ActivityDiaryScreen() {
   const calorieGoal = userProfile?.calorie_goal_value || 600;
   const calorieProgress = Math.min(totalCaloriesBurned / calorieGoal, 1);
 
-  // Handle adding a new session
   const handleAddSession = async () => {
     if (!user?.id) {
       console.warn("User not logged in");
@@ -98,7 +96,6 @@ export default function ActivityDiaryScreen() {
 
     const success = await startNewSession(user.id);
     if (success) {
-      // Navigate to the session detail screen with the active session
       router.push({
         pathname: "/gym-session-detail-screen",
       });
@@ -123,13 +120,7 @@ export default function ActivityDiaryScreen() {
         }}
       />
 
-      <CDatePicker
-        dateFormat="long"
-        // showDayName={false}
-        // compact={true}
-        // arrowSize={20}
-        style={styles.datePicker}
-      />
+      <CDatePicker dateFormat="long" style={styles.datePicker} />
 
       <FlatList
         data={sessions}

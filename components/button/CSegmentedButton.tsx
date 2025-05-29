@@ -21,7 +21,6 @@ type CSegmentedButtonProps = {
   highlightStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   textActiveStyle?: StyleProp<TextStyle>;
-  /** Odsazení zvýrazněného segmentu od okrajů (default 4) */
   highlightMargin?: number;
   /**
    * (Volitelné) Fixní šířka segmented buttonu.
@@ -85,7 +84,6 @@ export const CSegmentedButton: React.FC<CSegmentedButtonProps> = ({
       style={[
         styles.container,
         { backgroundColor: secondaryContainerColor, alignSelf: "flex-start" },
-        // Pokud je buttonWidth předán, explicitně jej použijeme
         buttonWidth ? { width: buttonWidth } : {},
         containerStyle,
       ]}>

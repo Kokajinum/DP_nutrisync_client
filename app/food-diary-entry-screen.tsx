@@ -70,7 +70,6 @@ export default function FoodDiaryEntryScreen() {
 
   const primaryColor = useThemeColor({}, "primary");
 
-  // State for meal type selection - automatically set based on time of day
   const [selectedMealTypeIndex, setSelectedMealTypeIndex] = useState(() =>
     mealTypeToIndex(getMealTypeFromTime())
   );
@@ -81,7 +80,6 @@ export default function FoodDiaryEntryScreen() {
     t(TranslationKeys.food_diary_entry_snack),
   ];
 
-  // State for search
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<FoodData[]>([]);
@@ -91,12 +89,10 @@ export default function FoodDiaryEntryScreen() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
 
-  // Load history items on mount
   useEffect(() => {
     loadHistoryItems();
   }, []);
 
-  // Load history items from local storage
   const loadHistoryItems = async () => {
     try {
       const items = await getAllLocalFoods();
@@ -106,7 +102,6 @@ export default function FoodDiaryEntryScreen() {
     }
   };
 
-  // Handle search query change with debounce
   useEffect(() => {
     if (searchQuery.length >= 4) {
       performSearch(1);
@@ -118,7 +113,6 @@ export default function FoodDiaryEntryScreen() {
     }
   }, [searchQuery]);
 
-  // Perform search
   const performSearch = async (page: number) => {
     if (searchQuery.length < 4) return;
 
@@ -150,7 +144,6 @@ export default function FoodDiaryEntryScreen() {
     }
   };
 
-  // Load more search results
   const handleLoadMore = () => {
     if (hasMoreResults && !isLoadingMore) {
       setIsLoadingMore(true);
@@ -158,15 +151,12 @@ export default function FoodDiaryEntryScreen() {
     }
   };
 
-  // Navigate to food details screen
   const navigateToFoodDetails = useCallback(
     (food: FoodData) => {
       console.log("Navigating to food details for:", food.name);
 
-      // Get the current meal type
       const mealType = indexToMealType(selectedMealTypeIndex);
 
-      // Navigate to food details screen with food data as params
       router.push({
         pathname: "/food-details-screen",
         params: {
@@ -191,7 +181,6 @@ export default function FoodDiaryEntryScreen() {
     [router, selectedMealTypeIndex]
   );
 
-  // Render food item
   const renderFoodItem = ({ item }: { item: FoodData }) => (
     <CFoodSearchResultCard
       item={item}
@@ -202,7 +191,6 @@ export default function FoodDiaryEntryScreen() {
     />
   );
 
-  // Render list header
   const renderListHeader = useCallback(() => {
     const isSearchMode = searchQuery.length >= 4;
     const headerText = isSearchMode
@@ -230,7 +218,6 @@ export default function FoodDiaryEntryScreen() {
     );
   }, [searchQuery, searchResults, historyItems, totalCount, isSearching, t]);
 
-  // Render list footer
   const renderListFooter = useCallback(() => {
     if (isSearching && searchQuery.length >= 4 && currentPage === 1) {
       return (

@@ -156,8 +156,6 @@ const styles = StyleSheet.create({
   },
   label: {
     marginLeft: 8,
-    //fontSize: 16,
-    //fontFamily: _500Medium,
   },
   required: {
     marginLeft: 4,

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { View, StyleProp, ViewStyle } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { GlobalColors } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -7,11 +7,10 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 type Status = "done" | "inProgress" | "notStarted";
 
 interface CStepIndicatorProps {
-  /** Určuje stav indikátoru */
   status: Status;
-  /** Volitelná velikost (výchozí 40) */
+
   size?: number;
-  /** Přídavný styl pro vnější View */
+
   style?: StyleProp<ViewStyle>;
 }
 
@@ -37,7 +36,6 @@ const CStepIndicator: React.FC<CStepIndicatorProps> = ({ status, size = 40, styl
     } else if (st === "inProgress") {
       return <MaterialCommunityIcons name="progress-check" size={size * 0.8} color="#fff" />;
     }
-    // notStarted je bez ikonky
     return null;
   };
 

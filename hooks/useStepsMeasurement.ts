@@ -17,18 +17,15 @@ export const useStepsMeasurement = () => {
       try {
         setLoading(true);
 
-        // Initialize the client
         const isInitialized = await initialize();
         if (!isInitialized) {
           throw new Error("Health Connect client could not be initialized");
         }
 
-        // Request permissions
         const grantedPermissions = await requestPermission([
           { accessType: "read", recordType: "Steps" },
         ]);
 
-        // Check if permission was granted
         const stepsPermissionGranted = grantedPermissions.some(
           (permission) => permission.recordType === "Steps" && permission.accessType === "read"
         );

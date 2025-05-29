@@ -7,10 +7,6 @@ import {
   WeightUnitEnum,
 } from "../enums/enums";
 
-/**
- * Data transfer object for updating user profile
- * All fields are optional to allow partial updates
- */
 export interface UpdateUserProfileDto {
   first_name?: string;
   last_name?: string;

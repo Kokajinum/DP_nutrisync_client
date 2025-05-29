@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ViewProps } from "react-native";
+import { View, ViewProps } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type CDividerProps = ViewProps & {

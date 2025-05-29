@@ -17,7 +17,6 @@ export class LocalDailyDiaryRepository implements DailyDiaryRepository {
     userProfile?: UserProfileData | null
   ): Promise<DailyDiaryResponseDto | null> {
     try {
-      // Get the diary for the specified date
       const diary = await db.getFirstAsync<DailyDiaryResponseDto>(
         `SELECT * FROM daily_diaries WHERE day_date = ?`,
         [date]
@@ -27,13 +26,11 @@ export class LocalDailyDiaryRepository implements DailyDiaryRepository {
         return null;
       }
 
-      // Get all food entries for this diary
       const foodEntries = await db.getAllAsync<FoodDiaryEntryResponseDto>(
         `SELECT * FROM diary_food_entries WHERE day_id = ? ORDER BY created_at DESC`,
         [diary.id]
       );
 
-      // Return the diary with food entries
       return {
         ...diary,
         food_entries: foodEntries || [],
@@ -51,12 +48,10 @@ export class LocalDailyDiaryRepository implements DailyDiaryRepository {
    */
   async saveDailyDiary(diary: DailyDiaryResponseDto): Promise<DailyDiaryResponseDto | null> {
     try {
-      // First save the diary itself
       const diaryWithoutEntries: DailyDiaryResponseDto = { ...diary, food_entries: [] };
       const normalizedData = normalizeForSqlite(diaryWithoutEntries);
       await db.saveToSqlite("daily_diaries", normalizedData);
 
-      // Then save all food entries if they exist
       if (diary.food_entries && diary.food_entries.length > 0) {
         for (const entry of diary.food_entries) {
           await db.saveToSqlite("diary_food_entries", normalizeForSqlite(entry));

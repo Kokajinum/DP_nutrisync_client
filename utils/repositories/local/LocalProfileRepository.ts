@@ -24,7 +24,6 @@ export class LocalProfileRepository implements UserProfileRepository {
 
       console.log(`LocalProfileRepository: Profile found in SQLite:`, JSON.stringify(result));
 
-      // Convert integer values to booleans
       return {
         ...result,
         onboarding_completed: result.onboarding_completed
@@ -48,7 +47,6 @@ export class LocalProfileRepository implements UserProfileRepository {
     try {
       console.log(`LocalProfileRepository: Attempting to save profile with ID ${profile.id}`);
 
-      // Ensure we have an ID
       if (!profile.id) {
         console.error("LocalProfileRepository: Cannot save user profile without an ID");
         throw new Error("Cannot save user profile without an ID");
@@ -70,13 +68,6 @@ export class LocalProfileRepository implements UserProfileRepository {
         JSON.stringify(withTimestamps)
       );
 
-      // Convert boolean values to integers for SQLite
-      // const normalizedData = {
-      //   ...withTimestamps,
-      //   onboarding_completed: withTimestamps.onboarding_completed ? 1 : 0,
-      //   notifications_enabled: withTimestamps.notifications_enabled ? 1 : 0,
-      // };
-
       await db.saveToSqlite("user_profiles", withTimestamps);
       console.log(`LocalProfileRepository: Profile saved successfully to SQLite`);
 
@@ -94,13 +85,11 @@ export class LocalProfileRepository implements UserProfileRepository {
    */
   async update(id: string, patch: Partial<UserProfileData>): Promise<void> {
     try {
-      // First get the existing profile
       const existingProfile = await this.get(id);
       if (!existingProfile) {
         throw new Error(`User profile with ID ${id} not found`);
       }
 
-      // Merge the existing profile with the patch
       const updatedProfile: UserProfileData = {
         ...existingProfile,
         ...patch,
@@ -108,7 +97,6 @@ export class LocalProfileRepository implements UserProfileRepository {
         updated_at: new Date().toISOString(), // Update the timestamp
       };
 
-      // Save the updated profile
       await this.save(updatedProfile);
     } catch (error) {
       console.error("Error updating user profile in local database:", error);

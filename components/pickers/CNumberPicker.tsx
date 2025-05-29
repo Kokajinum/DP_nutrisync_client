@@ -6,9 +6,7 @@ export interface NumberPickerProps {
   min: number;
   max: number;
   step?: number;
-  /** určuje, jestli se zobrazí druhý picker pro des. číslo */
   showDecimal?: boolean;
-  /** počáteční hodnota */
   value?: number;
   onChange: (value: number) => void;
   wholeLabel?: string;
@@ -32,20 +30,17 @@ export const NumberPicker: React.FC<NumberPickerProps> = ({
   wheelStyle,
   labelStyle,
 }) => {
-  // Build arrays
   const integers = Array.from(
     { length: Math.floor((max - min) / step) + 1 },
     (_, i) => min + i * step
   );
   const decimals = Array.from({ length: 10 }, (_, i) => i);
 
-  // State
   const [intPart, setIntPart] = useState<number>(Math.floor(value));
   const [decPart, setDecPart] = useState<number>(
     showDecimal ? Math.round((value - intPart) * 10) : 0
   );
 
-  // Sync external value
   useEffect(() => {
     const iv = Math.floor(value);
     const dv = showDecimal ? Math.round((value - iv) * 10) : 0;
@@ -53,7 +48,6 @@ export const NumberPicker: React.FC<NumberPickerProps> = ({
     setDecPart(dv);
   }, [value, showDecimal]);
 
-  // Emit combined change
   const emit = (i: number, d: number) => {
     const v = showDecimal ? i + d / 10 : i;
     onChange(parseFloat(v.toFixed(showDecimal ? 1 : 0)));

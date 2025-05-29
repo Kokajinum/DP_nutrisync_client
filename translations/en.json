@@ -14,7 +14,9 @@
     "dashboard_weight_history": "Weight History",
     "dashboard_steps_history": "Steps History",
     "dashboard_last_days": "Last {{days}} Days",
-    
+    "dashboard_no_steps": "No steps data available",
+    "dashboard_no_weight": "No weight data available",
+
     "profile_loading": "Loading profile...",
     "profile_not_available": "Profile not available",
     "profile_weight": "Weight",
@@ -81,6 +83,7 @@
     "activity_diary_no_exercises_found": "No exercises found",
     "activity_diary_in_progress": "In Progress",
     "activity_diary_completed": "Completed",
+    "activity_diary_search": "Add exercise to diary",
     
     "gym_session_detail_header": "Gym Session",
     "gym_session_detail_complete": "Complete",
@@ -316,5 +319,7 @@
     "beverages": "Beverages",
     "alcohol": "Alcohol",
     "condiments": "Condiments",
-    "prepared_meals": "Prepared Meals"
+    "prepared_meals": "Prepared Meals",
+
+    "global_search_placeholder": "Search..."
 }

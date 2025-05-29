@@ -44,14 +44,12 @@ const OnboardingThird = () => {
     const experienceLevel =
       selectedExperience === 0 ? ExperienceLevelEnum.BEGINNER : ExperienceLevelEnum.INTERMEDIATE;
 
-    // Save to store
     updateData({
       experience_level: experienceLevel,
     });
 
     setStep(4);
 
-    // Navigate to next screen (assuming there will be a fourth screen)
     router.push("/onboarding/onboarding-fourth");
   };
 

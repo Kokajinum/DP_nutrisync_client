@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { CartesianChart, Bar, useChartPressState } from "victory-native";
 import { format, isValid } from "date-fns";
 import { StepMeasurementResponseDto } from "@/models/interfaces/DashboardResponseDto";
@@ -7,15 +7,9 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "@/components/ThemedText";
 import { SharedValue } from "react-native-reanimated";
 import { Circle, LinearGradient, useFont, vec } from "@shopify/react-native-skia";
-import {
-  useFonts,
-  Quicksand_300Light,
-  Quicksand_400Regular,
-  Quicksand_500Medium,
-  Quicksand_600SemiBold,
-  Quicksand_700Bold,
-} from "@expo-google-fonts/quicksand";
-import { ThemedView } from "../ThemedView";
+import { Quicksand_500Medium } from "@expo-google-fonts/quicksand";
+import { useTranslation } from "react-i18next";
+import { TranslationKeys } from "@/translations/translations";
 
 interface StepsHistoryChartProps {
   data: StepMeasurementResponseDto[];
@@ -28,6 +22,8 @@ const StepsHistoryChart: React.FC<StepsHistoryChartProps> = ({ data, title, time
   const primaryColor = useThemeColor({}, "primary");
   //#endregion
 
+  const { t } = useTranslation();
+
   const font = useFont(Quicksand_500Medium, 12);
   const { state, isActive } = useChartPressState({ x: "", y: { steps: 0 } });
 
@@ -37,7 +33,7 @@ const StepsHistoryChart: React.FC<StepsHistoryChartProps> = ({ data, title, time
       <View style={styles.container}>
         <ThemedText type="subtitle">{title}</ThemedText>
         <View style={styles.emptyContainer}>
-          <ThemedText>No steps data available</ThemedText>
+          <ThemedText>{t(TranslationKeys.dashboard_no_steps)}</ThemedText>
         </View>
       </View>
     );
@@ -77,7 +73,7 @@ const StepsHistoryChart: React.FC<StepsHistoryChartProps> = ({ data, title, time
           axisOptions={{
             font,
             tickCount: Math.min(5, sortedChartData.length),
-            formatXLabel: (value) => value || "", // Explicitly handle undefined values
+            formatXLabel: (value) => value || "",
           }}
           chartPressState={state}>
           {({ points, chartBounds }) => (

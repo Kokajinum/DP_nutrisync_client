@@ -11,7 +11,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { TranslationKeys } from "@/translations/translations";
 
-// Extended interface for dashboard display
 interface DashboardActivityEntry extends ActivityDiaryEntryResponseDto {
   activity_name?: string;
   activity_type?: string;

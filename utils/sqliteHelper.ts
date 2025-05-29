@@ -99,7 +99,6 @@ export const db = new AsyncSQLiteDatabase("nutrisync_fitness.db");
 export async function initDb() {
   await db.createTableIfNotExists(userProfilesSchema);
   await db.createTableIfNotExists(foodSchema);
-  //await db.createTableIfNotExists(foodDiaryEntrySchema);
   await db.createTableIfNotExists(dailyDiarySchema);
   await db.createTableIfNotExists(diaryFoodEntrySchema);
   await db.createTableIfNotExists(offlineQueueSchema);

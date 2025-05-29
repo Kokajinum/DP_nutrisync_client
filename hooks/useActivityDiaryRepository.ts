@@ -8,7 +8,6 @@ import { format } from "date-fns";
 
 /**
  * Hook for fetching an activity diary by date
- * This will first check local SQLite storage, and only if not found, will fetch from the server
  * @param date The date as a Date object
  * @returns Query result containing the activity diary data
  */
@@ -30,7 +29,7 @@ export const useActivityDiaryByDate = (date: Date) => {
       return await activityDiaryRepository.getActivityDiaryByDate(formattedDate);
     },
     enabled: !!formattedDate,
-    staleTime: 1000 * 60 * 5, // Data is stale after 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

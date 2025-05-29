@@ -10,7 +10,7 @@ import { TranslationKeys } from "@/translations/translations";
 import { globalStyles } from "@/utils/global-styles";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, StyleSheet, View, Pressable, KeyboardAvoidingView } from "react-native";
 
@@ -21,6 +21,8 @@ const RegistrationScreen = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [isEmailErrorVisible, setIsEmailErrorVisible] = useState(false);
+  const [isPasswordErrorVisible, setIsPasswordErrorVisible] = useState(false);
+  const [isPasswordConfirmErrorVisible, setIsPasswordConfirmErrorVisible] = useState(false);
   const { signUp, loading, error } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
@@ -29,7 +31,49 @@ const RegistrationScreen = () => {
   const linkColor = useThemeColor({}, "primary");
   const onBackground = useThemeColor({}, "onBackground");
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password: string): boolean => {
+    return password.length >= 6 && password.length <= 30;
+  };
+
+  const validatePasswordConfirmation = (password: string, confirmation: string): boolean => {
+    return password === confirmation;
+  };
+
+  useEffect(() => {
+    if (email) {
+      setIsEmailErrorVisible(!validateEmail(email));
+    }
+
+    if (password) {
+      setIsPasswordErrorVisible(!validatePassword(password));
+    }
+
+    if (passwordConfirmation) {
+      setIsPasswordConfirmErrorVisible(
+        !validatePasswordConfirmation(password, passwordConfirmation)
+      );
+    }
+  }, [email, password, passwordConfirmation]);
+
   const handleSignUp = async () => {
+    const isEmailValid = email && validateEmail(email);
+    const isPasswordValid = password && validatePassword(password);
+    const isPasswordConfirmValid = validatePasswordConfirmation(password, passwordConfirmation);
+
+    setIsEmailErrorVisible(!isEmailValid);
+    setIsPasswordErrorVisible(!isPasswordValid);
+    setIsPasswordConfirmErrorVisible(!isPasswordConfirmValid);
+
+    if (!isEmailValid || !isPasswordValid || !isPasswordConfirmValid) {
+      Alert.alert(t(TranslationKeys.error), t(TranslationKeys.validation_error_message));
+      return;
+    }
+
     if (!email || !password) {
       Alert.alert(t(TranslationKeys.error), t(TranslationKeys.enter_email_password));
       return;
@@ -73,6 +117,7 @@ const RegistrationScreen = () => {
           rightIcon={<MaterialIcons name="close" size={20} color={onBackground} />}
           onRightIconPress={() => {
             setEmail("");
+            setIsEmailErrorVisible(false);
           }}
           containerStyle={styles.inputContainer}
         />
@@ -96,8 +141,9 @@ const RegistrationScreen = () => {
           onRightIconPress={() => setIsPasswordVisible(!isPasswordVisible)}
           containerStyle={styles.inputContainer}
         />
-        <ThemedText style={[styles.helperText, { display: "none" }]}>
-          {t(TranslationKeys.enter_password)}
+        <ThemedText
+          style={[styles.helperText, { display: isPasswordErrorVisible ? "flex" : "none" }]}>
+          {t(TranslationKeys.validation_short_password)}
         </ThemedText>
 
         {/* Confirm Password Input */}
@@ -116,8 +162,9 @@ const RegistrationScreen = () => {
           onRightIconPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
           containerStyle={styles.inputContainer}
         />
-        <ThemedText style={[styles.helperText, { display: "none" }]}>
-          {t(TranslationKeys.password_confirm)}
+        <ThemedText
+          style={[styles.helperText, { display: isPasswordConfirmErrorVisible ? "flex" : "none" }]}>
+          {t(TranslationKeys.validation_passwords_mismatch)}
         </ThemedText>
 
         <View style={styles.buttons}>
@@ -159,7 +206,7 @@ const styles = StyleSheet.create({
   },
   helperText: {
     fontSize: 12,
-    color: "#666",
+    color: "#e74c3c",
     marginBottom: 16,
   },
   rememberForgotContainer: {

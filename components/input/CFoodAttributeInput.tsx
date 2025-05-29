@@ -6,7 +6,6 @@ import {
   StyleSheet,
   StyleProp,
   ViewStyle,
-  TextStyle,
   KeyboardTypeOptions,
 } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";

@@ -34,7 +34,7 @@ const MAX_PROTEIN = 100;
 const MAX_SUGAR = 100;
 const MAX_FIBER = 50;
 const MAX_SALT = 100;
-const BARCODE_REGEX = /^[0-9]{8,14}$/; // basic types EAN-8, EAN-13, UPC-A, ...
+const BARCODE_REGEX = /^[0-9]{8,14}$/;
 
 export default function FoodCreationScreen() {
   const router = useRouter();
@@ -81,9 +81,7 @@ export default function FoodCreationScreen() {
   const [validFields, setValidFields] = useState<Record<string, boolean>>({});
   const [formTouched, setFormTouched] = useState<boolean>(false);
 
-  // Function to validate a single field
   const validateField = (field: keyof FoodData, value: string): string | null => {
-    // Trim the value if it's a string
     const trimmedValue = typeof value === "string" ? value.trim() : value;
 
     switch (field) {
@@ -115,11 +113,9 @@ export default function FoodCreationScreen() {
         return null;
 
       case "brand":
-        // Brand is optional
         return null;
 
       case "barcode":
-        // Barcode is optional according to DTO
         if (!trimmedValue) return null;
         if (!BARCODE_REGEX.test(trimmedValue)) return t(TranslationKeys.validation_invalid_barcode);
         return null;
@@ -193,7 +189,6 @@ export default function FoodCreationScreen() {
   const validateCrossFields = (): Record<string, string> => {
     const crossErrors: Record<string, string> = {};
 
-    // Check if sugar exceeds carbs
     if (foodData.sugar && foodData.carbs) {
       const sugar = Number(foodData.sugar);
       const carbs = Number(foodData.carbs);
@@ -202,7 +197,6 @@ export default function FoodCreationScreen() {
       }
     }
 
-    // Check if fiber exceeds carbs
     if (foodData.fiber && foodData.carbs) {
       const fiber = Number(foodData.fiber);
       const carbs = Number(foodData.carbs);
@@ -211,7 +205,6 @@ export default function FoodCreationScreen() {
       }
     }
 
-    // Check if macronutrients make sense with calories
     if (foodData.calories && foodData.fats && foodData.carbs && foodData.protein) {
       const calories = Number(foodData.calories);
       const fats = Number(foodData.fats);
@@ -236,16 +229,13 @@ export default function FoodCreationScreen() {
   };
 
   const updateFoodData = (field: keyof FoodFormData, value: string) => {
-    // For text fields, trim the input
-    const processedValue = field === "name" || field === "brand" ? value : value; // For numeric fields, we will keep the original input for better UX
+    const processedValue = field === "name" || field === "brand" ? value : value;
 
     setFoodData((prev) => ({ ...prev, [field]: processedValue }));
     setFormTouched(true);
 
-    // Validate the field
     const fieldError = validateField(field, processedValue);
 
-    // Update errors state
     setErrors((prev) => {
       const newErrors = { ...prev };
       if (fieldError) {
@@ -256,14 +246,12 @@ export default function FoodCreationScreen() {
       return newErrors;
     });
 
-    // Update valid fields state
     setValidFields((prev) => ({
       ...prev,
       [field]: !fieldError && processedValue.trim() !== "",
     }));
   };
 
-  // Effect to run cross-field validations when relevant fields change
   useEffect(() => {
     if (!formTouched) return;
 
@@ -272,12 +260,10 @@ export default function FoodCreationScreen() {
     setErrors((prev) => {
       const newErrors = { ...prev };
 
-      // Remove any previous cross-field errors
       if (prev.sugar && crossErrors.sugar === undefined) delete newErrors.sugar;
       if (prev.fiber && crossErrors.fiber === undefined) delete newErrors.fiber;
       if (prev.calories && crossErrors.calories === undefined) delete newErrors.calories;
 
-      // Add new cross-field errors
       return { ...newErrors, ...crossErrors };
     });
   }, [
@@ -294,7 +280,6 @@ export default function FoodCreationScreen() {
     const newErrors: Record<string, string> = {};
     const fields = Object.keys(foodData) as Array<keyof FoodFormData>;
 
-    // Validate each field
     fields.forEach((field) => {
       const error = validateField(field, foodData[field]);
       if (error) {
@@ -302,7 +287,6 @@ export default function FoodCreationScreen() {
       }
     });
 
-    // Add cross-field validations
     const crossErrors = validateCrossFields();
     Object.assign(newErrors, crossErrors);
 
@@ -318,14 +302,12 @@ export default function FoodCreationScreen() {
     if (validate()) {
       try {
         setIsSaving(true);
-        // Prepare data for save
         const preparedData: Omit<FoodData, "id" | "created_at" | "updated_at"> = {
           ...foodData,
           name: foodData.name.trim(),
           brand: foodData.brand.trim(),
         };
 
-        // Save to repository (which handles both remote and local storage)
         await saveFoodToRepository(preparedData);
 
         console.log("Food data saved successfully:", preparedData);

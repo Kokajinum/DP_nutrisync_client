@@ -4,10 +4,6 @@ import { LocalProfileRepository } from "./local/LocalProfileRepository";
 import { RemoteProfileRepository } from "./remote/RemoteProfileRepository";
 import NetInfo from "@react-native-community/netinfo";
 
-/**
- * A composite repository that combines local and remote repositories
- * Provides offline support and synchronization between local and remote data
- */
 export class ProfileRepository implements UserProfileRepository {
   private localRepository: LocalProfileRepository;
   private remoteRepository: RemoteProfileRepository;
@@ -31,18 +27,15 @@ export class ProfileRepository implements UserProfileRepository {
         const remoteProfile = await this.remoteRepository.get(id);
 
         if (remoteProfile) {
-          // If remote succeeds, update local and return remote data
           await this.localRepository.save(remoteProfile);
           return remoteProfile;
         }
       }
 
-      // If remote returns null or is offline, fall back to local
       const localProfile = await this.localRepository.get(id);
       return localProfile;
     } catch (error) {
       console.log("ProfileRepository: Error fetching from remote, falling back to local");
-      // Fall back to local on error
       const localProfile = await this.localRepository.get(id);
       return localProfile;
     }
@@ -54,7 +47,6 @@ export class ProfileRepository implements UserProfileRepository {
    */
   async save(profile: UserProfileData): Promise<UserProfileData | null> {
     try {
-      // Save to remote first
       const newData: UserProfileData | null = await this.remoteRepository.save(profile);
 
       if (newData !== null) await this.localRepository.save(newData);
@@ -62,7 +54,6 @@ export class ProfileRepository implements UserProfileRepository {
       return newData;
     } catch (error) {
       console.error("Error in remote save:", error);
-      // Still try to save locally even if remote fails
       const newData: UserProfileData | null = await this.localRepository.save(profile);
       return newData;
     }
@@ -75,14 +66,11 @@ export class ProfileRepository implements UserProfileRepository {
    */
   async update(id: string, patch: Partial<UserProfileData>): Promise<void> {
     try {
-      // Update remote first
       await this.remoteRepository.update(id, patch);
 
-      // Then update local
       await this.localRepository.update(id, patch);
     } catch (error) {
       console.error("Error in remote update:", error);
-      // Still try to update locally even if remote fails
       await this.localRepository.update(id, patch);
       throw error;
     }

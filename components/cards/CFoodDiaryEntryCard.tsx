@@ -7,7 +7,6 @@ import { MealTypeEnum } from "@/models/enums/enums";
 import { format } from "date-fns";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
-// Helper function to get meal type icon
 const getMealTypeIcon = (mealType: MealTypeEnum): any => {
   switch (mealType) {
     case MealTypeEnum.BREAKFAST:

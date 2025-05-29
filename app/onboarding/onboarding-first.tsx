@@ -22,13 +22,13 @@ import { convertHeight, convertWeight } from "@/utils/methods";
 // Default validation ranges
 const MIN_HEIGHT_CM = 100;
 const MAX_HEIGHT_CM = 250;
-const MIN_HEIGHT_FT = convertHeight(MIN_HEIGHT_CM, "cm", "ft", 2); // ~100cm
-const MAX_HEIGHT_FT = convertHeight(MAX_HEIGHT_CM, "cm", "ft", 2); // ~250cm
+const MIN_HEIGHT_FT = convertHeight(MIN_HEIGHT_CM, "cm", "ft", 2);
+const MAX_HEIGHT_FT = convertHeight(MAX_HEIGHT_CM, "cm", "ft", 2);
 
 const MIN_WEIGHT_KG = 30;
 const MAX_WEIGHT_KG = 300;
-const MIN_WEIGHT_LBS = convertWeight(MIN_WEIGHT_KG, "kg", "lbs", 0); // ~30kg
-const MAX_WEIGHT_LBS = convertWeight(MAX_WEIGHT_KG, "kg", "lbs", 0); // ~300kg
+const MIN_WEIGHT_LBS = convertWeight(MIN_WEIGHT_KG, "kg", "lbs", 0);
+const MAX_WEIGHT_LBS = convertWeight(MAX_WEIGHT_KG, "kg", "lbs", 0);
 
 const MIN_AGE = 13;
 const MAX_AGE = 120;

@@ -1,19 +1,14 @@
 import React from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { CartesianChart, Line } from "victory-native";
 import { format } from "date-fns";
 import { UserWeightDto } from "@/models/interfaces/DashboardResponseDto";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "@/components/ThemedText";
-import {
-  useFonts,
-  Quicksand_300Light,
-  Quicksand_400Regular,
-  Quicksand_500Medium,
-  Quicksand_600SemiBold,
-  Quicksand_700Bold,
-} from "@expo-google-fonts/quicksand";
+import { Quicksand_500Medium } from "@expo-google-fonts/quicksand";
 import { useFont } from "@shopify/react-native-skia";
+import { useTranslation } from "react-i18next";
+import { TranslationKeys } from "@/translations/translations";
 
 interface WeightHistoryChartProps {
   data: UserWeightDto[];
@@ -22,17 +17,17 @@ interface WeightHistoryChartProps {
 
 const WeightHistoryChart: React.FC<WeightHistoryChartProps> = ({ data, title }) => {
   const primaryColor = useThemeColor({}, "primary");
-  const screenWidth = Dimensions.get("window").width;
 
   const font = useFont(Quicksand_500Medium, 12);
 
-  // If no data, show a message
+  const { t } = useTranslation();
+
   if (!data || data.length === 0) {
     return (
       <View style={styles.container}>
         <ThemedText type="subtitle">{title}</ThemedText>
         <View style={styles.emptyContainer}>
-          <ThemedText>No weight data available</ThemedText>
+          <ThemedText>{t(TranslationKeys.dashboard_no_weight)}</ThemedText>
         </View>
       </View>
     );

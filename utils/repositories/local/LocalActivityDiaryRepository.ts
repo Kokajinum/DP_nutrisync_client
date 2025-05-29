@@ -18,14 +18,11 @@ export class LocalActivityDiaryRepository implements ActivityDiaryRepository {
    */
   async saveActivityDiary(diary: CreateActivityDiaryDto): Promise<ActivityDiaryResponseDto | null> {
     try {
-      // Check if this is a response DTO or a create DTO
       const isResponseDto = "user_id" in diary && "created_at" in diary;
 
       if (isResponseDto) {
-        // Cast to response DTO for easier handling
         const responseDiary = diary as unknown as ActivityDiaryResponseDto;
 
-        // Save the main diary record
         await db.runAsync(
           `INSERT OR REPLACE INTO activity_diary 
            (id, user_id, start_at, end_at, bodyweight_kg, notes, created_at, updated_at) 
@@ -42,7 +39,6 @@ export class LocalActivityDiaryRepository implements ActivityDiaryRepository {
           ]
         );
 
-        // Save entries if they exist
         if (responseDiary.entries && responseDiary.entries.length > 0) {
           for (const entry of responseDiary.entries) {
             await db.runAsync(
@@ -64,11 +60,9 @@ export class LocalActivityDiaryRepository implements ActivityDiaryRepository {
 
         return responseDiary;
       } else if (diary.id) {
-        // This is a CreateActivityDiaryDto with an ID, which we can save
         const now = new Date().toISOString();
         const userId = "00000000-0000-0000-0000-000000000000"; // Default user ID for local storage
 
-        // Save the main diary record
         await db.runAsync(
           `INSERT OR REPLACE INTO activity_diary 
            (id, user_id, start_at, end_at, bodyweight_kg, notes, created_at, updated_at) 
@@ -85,7 +79,6 @@ export class LocalActivityDiaryRepository implements ActivityDiaryRepository {
           ]
         );
 
-        // Save entries if they exist
         if (diary.entries && diary.entries.length > 0) {
           for (const entry of diary.entries) {
             const entryId =
@@ -107,7 +100,6 @@ export class LocalActivityDiaryRepository implements ActivityDiaryRepository {
           }
         }
 
-        // Return in response format
         return {
           id: diary.id,
           user_id: userId,
@@ -144,14 +136,12 @@ export class LocalActivityDiaryRepository implements ActivityDiaryRepository {
    */
   async getActivityDiaryByDate(date: string): Promise<ActivityDiaryResponseDto | null> {
     try {
-      // Format date for SQL query
       const dateObj = new Date(date);
       const dateStart = startOfDay(dateObj).toISOString();
       const nextDay = new Date(dateObj);
       nextDay.setDate(nextDay.getDate() + 1);
       const dateEnd = startOfDay(nextDay).toISOString();
 
-      // Get diary from SQLite
       const diary = await db.getFirstAsync<ActivityDiary>(
         `SELECT * FROM activity_diary 
          WHERE start_at >= ? AND start_at < ? 
@@ -161,13 +151,11 @@ export class LocalActivityDiaryRepository implements ActivityDiaryRepository {
 
       if (!diary) return null;
 
-      // Get entries for this diary
       const entries = await db.getAllAsync<ActivityDiaryEntry>(
         `SELECT * FROM activity_diary_entry WHERE diary_id = ?`,
         [diary.id]
       );
 
-      // Get exercise names for entries
       for (const entry of entries) {
         const exercise = await db.getFirstAsync<{ name: string }>(
           `SELECT name FROM exercises WHERE id = ?`,
@@ -179,7 +167,6 @@ export class LocalActivityDiaryRepository implements ActivityDiaryRepository {
         }
       }
 
-      // Convert entries to response format
       const entriesDto: ActivityDiaryEntryResponseDto[] = entries.map((entry) => ({
         id: entry.id,
         diary_id: entry.diary_id,
@@ -190,7 +177,6 @@ export class LocalActivityDiaryRepository implements ActivityDiaryRepository {
         created_at: entry.created_at || new Date().toISOString(),
       }));
 
-      // Return in response format
       return {
         id: diary.id,
         user_id: diary.user_id,

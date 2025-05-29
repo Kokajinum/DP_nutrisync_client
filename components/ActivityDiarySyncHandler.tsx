@@ -4,11 +4,6 @@ import { useActivityDiaryStore } from "@/stores/activityDiaryStore";
 import { CreateActivityDiaryDto } from "@/models/interfaces/ActivityDiary";
 import { useAuth } from "@/context/AuthProvider";
 
-/**
- * Component that handles syncing activity diary data with the server
- * This component doesn't render anything, it just provides the functionality
- * It only syncs data when a workout is completed (onSessionId changes)
- */
 export const ActivityDiarySyncHandler: React.FC<{
   onSessionId: string | null;
 }> = ({ onSessionId }) => {
@@ -40,7 +35,6 @@ export const ActivityDiarySyncHandler: React.FC<{
     };
   };
 
-  // Function to sync a completed session with the server
   const syncCompletedSession = async (sessionId: string) => {
     if (!user) return;
 
@@ -51,8 +45,6 @@ export const ActivityDiarySyncHandler: React.FC<{
         return;
       }
 
-      // Save to server and local DB via CompositeActivityDiaryRepository
-      // The repository will handle saving to both remote and local storage
       saveActivityDiary(dto, {
         onSuccess: (response) => {
           console.log("Activity diary saved to server successfully", response);
@@ -73,6 +65,5 @@ export const ActivityDiarySyncHandler: React.FC<{
     }
   }, [onSessionId]);
 
-  // This component doesn't render anything
   return null;
 };

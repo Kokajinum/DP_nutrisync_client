@@ -37,7 +37,6 @@ const CNumberInput: React.FC<CNumberInputProps> = ({
   const focusedBorderColor = useThemeColor({}, "primary");
   const errorColor = useThemeColor({}, "error");
 
-  // Update input value when external value changes
   useEffect(() => {
     setInputValue(value.toString());
   }, [value]);
@@ -55,7 +54,6 @@ const CNumberInput: React.FC<CNumberInputProps> = ({
       return t(TranslationKeys.error_range_more, { value: max });
     }
 
-    // We're no longer enforcing the step pattern to allow for more flexible decimal input
     return null;
   };
 
@@ -74,10 +72,8 @@ const CNumberInput: React.FC<CNumberInputProps> = ({
       setError(null);
     }
 
-    // Try to convert to number and update parent if valid
     const numValue = parseFloat(formattedText);
     if (!isNaN(numValue)) {
-      // Only update if within min/max range
       if (numValue >= min && numValue <= max) {
         onChange(numValue);
       }
@@ -87,30 +83,22 @@ const CNumberInput: React.FC<CNumberInputProps> = ({
   const handleBlur = () => {
     setIsFocused(false);
 
-    // Convert to number and validate
     let numValue = parseFloat(inputValue);
 
-    // Handle empty input
     if (inputValue === "" || isNaN(numValue)) {
       numValue = min;
       setInputValue(min.toString());
     }
 
-    // No longer rounding to nearest step to allow for more flexible decimal input
-    // Just ensure we have at most 2 decimal places for display
-    numValue = parseFloat(numValue.toFixed(2)); // Fix floating point precision issues
+    numValue = parseFloat(numValue.toFixed(2));
 
-    // Clamp to min/max
     numValue = Math.max(min, Math.min(max, numValue));
 
-    // Update input value with formatted number
     setInputValue(numValue.toString());
 
-    // Validate and set error
     const validationError = validateValue(numValue);
     setError(validationError);
 
-    // Only update parent if valid
     if (!validationError) {
       onChange(numValue);
     }
@@ -154,8 +142,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   label: {
-    //fontSize: 14,
-    //fontFamily: _500Medium,
     marginBottom: 8,
   },
   inputContainer: {

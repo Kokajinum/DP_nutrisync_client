@@ -37,7 +37,6 @@ const CDashboardFoodEntryCard: React.FC<CDashboardFoodEntryCardProps> = ({ entry
     }
   };
 
-  // Format date
   const formattedDate = entry.created_at
     ? format(new Date(entry.created_at), "dd.MM.yyyy HH:mm")
     : t(TranslationKeys.ai_recommendation_unknown_date);

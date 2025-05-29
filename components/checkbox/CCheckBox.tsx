@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,14 +9,12 @@ import Animated, {
 
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "../ThemedText";
-import { useThemeColor } from "@/hooks/useThemeColor";
 
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcons);
 
 interface CCheckBoxProps {
   label: string;
   checkColor?: string;
-  /** Barva rámečku a vyplněného pozadí */
   boxColor?: string;
   defaultChecked?: boolean;
   onChange?: (checked: boolean) => void;
@@ -41,7 +39,6 @@ const CCheckbox: React.FC<CCheckBoxProps> = ({
     setChecked(newChecked);
     onChange?.(newChecked);
 
-    // Spustíme animaci (0 -> 1 nebo 1 -> 0) s pružinovým efektem
     progress.value = withSpring(newChecked ? 1 : 0, {
       damping: 12,
       stiffness: 120,
@@ -57,7 +54,7 @@ const CCheckbox: React.FC<CCheckBoxProps> = ({
     };
   });
 
-  // Animovaný styl pro ikonu checku - měníme scale a opacity
+  // Animovaný styl pro ikonu checku - scale a opacity
   const animatedIconStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: progress.value }],
@@ -81,10 +78,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    /**
-     * alignSelf: 'flex-start' zajistí, že se Pressable "neroztáhne"
-     * přes celou šířku, ale jen kolem svého obsahu (box + text).
-     */
     alignSelf: "flex-start",
   },
   box: {

@@ -76,7 +76,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
 
-    // Subscribe to auth state changes
     let subscription: any;
     const setupAuthSubscription = async () => {
       if (!isSubscribed) return;
@@ -97,8 +96,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadSession();
     setupAuthSubscription();
 
-    //cleanup funkce
-    //provolá se, když se komponenta odmountuje
     return () => {
       isSubscribed = false;
       clearTimeout(timeoutId);
@@ -118,7 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setError(error.message);
         return false;
       } else {
-        setUser(data.user); // Update user immediately after signup
+        setUser(data.user);
         return true;
       }
     } catch (e: any) {
@@ -141,7 +138,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setError(error.message);
         return false;
       } else {
-        setUser(data.user); // Update user immediately after signin
+        setUser(data.user);
         return true;
       }
     } catch (e: any) {

@@ -16,7 +16,6 @@ interface CUserProfileCardProps {
 
 const CUserProfileCard: React.FC<CUserProfileCardProps> = ({ userProfile, isLoading = false }) => {
   const backgroundColor = useThemeColor({}, "surfaceContainerHigh");
-  const textColor = useThemeColor({}, "onSurface");
   const primaryColor = useThemeColor({}, "primary");
 
   const { t } = useTranslation();

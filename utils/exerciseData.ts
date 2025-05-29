@@ -2,16 +2,7 @@ import { ensureError } from "./methods";
 import { db } from "./sqliteHelper";
 import uuid from "react-native-uuid";
 
-/**
- * Generate a simple UUID
- * This is a basic implementation for our needs
- */
 function generateUUID() {
-  // return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-  //   const r = (Math.random() * 16) | 0;
-  //   const v = c === "x" ? r : (r & 0x3) | 0x8;
-  //   return v.toString(16);
-  // });
   return uuid.v4();
 }
 
@@ -30,7 +21,6 @@ export async function seedExerciseData() {
     if (existingExercises[0].count === 0) {
       console.log("Seeding exercise data...");
 
-      // Create a map to store exercise IDs by slug for later reference
       const exerciseIds = new Map();
 
       // Define exercise data
@@ -696,7 +686,7 @@ export async function seedExerciseData() {
         },
       ];
 
-      // Insert Czech localizations
+      // Czech localizations
       for (const loc of czechLocalizations) {
         const exerciseId = exerciseIds.get(loc.slug);
         if (exerciseId) {
@@ -938,7 +928,7 @@ export async function seedExerciseData() {
         },
       ];
 
-      // Insert English localizations
+      // English localizations
       for (const loc of englishLocalizations) {
         const exerciseId = exerciseIds.get(loc.slug);
         if (exerciseId) {

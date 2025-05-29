@@ -42,7 +42,6 @@ const ExerciseSelectionScreen = () => {
   const primaryColor = useThemeColor({}, "primary");
   const borderColor = useThemeColor({}, "outline");
 
-  // Load exercises from database
   useEffect(() => {
     const loadExercises = async () => {
       try {
@@ -72,7 +71,6 @@ const ExerciseSelectionScreen = () => {
     loadExercises();
   }, [i18n.language]);
 
-  // Filter exercises based on search query
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredExercises(exercises);
@@ -121,7 +119,7 @@ const ExerciseSelectionScreen = () => {
       {/* Header */}
       <ThemedStackScreen
         options={{
-          title: t(TranslationKeys.food_creation_header),
+          title: t(TranslationKeys.activity_diary_search),
           headerLeft: () => (
             <Pressable
               onPress={() => router.push("/(tabs)/activity-diary-screen")}
@@ -232,6 +230,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 16,
+    paddingBottom: 80,
   },
   exerciseCard: {
     borderRadius: 12,

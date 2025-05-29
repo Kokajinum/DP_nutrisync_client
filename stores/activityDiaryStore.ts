@@ -68,7 +68,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
       );
     }
 
-    // Create a new session
     const newSession: ActivityDiary = {
       id: uuid.v4() as string,
       user_id: userId,
@@ -80,7 +79,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
     };
 
     try {
-      // Save to SQLite
       await db.runAsync(
         `INSERT INTO activity_diary (id, user_id, start_at, notes, created_at, updated_at) 
          VALUES (?, ?, ?, ?, ?, ?)`,
@@ -107,7 +105,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
     if (!activeSession) return;
 
     try {
-      // Update in SQLite
       await db.runAsync(`UPDATE activity_diary SET notes = ?, updated_at = ? WHERE id = ?`, [
         notes,
         new Date().toISOString(),
@@ -142,7 +139,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
     };
 
     try {
-      // Save to SQLite
       await db.runAsync(
         `INSERT INTO activity_diary_entry (id, diary_id, exercise_id, sets_json, est_kcal, notes, created_at) 
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -181,7 +177,7 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
           const currentSets: ExerciseSet[] = JSON.parse(entry.sets_json || "[]");
           const updatedSets = [...currentSets, exerciseSet];
 
-          // Calculate estimated calories (simple calculation)
+          // Calculate estimated calories
           const estKcal = updatedSets.reduce((total, currentSet) => {
             return total + currentSet.reps * currentSet.weight_kg * 0.1; // Simple formula
           }, 0);
@@ -195,7 +191,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
         return entry;
       });
 
-      // Find the updated entry to save to SQLite
       const updatedEntry = updatedEntries.find((e) => e.id === entryId);
       if (updatedEntry) {
         await db.runAsync(
@@ -226,9 +221,8 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
           const currentSets: ExerciseSet[] = JSON.parse(entry.sets_json || "[]");
           const updatedSets = currentSets.map((s, i) => (i === index ? updatedSet : s));
 
-          // Calculate estimated calories
           const estKcal = updatedSets.reduce((total, currentSet) => {
-            return total + currentSet.reps * currentSet.weight_kg * 0.1; // Simple formula
+            return total + currentSet.reps * currentSet.weight_kg * 0.1;
           }, 0);
 
           return {
@@ -240,7 +234,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
         return entry;
       });
 
-      // Find the updated entry to save to SQLite
       const updatedEntry = updatedEntries.find((e) => e.id === entryId);
       if (updatedEntry) {
         await db.runAsync(
@@ -271,9 +264,8 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
           const currentSets: ExerciseSet[] = JSON.parse(entry.sets_json || "[]");
           const updatedSets = currentSets.filter((_, i) => i !== index);
 
-          // Calculate estimated calories
           const estKcal = updatedSets.reduce((total, currentSet) => {
-            return total + currentSet.reps * currentSet.weight_kg * 0.1; // Simple formula
+            return total + currentSet.reps * currentSet.weight_kg * 0.1;
           }, 0);
 
           return {
@@ -285,7 +277,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
         return entry;
       });
 
-      // Find the updated entry to save to SQLite
       const updatedEntry = updatedEntries.find((e) => e.id === entryId);
       if (updatedEntry) {
         await db.runAsync(
@@ -321,7 +312,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
           // Remove the last set
           const updatedSets = currentSets.slice(0, -1);
 
-          // Calculate estimated calories
           const estKcal = updatedSets.reduce((total, currentSet) => {
             return total + currentSet.reps * currentSet.weight_kg * 0.1; // Simple formula
           }, 0);
@@ -335,7 +325,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
         return entry;
       });
 
-      // Find the updated entry to save to SQLite
       const updatedEntry = updatedEntries.find((e) => e.id === entryId);
       if (updatedEntry) {
         await db.runAsync(
@@ -364,24 +353,20 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
       const endTime = new Date().toISOString();
       const sessionId = activeSession.id;
 
-      // Update in SQLite
       await db.runAsync(`UPDATE activity_diary SET end_at = ?, updated_at = ? WHERE id = ?`, [
         endTime,
         new Date().toISOString(),
         sessionId,
       ]);
 
-      // Update the session in the store
       const completedSession = {
         ...activeSession,
         end_at: endTime,
         updated_at: new Date().toISOString(),
       };
 
-      // Clear the active session
       set({ activeSession: null });
 
-      // Return the session ID so it can be used for syncing
       return sessionId;
     } catch (error) {
       console.error("Failed to complete session:", error);
@@ -391,7 +376,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
 
   getSessionById: async (id: string) => {
     try {
-      // Get session from SQLite
       const session = await db.getFirstAsync<ActivityDiary>(
         `SELECT * FROM activity_diary WHERE id = ?`,
         [id]
@@ -399,13 +383,11 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
 
       if (!session) return null;
 
-      // Get entries for this session
       const entries = await db.getAllAsync<ActivityDiaryEntry>(
         `SELECT * FROM activity_diary_entry WHERE diary_id = ?`,
         [id]
       );
 
-      // Get exercise names for entries
       for (const entry of entries) {
         const exercise = await db.getFirstAsync<{ name: string }>(
           `SELECT name FROM exercises WHERE id = ?`,
@@ -429,7 +411,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
 
   loadActiveSession: async (userId: string) => {
     try {
-      // Get active session from SQLite (where end_at is null)
       const session = await db.getFirstAsync<ActivityDiary>(
         `SELECT * FROM activity_diary WHERE user_id = ? AND end_at IS NULL ORDER BY start_at DESC LIMIT 1`,
         [userId]
@@ -440,7 +421,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
         return;
       }
 
-      // Check if the session is from a previous day
       const today = startOfDay(new Date());
       const sessionDate = startOfDay(new Date(session.start_at));
 
@@ -450,13 +430,11 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
         );
       }
 
-      // Get entries for this session
       const entries = await db.getAllAsync<ActivityDiaryEntry>(
         `SELECT * FROM activity_diary_entry WHERE diary_id = ?`,
         [session.id]
       );
 
-      // Get exercise names for entries
       for (const entry of entries) {
         const exercise = await db.getFirstAsync<{ name: string }>(
           `SELECT name FROM exercises WHERE id = ?`,
@@ -479,7 +457,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
     }
   },
 
-  // Get all sessions for a specific date
   getSessionsByDate: async (userId: string, date: Date) => {
     try {
       set({ loading: true });
@@ -490,7 +467,6 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
       nextDay.setDate(nextDay.getDate() + 1);
       const dateEnd = startOfDay(nextDay).toISOString();
 
-      // Get sessions from SQLite where start_at is between dateStart and dateEnd
       const sessions = await db.getAllAsync<ActivityDiary>(
         `SELECT * FROM activity_diary 
          WHERE user_id = ? 
@@ -500,14 +476,12 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
         [userId, dateStart, dateEnd]
       );
 
-      // Get entries for each session
       for (const session of sessions) {
         const entries = await db.getAllAsync<ActivityDiaryEntry>(
           `SELECT * FROM activity_diary_entry WHERE diary_id = ?`,
           [session.id]
         );
 
-        // Get exercise names for entries
         for (const entry of entries) {
           const exercise = await db.getFirstAsync<{ name: string }>(
             `SELECT name FROM exercises WHERE id = ?`,
@@ -529,12 +503,10 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
     }
   },
 
-  // Calculate total calories burned for a specific date
   getTotalCaloriesBurnedForDate: (date: Date) => {
     const { sessions } = get();
 
     return sessions.reduce((total, session) => {
-      // Sum up calories from all entries in the session
       const sessionCalories =
         session.entries?.reduce((entryTotal, entry) => {
           return entryTotal + (entry.est_kcal || 0);
@@ -544,12 +516,9 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
     }, 0);
   },
 
-  // Transform ActivityDiary to ActivitySession for UI components
   transformToActivitySession: (diary: ActivityDiary): ActivitySession => {
-    // Count the number of exercises
     const exerciseCount = diary.entries?.length || 0;
 
-    // Calculate total calories burned
     const caloriesBurned =
       diary.entries?.reduce((total, entry) => {
         return total + (entry.est_kcal || 0);
@@ -558,7 +527,7 @@ export const useActivityDiaryStore = create<ActivityDiaryState>((set, get) => ({
     return {
       id: diary.id,
       startTime: diary.start_at,
-      endTime: diary.end_at, // Added for tracking completion status
+      endTime: diary.end_at,
       caloriesBurned,
       exerciseCount,
       notes: diary.notes,

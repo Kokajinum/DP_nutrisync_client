@@ -14,6 +14,8 @@
     "dashboard_weight_history": "Historie váhy",
     "dashboard_steps_history": "Historie kroků",
     "dashboard_last_days": "Posledních {{days}} dní",
+    "dashboard_no_steps": "Nejsou k dispozici žádné údaje o krocích",
+    "dashboard_no_weight": "Nejsou k dispozici žádné údaje o hmotnosti",
     
     "profile_loading": "Načítání profilu...",
     "profile_not_available": "Profil není k dispozici",
@@ -84,6 +86,7 @@
     "activity_diary_no_exercises_found": "Žádné cviky nenalezeny",
     "activity_diary_in_progress": "Probíhá",
     "activity_diary_completed": "Dokončeno",
+    "activity_diary_search": "Přidat cvik do deníku",
     
     "gym_session_detail_header": "Trénink",
     "gym_session_detail_complete": "Dokončit",
@@ -318,5 +321,7 @@
     "beverages": "Nápoje",
     "alcohol": "Alkohol",
     "condiments": "Koření a dochucovadla",
-    "prepared_meals": "Hotová jídla"
+    "prepared_meals": "Hotová jídla",
+
+    "global_search_placeholder": "Vyhledat..."
 }

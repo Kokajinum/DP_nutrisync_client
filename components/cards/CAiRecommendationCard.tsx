@@ -41,11 +41,8 @@ const CAiRecommendationCard: React.FC<CAiRecommendationCardProps> = ({
         if (summary.length <= maxLength) return summary;
         return summary.substring(0, maxLength) + "...";
       }
-    } catch (error) {
-      // If parsing fails, use the original text (for backward compatibility)
-    }
+    } catch (error) {}
 
-    // Fallback to original text
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";
   };
@@ -111,7 +108,7 @@ const styles = StyleSheet.create({
   },
   unviewedContainer: {
     borderLeftWidth: 4,
-    borderLeftColor: "#6200ee", // Accent color
+    borderLeftColor: "#6200ee",
   },
   header: {
     flexDirection: "row",

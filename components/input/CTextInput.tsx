@@ -21,7 +21,6 @@ import { _500Medium, _600SemiBold, _700Bold } from "@/constants/Global";
 
 const AnimatedText = Animated.createAnimatedComponent(Animated.Text);
 
-//omit vynechá uvedené atributy z TextInputProps
 interface CTextInputProps extends Omit<TextInputProps, "placeholder" | "onChangeText" | "value"> {
   value?: string;
 
@@ -62,13 +61,10 @@ const CTextInput: React.FC<CTextInputProps> = ({
   ...textInputProps
 }) => {
   const [focused, setFocused] = useState(false);
-  //const themedBorderColor = useThemeColor({}, "onBackground");
   const themedFocusedBorderColor = useThemeColor({}, "primary");
 
-  // Animovaná hodnota 0..1 – 0 = placeholder je uvnitř pole, 1 = placeholder je nahoře
   const animation = useSharedValue(0);
 
-  // Nastavíme výchozí stav podle toho, zda je pole prázdné
   useEffect(() => {
     animation.value = value.length > 0 || focused ? 1 : 0;
   }, []);
@@ -119,7 +115,6 @@ const CTextInput: React.FC<CTextInputProps> = ({
         <TextInput
           {...textInputProps}
           style={[styles.textInput, inputStyle]}
-          // Skutečný "placeholder" nepotřebujeme, máme vlastní s animací
           placeholder=""
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -146,7 +141,6 @@ export default CTextInput;
 
 const styles = StyleSheet.create({
   wrapper: {
-    //flex: 1,
     width: "100%",
     marginTop: 30,
   },
@@ -164,7 +158,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 12,
     fontFamily: _500Medium,
-    // top: 0; animujeme transform: translateY
   },
   textInput: {
     flex: 1,

@@ -29,7 +29,7 @@ export const useDailyDiary = (date: string) => {
       return result;
     },
     enabled: !!date, // Only run the query if date is provided
-    staleTime: 1000 * 60 * 5, // Data is stale after 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

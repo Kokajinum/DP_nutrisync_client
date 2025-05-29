@@ -26,7 +26,8 @@ import CNumberInput from "../components/input/CNumberInput";
 import { ThemedStackScreen } from "@/components/ThemedStackScreen";
 import { TranslationKeys } from "@/translations/translations";
 import { t } from "i18next";
-import { useNetInfo } from "@react-native-community/netinfo";
+import { ThemedStatusBar } from "@/components/ThemedStatusBar";
+import NetInfo from "@react-native-community/netinfo";
 
 const GymSessionDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -59,39 +60,29 @@ const GymSessionDetailScreen = () => {
   useEffect(() => {
     const loadSession = async () => {
       try {
-        // If we have an ID, try to load that specific session
         if (id) {
           const loadedSession = await getSessionById(id);
           if (loadedSession) {
             setSession(loadedSession);
             setNotes(loadedSession.notes || "");
-            // Check if session is already completed
             if (loadedSession.end_at) {
               setIsCompleted(true);
             }
           }
-        }
-        // If no ID but we have an active session in the store, use that
-        else if (activeSession) {
+        } else if (activeSession) {
           setSession(activeSession);
           setNotes(activeSession.notes || "");
-          // Check if session is already completed
           if (activeSession.end_at) {
             setIsCompleted(true);
           }
-        }
-        // If no active session in the store, try to load it from the database
-        else if (user?.id) {
-          // Load the active session into the store
+        } else if (user?.id) {
           await loadActiveSession(user.id);
 
-          // Get the store state again after loading
           const { activeSession: updatedActiveSession } = useActivityDiaryStore.getState();
 
           if (updatedActiveSession) {
             setSession(updatedActiveSession);
             setNotes(updatedActiveSession.notes || "");
-            // Check if session is already completed
             if (updatedActiveSession.end_at) {
               setIsCompleted(true);
             }
@@ -112,9 +103,8 @@ const GymSessionDetailScreen = () => {
   };
 
   const handleCompleteSession = async () => {
-    const { isConnected } = useNetInfo();
-    if (isConnected) {
-      // Show confirmation dialog
+    const netState = await NetInfo.fetch();
+    if (netState.isConnected) {
       Alert.alert(
         t(TranslationKeys.gym_session_detail_complete_title),
         t(TranslationKeys.gym_session_detail_complete_message),
@@ -128,7 +118,6 @@ const GymSessionDetailScreen = () => {
             onPress: async () => {
               const result = await completeSession();
               if (result) {
-                // If result is a string, it's the session ID
                 if (typeof result === "string") {
                   setCompletedSessionId(result);
                   setIsCompleted(true);
@@ -207,6 +196,7 @@ const GymSessionDetailScreen = () => {
       {/* ActivityDiarySyncHandler - invisible component that handles syncing */}
       <ActivityDiarySyncHandler onSessionId={completedSessionId} />
 
+      <ThemedStatusBar></ThemedStatusBar>
       {/* Header */}
       <ThemedStackScreen
         options={{
@@ -317,21 +307,19 @@ const GymSessionDetailScreen = () => {
 
         {/* Complete Workout Button */}
         {!isCompleted && (
-          <View style={styles.completeWorkoutButtonContainer}>
-            <CButton
-              title={t(TranslationKeys.gym_session_detail_complete)}
-              onPress={handleCompleteSession}
-              style={styles.completeWorkoutButton}
-              icon={
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={20}
-                  color="white"
-                  style={{ marginRight: 8 }}
-                />
-              }
-            />
-          </View>
+          <CButton
+            title={t(TranslationKeys.gym_session_detail_complete)}
+            onPress={handleCompleteSession}
+            style={styles.completeWorkoutButton}
+            icon={
+              <Ionicons
+                name="checkmark-circle-outline"
+                size={20}
+                color="white"
+                style={{ marginRight: 8 }}
+              />
+            }
+          />
         )}
       </KeyboardAvoidingView>
     </ThemedView>
@@ -432,11 +420,12 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    //marginBottom: 50,
   },
   keyboardAvoidingContainer: {
     flex: 1,
-    display: "flex",
-    flexDirection: "column",
+    //display: "flex",
+    //flexDirection: "column",
   },
   loadingContainer: {
     flex: 1,
@@ -466,7 +455,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   scrollViewContent: {
-    paddingBottom: 130,
+    paddingBottom: 120,
   },
   timesContainer: {
     flexDirection: "row",
@@ -611,8 +600,11 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   completeWorkoutButton: {
-    borderRadius: 8,
-    width: "100%",
+    //margin: "auto",
+    position: "absolute",
+    bottom: 60,
+    left: 30,
+    width: "85%",
   },
 });
 
